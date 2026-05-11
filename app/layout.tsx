@@ -55,7 +55,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" suppressHydrationWarning className="scroll-smooth font-sans antialiased">
       <head>{styles && <style>{styles}</style>}</head>
       <body className="overflow-x-hidden">
-        <Script id="mahimai-mode-pre-paint" strategy="beforeInteractive">
+        <Script id="voice-playground-mode-pre-paint" strategy="beforeInteractive">
           {PRE_PAINT_MODE_SCRIPT}
         </Script>
         <ThemeProvider

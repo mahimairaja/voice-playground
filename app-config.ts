@@ -33,10 +33,10 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Mahimai AI',
-  pageTitle: 'Mahimai AI playground',
+  companyName: 'voice playground',
+  pageTitle: 'voice playground',
   pageDescription:
-    'Live voice agent demos. Bring your own provider keys and talk to one in your browser.',
+    'A standalone UI to try voice agents from the awesome-voice-apps catalogue. Bring your own provider keys and talk to one in your browser.',
 
   supportsChatInput: true,
   supportsVideoInput: true,

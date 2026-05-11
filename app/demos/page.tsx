@@ -4,8 +4,9 @@ import { getAllDemos, getDemoCategories } from '@/lib/demos';
 import { cn } from '@/lib/shadcn/utils';
 
 export const metadata: Metadata = {
-  title: 'Demos · Mahimai AI playground',
-  description: 'Live voice agent demos. Pick one, paste your provider keys, and talk to it.',
+  title: 'Demos · voice playground',
+  description:
+    'Live voice agent demos from the awesome-voice-apps catalogue. Pick one, paste your provider keys, talk to it.',
 };
 
 const ALL_FILTER = '__all__';

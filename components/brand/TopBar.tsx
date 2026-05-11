@@ -21,7 +21,7 @@ interface TopBarProps {
   className?: string;
 }
 
-export function TopBar({ brandTag = '// playground v1', className }: TopBarProps) {
+export function TopBar({ brandTag = '// open source', className }: TopBarProps) {
   const pathname = usePathname() ?? '/';
 
   return (
@@ -33,9 +33,9 @@ export function TopBar({ brandTag = '// playground v1', className }: TopBarProps
         className
       )}
     >
-      <Link href="/" className="brand brand-accent" aria-label="Mahimai AI playground home">
+      <Link href="/" className="brand brand-accent" aria-label="voice playground home">
         <span className="dot" aria-hidden="true" />
-        <span>mahimai</span>
+        <span>playground</span>
         <span className="tag">{brandTag}</span>
       </Link>
 

@@ -20,9 +20,9 @@ interface DemoPageProps {
 export async function generateMetadata({ params }: DemoPageProps): Promise<Metadata> {
   const { slug } = await params;
   const demo = getDemoBySlug(slug);
-  if (!demo) return { title: 'Demo not found · Mahimai AI playground' };
+  if (!demo) return { title: 'Demo not found · voice playground' };
   return {
-    title: `${demo.title} · Mahimai AI playground`,
+    title: `${demo.title} · voice playground`,
     description: demo.description,
   };
 }
@@ -222,7 +222,7 @@ export default async function DemoPage({ params }: DemoPageProps) {
             ← back to the corkboard
           </Link>
           <Link href="/about" className="btn">
-            About Mahimai AI →
+            About the playground →
           </Link>
         </div>
       </section>

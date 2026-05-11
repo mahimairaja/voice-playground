@@ -13,7 +13,7 @@ const GOAT_SRC = '/brand/goat.svg';
 export function Logo({
   size = 32,
   withWordmark = false,
-  wordmark = 'Mahimai AI',
+  wordmark = 'voice playground',
   className,
 }: LogoProps) {
   const goatStyle: CSSProperties = {
@@ -40,7 +40,7 @@ export function Logo({
   return (
     <span
       role="img"
-      aria-label={withWordmark ? `${wordmark} logo` : 'Mahimai AI logo'}
+      aria-label={withWordmark ? `${wordmark} logo` : 'voice playground logo'}
       className={cn('inline-flex items-center gap-2 align-middle leading-none', className)}
     >
       <span aria-hidden="true" className="block shrink-0" style={goatStyle} />
