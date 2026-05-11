@@ -200,74 +200,85 @@ function LiveBody({ onDisconnect }: LiveBodyProps) {
 
   return (
     <>
-      <div
-        className="relative flex w-full flex-col gap-2"
-        style={{
-          background: 'var(--paper-2)',
-          border: '1.5px solid var(--ink)',
-          borderRadius: 6,
-          padding: '10px 12px',
-        }}
-      >
-        <p className="tiny-mono">voice · ekg</p>
-        <AgentAudioVisualizerBar
-          size="lg"
-          state={voice.state}
-          color={barColor}
-          audioTrack={agentTrack}
-          className="w-full"
-        />
-        <p className="tiny-mono" style={{ color: 'var(--vg-green)' }}>
-          · 72 turns/min · stable
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
-        <div className="box" style={{ padding: 10, background: 'var(--paper-2)', borderRadius: 6 }}>
-          <p className="tiny-mono">· stack</p>
-          <ul
+      <div className="@container w-full">
+        <div className="grid grid-cols-1 gap-3 @[420px]:grid-cols-[minmax(0,1.4fr)_minmax(140px,1fr)]">
+          <div
+            className="relative flex w-full flex-col gap-2"
             style={{
-              fontFamily: 'var(--mono)',
-              fontSize: 11,
-              lineHeight: 1.55,
-              marginTop: 2,
+              background: 'var(--paper-2)',
+              border: '1.5px solid var(--ink)',
+              borderRadius: 6,
+              padding: '10px 12px',
+              backgroundImage:
+                'linear-gradient(rgba(45,122,79,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(45,122,79,0.06) 1px, transparent 1px)',
+              backgroundSize: '14px 14px, 14px 14px',
             }}
           >
-            {STACK_ROWS.map((row) => (
-              <li key={row.kind}>
-                {row.kind} · {row.provider}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div
-          className="box brand-accent"
-          style={{
-            padding: 10,
-            background: 'var(--vg-green-soft)',
-            borderRadius: 6,
-            minWidth: 110,
-          }}
-        >
-          <p className="tiny-mono">· latency</p>
-          <p
-            style={{
-              fontFamily: 'var(--hand-title)',
-              fontWeight: 700,
-              fontSize: 22,
-              color: 'var(--vg-green)',
-              marginTop: 2,
-            }}
-          >
-            live
-          </p>
-          <p className="tiny-mono" style={{ marginTop: -2 }}>
-            target &lt;800ms
-          </p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="tiny-mono">voice · ekg</p>
+              <p className="tiny-mono" style={{ color: 'var(--vg-green)' }}>
+                ● 72 turns/min · stable
+              </p>
+            </div>
+            <AgentAudioVisualizerBar
+              size="lg"
+              state={voice.state}
+              color={barColor}
+              audioTrack={agentTrack}
+              className="w-full"
+            />
+            <p className="tiny-mono">{`// agent · ${voice.state}`}</p>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <div
+              className="box"
+              style={{ padding: 10, background: 'var(--paper-2)', borderRadius: 6 }}
+            >
+              <p className="tiny-mono">· stack</p>
+              <ul
+                style={{
+                  fontFamily: 'var(--mono)',
+                  fontSize: 11,
+                  lineHeight: 1.55,
+                  marginTop: 2,
+                }}
+              >
+                {STACK_ROWS.map((row) => (
+                  <li key={row.kind}>
+                    {row.kind} · {row.provider}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div
+              className="box"
+              style={{
+                padding: 10,
+                background: 'var(--vg-green-soft)',
+                borderRadius: 6,
+              }}
+            >
+              <p className="tiny-mono">· latency</p>
+              <p
+                style={{
+                  fontFamily: 'var(--hand-title)',
+                  fontWeight: 700,
+                  fontSize: 24,
+                  color: 'var(--vg-green)',
+                  marginTop: 2,
+                  lineHeight: 1,
+                }}
+              >
+                live
+              </p>
+              <p className="tiny-mono" style={{ marginTop: 2 }}>
+                target &lt;800ms
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-
-      <p className="tiny-mono">{`// agent · ${voice.state}`}</p>
 
       <div className="flex w-full flex-col items-center gap-3">
         <AgentControlBar
