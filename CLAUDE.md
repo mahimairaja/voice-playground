@@ -1,103 +1,148 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Operating instructions for any Claude session working in this repo. Auto loaded by Claude Code. The shorter and sharper this file is, the better the playground holds up.
 
 ## What this repo is
 
-A Next.js 15 (App Router, React 19, Turbopack) frontend for a LiveKit voice agent. Forked from the upstream `agent-starter-react` template (note: `package.json#name` is still `agent-starter-react`) and being rebranded as the **Mahimai AI voice playground**. The user-facing wireframes and brand tokens live in `.brand/` and `styles/brand.css`; the runtime UI is still mostly the upstream LiveKit chrome.
+The Mahimai AI voice playground. Public site at `playground.mahimai.ca`. A Next.js 15 frontend that lets visitors talk to the voice agents catalogued in the sister repo `awesome-voice-apps` (sibling on disk: `../awesome-voice-apps`). Visitors bring their own provider keys, paste them in the credentials drawer, and the playground mints a short-lived LiveKit token in their browser.
 
-The app pairs with a separate Python/Node LiveKit agent worker. This repo only ships the browser client and a token-mint API route.
+If a piece of work does not advance one of these, it does not belong in this repo:
+
+1. Render the cookbook (the marketing landing, demo index, per-demo page) with the brand intact.
+2. Connect a visitor to a demo (credentials drawer, token route, voice surface, transcript).
+3. Render the agent's generative UI (canvas plus dispatcher plus per-demo component bundles).
+
+## Default mode: brainstorm before code
+
+When the operator opens a fresh session and asks for help, default to **brainstorming**, not coding. Confirm the change is in scope below, then propose the smallest path. Only start writing code when the operator says go, or when the request is unambiguously about execution.
+
+## Tech stack
+
+| Layer           | Choice                                                                                                     |
+| --------------- | ---------------------------------------------------------------------------------------------------------- |
+| Framework       | Next.js 15 App Router, React 19, TypeScript                                                                |
+| Package manager | pnpm (never npm or yarn)                                                                                   |
+| Styling         | Tailwind v4 plus brand.css primitives. shadcn registry at `components/ui/`. `@agents-ui/*` registry.       |
+| Validation      | zod (manifest schema, UI-event envelope, token route body)                                                 |
+| State           | zustand (the generative-UI store only). React state everywhere else.                                       |
+| Theming         | next-themes for light/dark, body.clean toggle for sketchy/clean modes (see `lib/theme.ts`, `lib/mode.ts`). |
+| Voice runtime   | livekit-client plus `@livekit/components-react`. Visitor-supplied LiveKit URL/key/secret.                  |
+| Hosting         | Vercel Hobby tier, Node 20 pin via `package.json#engines.node` and `vercel.json`.                          |
+
+The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`, NOT in this repo. The playground only ships the visitor-side client.
+
+## Hard constraints
+
+- **Brand assets are in place. Do not regenerate `public/brand/goat.svg`, `styles/brand.css`, the favicon set, or `public/og-image.png`.** Source of truth for design is `.brand/mahimai-wireframes.html`.
+- **Do not edit `styles/brand.css` directly.** It mirrors the wireframes verbatim. Theme overrides go in `styles/globals.css` (the `@theme inline` block) or via the `brand-accent` opt-in class for elements that need terracotta where shadcn overrode `--accent`.
+- **No demo-specific React components in this repo.** `components/demos/<slug>/*` is reserved for the per-demo bundles that ship in M2. The current iteration only provides the registry, dispatcher, and Canvas; bundles register themselves.
+- **No backticks in shell prompts you suggest the operator paste.**
+- **No em dashes anywhere.** Use colons, periods, semicolons, or parentheses. The wireframes contain em dashes; the rule still applies.
+- **No `Co-Authored-By: Claude` trailers, no `Generated with Claude Code` footer, no robot emoji, no AI attribution.** Commits read as if Mahimai authored them directly.
+- The API route `app/api/token/route.ts` is the only server-side code. It mints LiveKit AccessTokens from visitor-pasted credentials and never logs or persists them.
+
+## File conventions
+
+- `app/(marketing)/` is the marketing route group: `/` (landing) and `/about`. Both server-rendered, brand.css primitives only.
+- `app/demos/page.tsx` is the demo index with a URL-driven category filter.
+- `app/demos/[slug]/page.tsx` is the per-demo page. Uses `generateStaticParams` from `getAllDemos()` and `dynamicParams = false`, so unknown slugs 404 at the route layer.
+- `app/api/token/route.ts` is the only API route.
+- `app/error.tsx` (client) and `app/not-found.tsx` (server) are brand-styled.
+- `app/layout.tsx` mounts the brand chrome (`TopBar`, `Footer`, `ThemeProvider`, `Script` for the clean-mode pre-paint) and `generateMetadata` for icons / OG.
+- `components/brand/` is brand chrome: `Logo`, `TopBar`, `Footer`. All consume brand.css primitive classes.
+- `components/playground/` is the demo runtime: `CredentialsDrawer`, `CredentialsBanner`, `VoiceSurface`, `Transcript`. Coordinates the visitor session.
+- `components/generative/Canvas.tsx` reads from the dispatcher store and renders per-demo components via the registry.
+- `components/agents-ui/` is the upstream LiveKit `@agents-ui/*` registry. Edit in place if you must, but `pnpm shadcn:install` will overwrite. Prefer Tailwind class overrides on the consuming side.
+- `lib/demos/` is the build-time manifest loader. `server-only` guarded.
+- `lib/credentials/` is the localStorage store plus the optional async provider ping.
+- `lib/generative-ui/` is the protocol schema, registry, and dispatcher.
+- `lib/theme.ts`, `lib/mode.ts`, `lib/utils.ts` are app-wide utilities.
 
 ## Commands
 
-Package manager is **pnpm** (pinned in `package.json#packageManager`, Node 22 in CI). Do not use npm or yarn.
+| Command               | Purpose                                                                               |
+| --------------------- | ------------------------------------------------------------------------------------- |
+| `pnpm install`        | Install deps. Node 20 pin emits a warning on Node 22 dev machines, harmless.          |
+| `pnpm dev`            | Next dev with Turbopack on http://localhost:3000.                                     |
+| `pnpm build`          | Production build. The CI gate.                                                        |
+| `pnpm lint`           | ESLint plus Next core-web-vitals plus prettier.                                       |
+| `pnpm format`         | Prettier write. Use `pnpm exec prettier --write <file>` to format a single file.      |
+| `pnpm shadcn:install` | Re-pull every `@agents-ui/*` component from the registry. Prompts before overwriting. |
 
-| Command | Purpose |
-| --- | --- |
-| `pnpm install` | Install dependencies. |
-| `pnpm dev` | Next dev server with Turbopack on http://localhost:3000. |
-| `pnpm build` | Production build (also gates CI). |
-| `pnpm start` | Serve the production build. |
-| `pnpm lint` | ESLint (`next/core-web-vitals` + `next/typescript` + `import/recommended` + `prettier`). |
-| `pnpm format` / `pnpm format:check` | Prettier write / check. CI runs `format:check`. |
-| `pnpm shadcn:install` | Re-pull every `@agents-ui/*` component from the LiveKit registry and run Prettier. The CLI prompts before overwriting locally edited files; review the diff before accepting. |
+There is no test suite. CI runs `lint`, `format:check`, and `build`. Smoke tests are manual (per `.agents/TODO.md` Phase 9).
 
-There is no test suite. CI (`.github/workflows/build-and-test.yaml`) runs `lint`, `format:check`, and `build` on push/PR to `main`.
+## Required env vars
 
-`taskfile.yaml` exposes `task install` and `task dev` (interactive shells), used by the LiveKit Sandbox bootstrap; locally, just call `pnpm` directly.
+Production:
 
-## Required env (.env.local)
+- `NEXT_PUBLIC_SITE_URL` (e.g. `https://playground.mahimai.ca`). Used by `generateMetadata` for the `metadataBase`.
 
-Copy `.env.example`. Required for the local token route to mint anything:
+Local (`.env.local`, optional for the marketing surfaces):
 
+- `NEXT_PUBLIC_SITE_URL` for OG link previews to render the right absolute URLs.
+
+The token route does NOT read any env var. Visitor credentials come from the request body.
+
+## Generative UI protocol
+
+The agent worker ships JSON envelopes on the LiveKit data channel under topic `ui`:
+
+```json
+{
+  "type": "ui_event",
+  "component": "Cart",
+  "action": "mount",
+  "id": "primary-cart",
+  "props": { "items": [] }
+}
 ```
-LIVEKIT_API_KEY=...
-LIVEKIT_API_SECRET=...
-LIVEKIT_URL=wss://<project>.livekit.cloud
-AGENT_NAME=                # blank = automatic dispatch; set = explicit dispatch
-```
 
-Optional sandbox/remote-config vars (also referenced by the code, only one is in `.env.example`; both are real):
-- `NEXT_PUBLIC_APP_CONFIG_ENDPOINT` — when set, `lib/utils.ts#getAppConfig` fetches `AppConfig` overrides from this endpoint per request, gated by an `X-Sandbox-ID` header.
-- `NEXT_PUBLIC_CONN_DETAILS_ENDPOINT` — when set, `components/app/app.tsx` switches the token source from `/api/token` to `getSandboxTokenSource()` (POSTs to that endpoint with `room_config`).
-- `SANDBOX_ID` — server-side fallback when the request lacks `x-sandbox-id`.
+Action semantics:
 
-## Architecture
+- `mount`: add an instance keyed by `id` (defaults to component name). Existing id is replaced.
+- `update`: merge `props` onto the existing instance. No-op on miss. Coalesced with rAF (16 ms) on the client.
+- `unmount`: remove the instance. No-op on miss.
 
-### Two views, one session
+Schema lives in `lib/generative-ui/protocol.ts`. Per-demo components register themselves into `lib/generative-ui/registry.ts` via `registerForDemo(slug, map)`. The dispatcher (`lib/generative-ui/dispatcher.ts`) holds the live store; the Canvas reads from it.
 
-`components/app/app.tsx` is the root client component. It builds a `useSession(tokenSource, ...)` hook and wraps everything in `AgentSessionProvider` (which also mounts `RoomAudioRenderer`). `view-controller.tsx` then reads `useSessionContext().isConnected` and animates between two views with `motion.create`:
+## Commit conventions
 
-- **`WelcomeView`** (not connected): single Start button that calls `session.start()`.
-- **`AgentSessionView_01`** (connected): the full session UI — transcript, tile layout with audio visualizer, control bar.
+Match the format the milestone branch already uses:
 
-`AgentSessionView_01` lives at `components/agents-ui/blocks/agent-session-view-01/components/`, and is composed of `agent-session-block.tsx` + `audio-visualizer.tsx` + `tile-view.tsx`. This block is shadcn-installed (re-pullable via `pnpm shadcn:install`), so prefer extending via Tailwind classes rather than hacking the block unless you intend to fork it permanently.
+- `M<n>/T<NN>: <one-line summary>` for any task that is part of a Ralph milestone (subject + body).
+- `feat(playground): <one-line>` / `fix(playground): <one-line>` / `docs(playground): <one-line>` / `chore(playground): <one-line>` for repo-level work outside the milestone loop.
 
-### Token sourcing
+Subject line: imperative mood, lowercase, under 70 characters. Body: explain why, not what. Include a `REQ-AVA-PLAY-<n>, Foundry Imp <n>` line for milestone tasks.
 
-Two paths, picked at render time in `app.tsx`:
+Do not stage `.env*` files (only `.env.example` is committed), `.next/`, `node_modules/`, or anything in the gitignored `.agents/` and `.brand/` folders.
 
-1. **Local dev:** `TokenSource.endpoint('/api/token')` → `app/api/token/route.ts` mints a 15-minute LiveKit JWT using `livekit-server-sdk`. **This route deliberately throws when `NODE_ENV !== 'development'`** — it is not safe for production. Wire your own auth, or deploy via Sandbox path before shipping.
-2. **Sandbox/hosted:** when `NEXT_PUBLIC_CONN_DETAILS_ENDPOINT` is set, `getSandboxTokenSource()` (`lib/utils.ts`) POSTs `{room_config}` with `X-Sandbox-Id` to the configured endpoint and uses its response as the connection details.
+## Voice and tone
 
-### Config flow (`app-config.ts` + `lib/utils.ts`)
+The playground reads to two audiences: technical buyers and indie engineers comparing voice stacks. The voice in headlines and body is direct, slightly opinionated, and never marketing-fluffy. Skip qualifiers (very, really, just, simply) and hedges (might, perhaps, maybe). Show concrete behaviour.
 
-`AppConfig` (typed in `app-config.ts`) is the shape of every runtime knob: branding (`logo`, `accent`, `companyName`), feature toggles (`supportsChatInput`, `supportsVideoInput`, `supportsScreenShare`, `isPreConnectBufferEnabled`), agent dispatch (`agentName`), and visualizer presets (`audioVisualizerType`: `bar | wave | grid | radial | aura`, plus per-type knobs).
+The brand wordmark in chrome is `mahimai` lowercase. Page-level prose uses `Mahimai AI` capitalised.
 
-`getAppConfig(headers)` is a `cache()`d server function called from `app/page.tsx` and `app/layout.tsx`. If `NEXT_PUBLIC_APP_CONFIG_ENDPOINT` is set, it fetches a `SandboxConfig` (typed key/value with `{type, value}` entries), then merges into `APP_CONFIG_DEFAULTS` while enforcing that the key already exists in defaults and the primitive types match. This is what lets the LiveKit Sandbox push branding/feature flags into a deployed instance without code changes.
+## What goes where
 
-`getStyles(appConfig)` returns a `<style>`-injectable string that overrides `--primary` / `--primary-hover` for the light theme via `:root` and the dark theme via `.dark`. It is rendered into `<head>` from `app/layout.tsx`. So changing `accent` / `accentDark` in `app-config.ts` (or via the remote endpoint) cascades into the entire shadcn token system at runtime.
+- A reusable React surface across the playground: into `components/{brand,playground,generative}/`.
+- A per-demo React surface (M2): into `components/demos/<slug>/index.ts`. Registers a component map.
+- A reusable utility: into `lib/<domain>/`.
+- A new manifest field: zod schema in `lib/demos/schema.ts` first, then loader, then UI.
+- A planning artifact (Refinery doc, Foundry blueprint, design notes): Linear, not the repo.
+- An agent / Python concern: `../awesome-voice-apps`, not here. Exception: the `publish_ui_event` helper that ships in T36 lives in `awesome-voice-apps/templates/livekit-base/agent.py`.
 
-### Components layout
+## Out of scope for this repo
 
-- `components/agents-ui/` — LiveKit `@agents-ui/*` components installed locally (`pnpm shadcn:install`). Edit in place if you must, but they will be overwritten on re-install. Prefer Tailwind class overrides on the consuming side.
-- `components/ai-elements/` — Vercel AI Elements (`@ai-elements/*` registry).
-- `components/app/` — app-specific composition; this is where business logic for THIS deployment goes.
-- `components/ui/` — plain shadcn primitives (button, alert, etc).
+- Anything ShipVoice shaped. Separate repo, separate product.
+- The agent worker itself. Lives in `../awesome-voice-apps`.
+- Voice Arena (scenario picker, stack picker, rating, leaderboard). Separate milestone.
+- Sentry, PostHog, Plausible, any telemetry.
+- An automated test suite. Manual smoke only.
+- Mobile-optimised layouts beyond what the upstream shell provides.
 
-`components.json` registers two shadcn registries with non-default aliases:
-- utils → `@/lib/shadcn/utils`
-- lib   → `@/lib/shadcn`
-- registries: `@agents-ui` → `https://livekit.io/ui/r/{name}.json`, `@ai-elements` → `https://registry.ai-sdk.dev/{name}.json`
+## When the operator asks for the next change
 
-### Path alias
-
-`@/*` resolves to the repo root (see `tsconfig.json#paths`). Use it for all internal imports (`@/components/...`, `@/lib/...`, `@/app-config`).
-
-### Styling
-
-- Tailwind v4 via `@tailwindcss/postcss`. Theme variables are oklch; tokens defined in `styles/globals.css` with a `.dark` variant.
-- Prettier sorts imports via `@trivago/prettier-plugin-sort-imports` (order: react → next → next/* → third-party → @scoped → `@/*` → relative). It also runs `prettier-plugin-tailwindcss` to sort class names.
-- `styles/brand.css` (Mahimai brand tokens: ink/paper/accent palette plus Caveat/Kalam/JetBrains Mono/Inter fonts) is **staged but not yet imported anywhere**. When you wire the brand UI, import it from `app/layout.tsx` alongside `globals.css` (or replace globals). Source of truth is `.brand/mahimai-wireframes.html`; do not hand-edit `brand.css` to add new tokens — propagate from the wireframes file.
-
-### Dev-only globals
-
-`hooks/useDebug.ts` (mounted by `AppSetup` in `app.tsx` with `enabled: NODE_ENV !== 'production'`) sets the LiveKit log level to `debug` and exposes the active `Room` as `window.__lk_room` for in-browser inspection.
-
-## Local conventions and gotchas
-
-- **No em dashes** anywhere (code, comments, prompts, docs). Use colons, periods, semicolons, or parentheses. Same rule applies to commit messages.
-- Commit messages are authored as if by Mahimai: no `Co-Authored-By` trailer, no "Generated with Claude Code" footer, no robot emoji or AI attribution.
-- `.agents/` and `.brand/` are **gitignored** — treat as personal scratch space; do not move source-of-truth content into them.
-- The upstream README (`README.md`) and `TEMPLATE.md` describe the original `agent-starter-react` template and its sandbox flow; useful for upstream context but not the rebrand spec.
-- `next.config.ts` is intentionally empty; add config sparingly.
+1. Read `.agents/design.md` and `.agents/TODO.md` to confirm the current milestone scope.
+2. If the request is in scope, propose the smallest commit and confirm before coding. If not, surface the mismatch and ask whether to log a follow-up or extend scope.
+3. Honour the brand: the wireframes file under `.brand/` is the design source of truth, brand.css is its CSS port, and primitives (`.ab`, `.box`, `.btn`, `.chip`, `.h-hand`, `.p-hand`, `.tiny-mono`, `.line`, `.stamp`) cover almost every surface.
+4. Build via `pnpm build` before declaring done.
