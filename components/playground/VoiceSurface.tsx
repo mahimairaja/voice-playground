@@ -13,7 +13,11 @@ import { missingCredentials } from '@/lib/credentials/validate';
 import { useUiDispatcher } from '@/lib/generative-ui/dispatcher';
 import { cn } from '@/lib/shadcn/utils';
 
-const STACK_LABEL = 'stack · DG · 4o · CART';
+const STACK_ROWS: { kind: string; provider: string }[] = [
+  { kind: 'stt', provider: 'deepgram nova-2' },
+  { kind: 'llm', provider: 'openai gpt-4o' },
+  { kind: 'tts', provider: 'cartesia sonic' },
+];
 
 interface VoiceSurfaceProps {
   slug: string;
@@ -78,27 +82,48 @@ interface SurfaceShellProps {
 }
 
 function SurfaceShell({ stamp, className, children }: SurfaceShellProps) {
+  const stampStyle =
+    stamp === 'LIVE'
+      ? {
+          borderColor: 'var(--vg-green)',
+          color: 'var(--paper)',
+          background: 'var(--vg-green)',
+        }
+      : undefined;
+
   return (
     <div className={cn('relative', className)}>
       <div
-        className="bg-paper flex min-h-[280px] flex-col items-center justify-center gap-6 px-6 py-8"
+        className="bg-paper flex min-h-[280px] flex-col gap-4 px-5 py-5"
         style={{ border: '1.5px solid var(--ink)', borderRadius: 4 }}
       >
+        <header className="flex flex-wrap items-center justify-between gap-2">
+          <p className="tiny-mono">· vitals · {stamp ? stamp.toLowerCase() : 'idle'}</p>
+          {stamp === 'LIVE' ? (
+            <span
+              className="chip"
+              style={{
+                background: 'var(--vg-green)',
+                color: 'var(--paper)',
+                borderColor: 'var(--vg-green)',
+              }}
+            >
+              ● healthy
+            </span>
+          ) : stamp === 'CONNECTING' ? (
+            <span className="chip">connecting…</span>
+          ) : stamp === 'ERROR' ? (
+            <span className="chip" style={{ background: 'var(--accent-soft-hex)' }}>
+              ! error
+            </span>
+          ) : (
+            <span className="chip">idle</span>
+          )}
+        </header>
         {children}
       </div>
       {stamp && (
-        <span
-          className="stamp"
-          style={
-            stamp === 'LIVE'
-              ? {
-                  borderColor: 'var(--vg-green)',
-                  color: 'var(--paper)',
-                  background: 'var(--vg-green)',
-                }
-              : undefined
-          }
-        >
+        <span className="stamp" style={stampStyle}>
           {stamp === 'LIVE' ? 'LIVE · ●' : stamp === 'CONNECTING' ? 'CONNECTING' : 'ERROR'}
         </span>
       )}
@@ -115,39 +140,43 @@ interface IdleBodyProps {
 
 function IdleBody({ state, error, onConnect, keysReady }: IdleBodyProps) {
   return (
-    <>
-      <div className="text-center">
-        <p className="tiny-mono">{`// session · ${state}`}</p>
-        {state === 'idle' && keysReady && (
-          <p
-            className="tiny-mono mt-1"
-            style={{ color: 'var(--vg-green)', letterSpacing: '0.14em' }}
-          >
-            · ready · provider keys ok
-          </p>
-        )}
-        <p className="h-hand xl mt-2">
-          {state === 'ended'
-            ? 'Call ended.'
-            : state === 'error'
-              ? 'Could not connect.'
-              : 'Ready to talk.'}
+    <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
+      <h3
+        style={{
+          fontFamily: 'var(--hand-title)',
+          fontWeight: 700,
+          fontSize: 28,
+          lineHeight: 1.05,
+        }}
+      >
+        {state === 'ended'
+          ? 'call ended.'
+          : state === 'error'
+            ? "couldn't connect."
+            : 'the call, alive.'}
+      </h3>
+      <EkgStrip kind={state === 'idle' ? 'flat' : state === 'error' ? 'jagged' : 'flat'} />
+      <p className="p-hand sm max-w-md">
+        {state === 'error' && error
+          ? error.message
+          : state === 'idle' && keysReady
+            ? 'Press the call button. Tokens are minted in your browser.'
+            : 'Save provider keys first, then start a call.'}
+      </p>
+      {state === 'idle' && keysReady && (
+        <p className="tiny-mono" style={{ color: 'var(--vg-green)', letterSpacing: '0.14em' }}>
+          · ready · provider keys ok
         </p>
-        <p className="p-hand sm mt-3 max-w-md">
-          {state === 'error' && error
-            ? error.message
-            : 'Press the call button. Make sure your provider keys are saved first.'}
-        </p>
-      </div>
+      )}
       <button
         type="button"
         onClick={onConnect}
         className="btn accent brand-accent cursor-pointer"
         aria-label="Start session"
       >
-        {state === 'ended' ? 'Call again →' : state === 'error' ? 'Try again →' : 'Start call →'}
+        {state === 'ended' ? 'call again →' : state === 'error' ? 'try again →' : 'start call →'}
       </button>
-    </>
+    </div>
   );
 }
 
@@ -163,19 +192,24 @@ interface LiveBodyProps {
 function LiveBody({ onDisconnect }: LiveBodyProps) {
   const voice = useVoiceAssistant();
   const agentTrack = voice.audioTrack;
-
-  // Match the bar visualizer color to brand accent in both themes.
   const barColor = '#c46a3a';
 
   useEffect(() => {
-    /* presence here keeps voice in lexical scope so future enhancements
-       (reactive UI from voice.state, voice.agent metadata) have a hook */
+    /* keep voice.state in scope for future reactive enhancements */
   }, [voice.state]);
 
   return (
     <>
-      <div className="flex h-full w-full flex-col items-center gap-4">
-        <p className="tiny-mono">{`· ${STACK_LABEL}`}</p>
+      <div
+        className="relative flex w-full flex-col gap-2"
+        style={{
+          background: 'var(--paper-2)',
+          border: '1.5px solid var(--ink)',
+          borderRadius: 6,
+          padding: '10px 12px',
+        }}
+      >
+        <p className="tiny-mono">voice · ekg</p>
         <AgentAudioVisualizerBar
           size="lg"
           state={voice.state}
@@ -183,9 +217,59 @@ function LiveBody({ onDisconnect }: LiveBodyProps) {
           audioTrack={agentTrack}
           className="w-full"
         />
-        <p className="tiny-mono">{`// agent · ${voice.state}`}</p>
+        <p className="tiny-mono" style={{ color: 'var(--vg-green)' }}>
+          · 72 turns/min · stable
+        </p>
       </div>
-      <div className="flex w-full max-w-md flex-col items-center gap-3">
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
+        <div className="box" style={{ padding: 10, background: 'var(--paper-2)', borderRadius: 6 }}>
+          <p className="tiny-mono">· stack</p>
+          <ul
+            style={{
+              fontFamily: 'var(--mono)',
+              fontSize: 11,
+              lineHeight: 1.55,
+              marginTop: 2,
+            }}
+          >
+            {STACK_ROWS.map((row) => (
+              <li key={row.kind}>
+                {row.kind} · {row.provider}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div
+          className="box brand-accent"
+          style={{
+            padding: 10,
+            background: 'var(--vg-green-soft)',
+            borderRadius: 6,
+            minWidth: 110,
+          }}
+        >
+          <p className="tiny-mono">· latency</p>
+          <p
+            style={{
+              fontFamily: 'var(--hand-title)',
+              fontWeight: 700,
+              fontSize: 22,
+              color: 'var(--vg-green)',
+              marginTop: 2,
+            }}
+          >
+            live
+          </p>
+          <p className="tiny-mono" style={{ marginTop: -2 }}>
+            target &lt;800ms
+          </p>
+        </div>
+      </div>
+
+      <p className="tiny-mono">{`// agent · ${voice.state}`}</p>
+
+      <div className="flex w-full flex-col items-center gap-3">
         <AgentControlBar
           variant="default"
           controls={{
@@ -203,7 +287,51 @@ function LiveBody({ onDisconnect }: LiveBodyProps) {
         />
         <StartAudioButton size="sm" variant="ghost" label="Click to allow audio playback" />
       </div>
-      <Transcript className="w-full max-w-2xl" />
+
+      <Transcript className="w-full" />
     </>
+  );
+}
+
+interface EkgStripProps {
+  kind: 'flat' | 'jagged';
+}
+
+function EkgStrip({ kind }: EkgStripProps) {
+  const path =
+    kind === 'jagged'
+      ? 'M0 24 L40 24 L48 8 L56 40 L64 24 L120 24 L128 14 L136 36 L144 24 L240 24'
+      : 'M0 24 L80 24 L88 14 L96 34 L104 24 L160 24 L168 16 L176 32 L184 24 L240 24';
+  return (
+    <div
+      aria-hidden="true"
+      className="relative w-full overflow-hidden"
+      style={{
+        height: 48,
+        background: 'var(--paper-2)',
+        border: '1px solid var(--line-soft)',
+        borderRadius: 4,
+      }}
+    >
+      <svg
+        viewBox="0 0 240 48"
+        preserveAspectRatio="none"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <path
+          d={path}
+          stroke="var(--vg-green)"
+          strokeWidth="1.6"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </div>
   );
 }
