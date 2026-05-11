@@ -45,34 +45,65 @@ export function Canvas({ slug, className, emptyState }: CanvasProps) {
   const cardCount = instances.length;
   return (
     <div
-      className={cn('flex w-full flex-col gap-3', className)}
+      className={cn('relative w-full', className)}
       data-canvas-slug={slug}
       data-canvas-state="populated"
+      style={{
+        background: 'var(--paper-2)',
+        border: '1.5px solid var(--ink)',
+        borderRadius: 6,
+        boxShadow: '4px 4px 0 var(--ink)',
+        padding: 14,
+      }}
     >
-      <p className="tiny-mono">
-        · drawn by agent · {cardCount} card{cardCount === 1 ? '' : 's'}
-      </p>
-      {instances.map((instance) => {
-        const Component = resolve(slug, instance.component);
-        if (!Component) {
-          if (!warnedNames.has(instance.component)) {
-            warnedNames.add(instance.component);
-            console.warn(
-              `[canvas] '${slug}' has no component named '${instance.component}'. Skipping.`
-            );
+      <header className="flex items-baseline justify-between gap-2">
+        <p className="tiny-mono">· drawn by agent</p>
+        <p className="tiny-mono">
+          {cardCount} card{cardCount === 1 ? '' : 's'}
+        </p>
+      </header>
+      <div className="line mt-2 mb-3"></div>
+      <div className="flex flex-col gap-3">
+        {instances.map((instance) => {
+          const Component = resolve(slug, instance.component);
+          if (!Component) {
+            if (!warnedNames.has(instance.component)) {
+              warnedNames.add(instance.component);
+              console.warn(
+                `[canvas] '${slug}' has no component named '${instance.component}'. Skipping.`
+              );
+            }
+            return null;
           }
-          return null;
-        }
-        return (
-          <div key={instance.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <Component
-              {...instance.props}
-              data-instance-id={instance.id}
-              data-instance-mounted-at={instance.mountedAt}
-            />
-          </div>
-        );
-      })}
+          return (
+            <div
+              key={instance.id}
+              className="animate-in fade-in slide-in-from-bottom-2 duration-300"
+            >
+              <Component
+                {...instance.props}
+                data-instance-id={instance.id}
+                data-instance-mounted-at={instance.mountedAt}
+              />
+            </div>
+          );
+        })}
+      </div>
+      {/* chalk eraser */}
+      <span
+        aria-hidden="true"
+        title="erases on call end"
+        style={{
+          position: 'absolute',
+          bottom: 10,
+          right: 12,
+          width: 44,
+          height: 14,
+          background: 'var(--ink)',
+          border: '1.5px solid var(--ink)',
+          borderRadius: 3,
+        }}
+      />
     </div>
   );
 }
