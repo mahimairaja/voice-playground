@@ -73,14 +73,53 @@ export default async function DemoPage({ params }: DemoPageProps) {
         aria-label="Live call and listing"
         className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]"
       >
-        {/* LEFT: walkie / call surface + transcript */}
-        <div className="ab relative">
-          <div className="ab-head">
-            <span className="label">/walkie</span>
-            <span className="meta">voice surface</span>
-          </div>
-          <div className="ab-body">
-            <VoiceSurface slug={demo.slug} requiredCredentials={demo.required_credentials} />
+        {/* LEFT: walkie talkie shell wrapping the voice surface */}
+        <div>
+          <div
+            className="relative"
+            style={{
+              border: '1.5px solid var(--ink)',
+              borderRadius: '14px 16px 13px 15px',
+              background: 'var(--paper-2)',
+              boxShadow: '4px 4px 0 var(--ink)',
+              padding: 12,
+            }}
+          >
+            {/* antenna */}
+            <span
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                top: -22,
+                left: 22,
+                width: 8,
+                height: 24,
+                background: 'var(--ink)',
+                borderRadius: '4px 4px 0 0',
+              }}
+            />
+            <span
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                top: -28,
+                left: 18,
+                width: 16,
+                height: 8,
+                border: '1.5px solid var(--ink)',
+                borderRadius: '50%',
+                background: 'var(--paper-2)',
+              }}
+            />
+
+            <div className="flex items-center justify-between gap-2">
+              <p className="tiny-mono">· walkie · ch 01</p>
+              <p className="tiny-mono">· local push-to-talk</p>
+            </div>
+
+            <div className="mt-2">
+              <VoiceSurface slug={demo.slug} requiredCredentials={demo.required_credentials} />
+            </div>
           </div>
         </div>
 
@@ -110,7 +149,15 @@ export default async function DemoPage({ params }: DemoPageProps) {
             }}
           />
           <div style={{ padding: 18 }}>
-            <p className="tiny-mono">· listing · {demo.slug.toUpperCase()}</p>
+            <div className="flex items-baseline justify-between gap-3">
+              <p className="tiny-mono">· listing · {demo.slug.toUpperCase()}</p>
+              <span
+                className="chip accent brand-accent"
+                style={{ fontSize: 11, transform: 'rotate(-2deg)' }}
+              >
+                {demo.category}
+              </span>
+            </div>
             <h2
               className="mt-1"
               style={{
