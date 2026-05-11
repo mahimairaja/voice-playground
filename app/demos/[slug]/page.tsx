@@ -42,9 +42,18 @@ export default async function DemoPage({ params }: DemoPageProps) {
         / {demo.slug}
       </p>
 
-      <header className="mt-3">
-        <h1 className="h-hand xxl leading-[0.95]">{demo.title}</h1>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+      <header className="mt-2 flex flex-wrap items-end justify-between gap-3">
+        <h1
+          className="leading-[0.92]"
+          style={{
+            fontFamily: 'var(--hand-title)',
+            fontWeight: 700,
+            fontSize: 'clamp(32px, 4.5vw, 48px)',
+          }}
+        >
+          {demo.title}
+        </h1>
+        <div className="flex flex-wrap items-center gap-2">
           <span className="chip">{demo.category}</span>
           {demo.recording_url && (
             <a href={demo.recording_url} target="_blank" rel="noopener noreferrer" className="chip">
@@ -54,28 +63,94 @@ export default async function DemoPage({ params }: DemoPageProps) {
         </div>
       </header>
 
-      <section
-        aria-label="Demo overview"
-        className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-[2fr_1fr]"
-      >
-        <div className="box" style={{ padding: 18 }}>
-          <p className="tiny-mono">/about</p>
-          <p className="p-hand mt-3">{demo.description}</p>
+      {demo.required_credentials.length > 0 && (
+        <div className="mt-6">
+          <CredentialsBanner requiredCredentials={demo.required_credentials} />
         </div>
-        <div className="box" style={{ padding: 18 }}>
-          <p className="tiny-mono">/who-for</p>
-          <p className="p-hand mt-3">{demo.who_for}</p>
+      )}
+
+      <section
+        aria-label="Live call and listing"
+        className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]"
+      >
+        {/* LEFT: walkie / call surface + transcript */}
+        <div className="ab relative">
+          <div className="ab-head">
+            <span className="label">/walkie</span>
+            <span className="meta">voice surface</span>
+          </div>
+          <div className="ab-body">
+            <VoiceSurface slug={demo.slug} requiredCredentials={demo.required_credentials} />
+          </div>
+        </div>
+
+        {/* RIGHT: clipboard listing — about / who-for / agent-mounted canvas */}
+        <div
+          className="relative"
+          style={{
+            border: '1.5px solid var(--ink)',
+            borderRadius: '10px 12px 9px 11px',
+            background: 'var(--paper-2)',
+            boxShadow: '4px 4px 0 var(--ink)',
+            padding: 0,
+          }}
+        >
+          {/* clipboard clip */}
+          <span
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: -8,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 64,
+              height: 12,
+              borderRadius: 3,
+              background: 'var(--ink)',
+            }}
+          />
+          <div style={{ padding: 18 }}>
+            <p className="tiny-mono">· listing · {demo.slug.toUpperCase()}</p>
+            <h2
+              className="mt-1"
+              style={{
+                fontFamily: 'var(--hand-title)',
+                fontWeight: 700,
+                fontSize: 22,
+                lineHeight: 1.05,
+              }}
+            >
+              {demo.title}
+            </h2>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div className="box" style={{ padding: 12, background: 'var(--paper)' }}>
+                <p className="tiny-mono">· what it does</p>
+                <p className="p-hand sm mt-2">{demo.description}</p>
+              </div>
+              <div className="box" style={{ padding: 12, background: 'var(--paper)' }}>
+                <p className="tiny-mono">· who it&apos;s for</p>
+                <p className="p-hand sm mt-2">{demo.who_for}</p>
+              </div>
+            </div>
+
+            <div className="line mt-5 mb-3"></div>
+
+            <p className="tiny-mono">· agent mounted ↓</p>
+            <div className="mt-2 rounded-[6px]" style={{ background: 'var(--paper)' }}>
+              <Canvas slug={demo.slug} className="p-3" />
+            </div>
+          </div>
         </div>
       </section>
 
       {demo.required_credentials.length > 0 && (
-        <section aria-label="Required credentials" className="mt-10">
-          <CredentialsBanner requiredCredentials={demo.required_credentials} />
-          <div className="box mt-4" style={{ padding: 18 }}>
+        <section aria-label="Required credentials" className="mt-8">
+          <div className="box" style={{ padding: 16 }}>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="tiny-mono">· vault · local only</p>
-                <div className="mt-3 flex flex-wrap items-center gap-2">
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   {demo.required_credentials.map((key) => (
                     <span key={key} className="chip">
                       {key}
@@ -85,47 +160,19 @@ export default async function DemoPage({ params }: DemoPageProps) {
               </div>
               <CredentialsDrawer requiredCredentials={demo.required_credentials} />
             </div>
-            <p className="p-hand sm mt-4">
-              Pasted keys live only in your browser&apos;s localStorage. The token mints in your
-              browser. Our server never sees the raw values.
+            <p className="p-hand sm mt-3">
+              Your tokens are generated in your browser. Pasted keys live only in your
+              browser&apos;s localStorage. Our server never sees the raw values.
             </p>
           </div>
         </section>
       )}
 
-      <section aria-label="Voice surface" className="mt-8">
-        <div className="ab">
-          <div className="ab-head">
-            <span className="label">/call</span>
-            <span className="meta">voice surface</span>
-          </div>
-          <div className="ab-body">
-            <VoiceSurface slug={demo.slug} requiredCredentials={demo.required_credentials} />
-          </div>
-        </div>
-      </section>
-
-      <section aria-label="Generative UI canvas" className="mt-8">
-        <div className="ab">
-          <div className="ab-head">
-            <span className="label">/canvas</span>
-            <span className="meta">
-              {demo.ui_components.length > 0
-                ? `agent added context · ${demo.ui_components.length} card${demo.ui_components.length === 1 ? '' : 's'}`
-                : 'agent canvas · idle'}
-            </span>
-          </div>
-          <div className="ab-body">
-            <Canvas slug={demo.slug} />
-          </div>
-        </div>
-      </section>
-
-      <section className="mt-20">
+      <section className="mt-16">
         <div className="line soft"></div>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
           <Link href="/demos" className="tiny-mono underline underline-offset-4">
-            ← back to demos
+            ← back to the corkboard
           </Link>
           <Link href="/about" className="btn">
             About Mahimai AI →
