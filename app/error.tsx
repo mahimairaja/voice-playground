@@ -29,10 +29,15 @@ export default function RouteError({ error, reset }: RouteErrorProps) {
             broke.
           </h1>
           <p className="p-hand mt-5 max-w-md">
-            We logged it. The playground tried to recover automatically; if it cannot, hitting retry
-            usually works. If it keeps happening, let us know at{' '}
-            <a href="mailto:hello@mahimai.ca" className="underline underline-offset-4">
-              hello@mahimai.ca
+            The playground logged it locally. Hitting retry usually works. If it keeps happening,
+            open an issue on the{' '}
+            <a
+              href="https://github.com/mahimairaja/voice-playground/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-4"
+            >
+              source repo
             </a>
             .
           </p>
