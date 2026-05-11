@@ -42,12 +42,16 @@ export function Canvas({ slug, className, emptyState }: CanvasProps) {
     );
   }
 
+  const cardCount = instances.length;
   return (
     <div
       className={cn('flex w-full flex-col gap-3', className)}
       data-canvas-slug={slug}
       data-canvas-state="populated"
     >
+      <p className="tiny-mono">
+        · drawn by agent · {cardCount} card{cardCount === 1 ? '' : 's'}
+      </p>
       {instances.map((instance) => {
         const Component = resolve(slug, instance.component);
         if (!Component) {
@@ -60,12 +64,13 @@ export function Canvas({ slug, className, emptyState }: CanvasProps) {
           return null;
         }
         return (
-          <Component
-            key={instance.id}
-            {...instance.props}
-            data-instance-id={instance.id}
-            data-instance-mounted-at={instance.mountedAt}
-          />
+          <div key={instance.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <Component
+              {...instance.props}
+              data-instance-id={instance.id}
+              data-instance-mounted-at={instance.mountedAt}
+            />
+          </div>
         );
       })}
     </div>
