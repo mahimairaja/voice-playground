@@ -35,6 +35,7 @@ export default async function DemoPage({ params }: DemoPageProps) {
   return (
     <main className="mx-auto max-w-5xl px-6 pt-24 pb-16 md:pt-28">
       <p className="tiny-mono">
+        · listing ·{' '}
         <Link href="/demos" className="underline underline-offset-4">
           /demos
         </Link>{' '}
@@ -68,12 +69,31 @@ export default async function DemoPage({ params }: DemoPageProps) {
       </section>
 
       {demo.required_credentials.length > 0 && (
-        <div className="mt-10">
+        <section aria-label="Required credentials" className="mt-10">
           <CredentialsBanner requiredCredentials={demo.required_credentials} />
-        </div>
+          <div className="box mt-4" style={{ padding: 18 }}>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="tiny-mono">· vault · local only</p>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {demo.required_credentials.map((key) => (
+                    <span key={key} className="chip">
+                      {key}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <CredentialsDrawer requiredCredentials={demo.required_credentials} />
+            </div>
+            <p className="p-hand sm mt-4">
+              Pasted keys live only in your browser&apos;s localStorage. The token mints in your
+              browser. Our server never sees the raw values.
+            </p>
+          </div>
+        </section>
       )}
 
-      <section aria-label="Voice surface" className="mt-6">
+      <section aria-label="Voice surface" className="mt-8">
         <div className="ab">
           <div className="ab-head">
             <span className="label">/call</span>
@@ -91,8 +111,8 @@ export default async function DemoPage({ params }: DemoPageProps) {
             <span className="label">/canvas</span>
             <span className="meta">
               {demo.ui_components.length > 0
-                ? `${demo.ui_components.length} component${demo.ui_components.length === 1 ? '' : 's'}`
-                : 'none'}
+                ? `agent added context · ${demo.ui_components.length} card${demo.ui_components.length === 1 ? '' : 's'}`
+                : 'agent canvas · idle'}
             </span>
           </div>
           <div className="ab-body">
@@ -100,30 +120,6 @@ export default async function DemoPage({ params }: DemoPageProps) {
           </div>
         </div>
       </section>
-
-      {demo.required_credentials.length > 0 && (
-        <section aria-label="Required credentials" className="mt-8">
-          <div className="box" style={{ padding: 18 }}>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="tiny-mono">required keys</p>
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  {demo.required_credentials.map((key) => (
-                    <span key={key} className="chip">
-                      {key}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <CredentialsDrawer requiredCredentials={demo.required_credentials} />
-            </div>
-            <p className="p-hand sm mt-4">
-              The drawer collects these in your browser&apos;s localStorage and passes them to the
-              token endpoint. Keys never reach the server log.
-            </p>
-          </div>
-        </section>
-      )}
 
       <section className="mt-20">
         <div className="line soft"></div>
