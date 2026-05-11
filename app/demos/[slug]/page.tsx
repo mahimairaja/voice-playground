@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CredentialsBanner } from '@/components/playground/CredentialsBanner';
 import { CredentialsDrawer } from '@/components/playground/CredentialsDrawer';
+import { VoiceSurface } from '@/components/playground/VoiceSurface';
 import { getAllDemos, getDemoBySlug } from '@/lib/demos';
 
 export const dynamicParams = false;
@@ -78,25 +79,7 @@ export default async function DemoPage({ params }: DemoPageProps) {
             <span className="meta">voice surface</span>
           </div>
           <div className="ab-body">
-            <div
-              className="box dashed"
-              data-placeholder="VoiceSurface"
-              style={{ padding: 28, textAlign: 'center' }}
-            >
-              <p className="tiny-mono">voice surface · pending T23</p>
-              <p className="p-hand mt-3">
-                The mic / audio visualizer / end-call control bar mounts here. It is wired by
-                <span className="kbd" style={{ marginLeft: 4, marginRight: 4 }}>
-                  hooks/useDemoSession
-                </span>
-                (T22), which reads keys from the credentials store (T17) and mints a token via
-                <span className="kbd" style={{ marginLeft: 4, marginRight: 4 }}>
-                  app/api/token
-                </span>
-                (T21).
-              </p>
-              <p className="p-hand sm mt-4">Until T19/T21/T22/T23 land, this slot is empty.</p>
-            </div>
+            <VoiceSurface slug={demo.slug} requiredCredentials={demo.required_credentials} />
           </div>
         </div>
       </section>
