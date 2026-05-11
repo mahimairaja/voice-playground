@@ -293,7 +293,7 @@ export function CredentialsDrawer({
               ↑ tokens mint in your browser. our server sees nothing.
             </p>
             <p className="p-hand sm mt-3" style={{ color: 'var(--ink-soft)' }}>
-              Stored in localStorage under <span className="kbd">mahimai_playground:cred</span>.
+              Stored in localStorage under <span className="kbd">voice_playground:cred</span>.
               Closing the tab keeps them; clearing site data wipes them.
             </p>
           </div>

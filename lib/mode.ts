@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 export type Mode = 'sketchy' | 'clean';
 
-export const MODE_STORAGE_KEY = 'mahimai_playground:clean_mode';
+export const MODE_STORAGE_KEY = 'voice_playground:clean_mode';
 const CLEAN_BODY_CLASS = 'clean';
 
 export const PRE_PAINT_MODE_SCRIPT = `try{var k='${MODE_STORAGE_KEY}',v=localStorage.getItem(k);if(v==='1')document.body.classList.add('${CLEAN_BODY_CLASS}');else document.body.classList.remove('${CLEAN_BODY_CLASS}')}catch(e){}`;

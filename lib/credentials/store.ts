@@ -1,6 +1,6 @@
 /**
  * Browser-only credentials store. Visitor-pasted provider keys live in
- * localStorage under the namespace 'mahimai_playground:cred:<key>'. Nothing
+ * localStorage under the namespace 'voice_playground:cred:<key>'. Nothing
  * is sent to a server, nothing is logged. Closing the tab keeps the keys;
  * clearing site data wipes them.
  *
@@ -9,7 +9,7 @@
  * to render UI that depends on storage actually working.
  */
 
-export const CRED_PREFIX = 'mahimai_playground:cred:';
+export const CRED_PREFIX = 'voice_playground:cred:';
 
 /**
  * Fired on the window after any 'saveCredentials' or 'clearAll' call so
@@ -17,14 +17,14 @@ export const CRED_PREFIX = 'mahimai_playground:cred:';
  * native 'storage' event covers cross-tab updates but does NOT fire in the
  * tab that wrote.
  */
-export const CRED_CHANGE_EVENT = 'mahimai-credentials-changed';
+export const CRED_CHANGE_EVENT = 'voice-playground-credentials-changed';
 
 /**
  * Dispatched on the window to ask any listening 'CredentialsDrawer' to open.
  * Lets the missing/rejected banner trigger the drawer without a parent
  * wrapper holding shared state.
  */
-export const CRED_OPEN_DRAWER_EVENT = 'mahimai-open-credentials-drawer';
+export const CRED_OPEN_DRAWER_EVENT = 'voice-playground-open-credentials-drawer';
 
 export type CredentialMap = Record<string, string>;
 
