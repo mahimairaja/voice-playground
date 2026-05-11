@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { CredentialsDrawer } from '@/components/playground/CredentialsDrawer';
 import { getAllDemos, getDemoBySlug } from '@/lib/demos';
 
 export const dynamicParams = false;
@@ -146,18 +147,11 @@ export default async function DemoPage({ params }: DemoPageProps) {
                   ))}
                 </div>
               </div>
-              <span
-                className="btn"
-                role="button"
-                aria-disabled="true"
-                title="The credentials drawer ships in T19"
-              >
-                Open keys drawer →
-              </span>
+              <CredentialsDrawer requiredCredentials={demo.required_credentials} />
             </div>
             <p className="p-hand sm mt-4">
-              The drawer (T19) collects these in your browser&apos;s localStorage and passes them to
-              the token endpoint. Keys never reach the server log.
+              The drawer collects these in your browser&apos;s localStorage and passes them to the
+              token endpoint. Keys never reach the server log.
             </p>
           </div>
         </section>
