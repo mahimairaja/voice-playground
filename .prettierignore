@@ -9,5 +9,9 @@ pnpm-lock.yaml
 # it must not be reformatted in place. See CLAUDE.md.
 styles/brand.css
 
+# Reference wireframes are read-only design exports from claude.ai/design.
+# Prettier should not rewrite their inlined font/data blocks.
+references/
+
 
 
