@@ -146,6 +146,20 @@
  *
  * Keep these values in sync with brand.css's 'body.dark' block.
  */
+/*
+ * brand.css primitives ('.brand .dot', '.btn.accent', '.chip.accent',
+ * '.box.accent', '.stamp', etc.) reference 'var(--accent)' / 'var(--accent-soft)'.
+ * globals.css's :root overrides those with shadcn's subdued accent (consumed
+ * by shadcn components for hover and secondary surfaces, see T05 journal). On
+ * any element that should render the brand terracotta, opt in by adding the
+ * 'brand-accent' class to re-alias the var locally to '--accent-hex' /
+ * '--accent-soft-hex' (which brand.css defines and globals.css does not touch).
+ */
+.brand-accent {
+  --accent: var(--accent-hex);
+  --accent-soft: var(--accent-soft-hex);
+}
+
 html.dark body {
   --paper: #14130f;
   --paper-2: #1c1b17;
