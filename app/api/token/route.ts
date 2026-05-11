@@ -24,7 +24,7 @@ const REQUEST_SCHEMA = z.object({
     .regex(/^wss?:\/\/.+$/, { message: 'livekit_url must be a ws:// or wss:// URL' }),
   livekit_api_key: z.string().min(1),
   livekit_api_secret: z.string().min(1),
-  /** Optional explicit room name. Otherwise a random 'mahimai_<n>' room is minted. */
+  /** Optional explicit room name. Otherwise a random 'playground_<n>' room is minted. */
   room: z.string().min(1).max(64).optional(),
   /** Optional explicit participant identity. Otherwise a random 'visitor_<n>' identity is used. */
   identity: z.string().min(1).max(64).optional(),
@@ -83,7 +83,7 @@ export async function POST(req: Request): Promise<NextResponse> {
   } = parsed.data;
 
   const slugPrefix = demo_slug ? `${demo_slug}_` : '';
-  const roomName = room ?? `mahimai_${slugPrefix}${randomSuffix()}`;
+  const roomName = room ?? `playground_${slugPrefix}${randomSuffix()}`;
   const participantIdentity = identity ?? `visitor_${randomSuffix()}`;
   const participantName = name ?? 'visitor';
 

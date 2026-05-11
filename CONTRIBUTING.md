@@ -1,6 +1,6 @@
 # Contributing
 
-The Mahimai AI playground hosts the React side of the demos catalogued in the sibling [`awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps) repo. Each demo can ship a small bundle of React components that the agent worker mounts on the canvas as the call progresses (cart, total, ticker, status badge, whatever the demo needs).
+The voice playground hosts the React side of the demos catalogued in the sibling [`awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps) repo. Each demo can ship a small bundle of React components that the agent worker mounts on the canvas as the call progresses (cart, total, ticker, status badge, whatever the demo needs).
 
 This document describes how to add one.
 
@@ -117,4 +117,4 @@ Before opening the PR:
 - No `Co-Authored-By: Claude` trailers, no `Generated with Claude Code` footer.
 - Commit subject: `feat(demo): add <slug> bundle`. Body explains why this demo needs UI components and what each one shows.
 
-Questions? Mahimai is the sole maintainer; open an issue or email `hello@mahimai.ca`.
+Questions? Open an issue on the [voice-playground](https://github.com/mahimairaja/voice-playground) repo or the [awesome-voice-apps](https://github.com/mahimailabs/awesome-voice-apps) repo depending on whether the question is about this UI or the agent itself.

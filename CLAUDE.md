@@ -4,11 +4,11 @@ Operating instructions for any Claude session working in this repo. Auto loaded 
 
 ## What this repo is
 
-The Mahimai AI voice playground. Public site at `playground.mahimai.ca`. A Next.js 15 frontend that lets visitors talk to the voice agents catalogued in the sister repo `awesome-voice-apps` (sibling on disk: `../awesome-voice-apps`). Visitors bring their own provider keys, paste them in the credentials drawer, and the playground mints a short-lived LiveKit token in their browser.
+A standalone open-source playground: a Next.js 15 frontend that lets visitors talk to the voice agents catalogued in the sister repo `awesome-voice-apps` (sibling on disk: `../awesome-voice-apps`). Visitors bring their own provider keys, paste them in the credentials drawer, and the playground mints a short-lived LiveKit token in their browser. This is NOT a hosted product, NOT a consultancy site, NOT a marketing surface for any specific company.
 
 If a piece of work does not advance one of these, it does not belong in this repo:
 
-1. Render the cookbook (the marketing landing, demo index, per-demo page) with the brand intact.
+1. Render the catalogue (landing, demo index, per-demo page, about) with the brand intact.
 2. Connect a visitor to a demo (credentials drawer, token route, voice surface, transcript).
 3. Render the agent's generative UI (canvas plus dispatcher plus per-demo component bundles).
 
@@ -33,12 +33,12 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 
 ## Hard constraints
 
-- **Brand assets are in place. Do not regenerate `public/brand/goat.svg`, `styles/brand.css`, the favicon set, or `public/og-image.png`.** Source of truth for design is `.brand/mahimai-wireframes.html`.
+- **Brand assets are in place. Do not regenerate `public/brand/goat.svg`, `styles/brand.css`, the favicon set, or `public/og-image.png`.** Source of truth for the design is the wireframe HTML in `.brand/` (gitignored). The seven curated wireframe variants live under `references/` and are the visual contract for the rendered surfaces.
 - **Do not edit `styles/brand.css` directly.** It mirrors the wireframes verbatim. Theme overrides go in `styles/globals.css` (the `@theme inline` block) or via the `brand-accent` opt-in class for elements that need terracotta where shadcn overrode `--accent`.
 - **No demo-specific React components in this repo.** `components/demos/<slug>/*` is reserved for the per-demo bundles that ship in M2. The current iteration only provides the registry, dispatcher, and Canvas; bundles register themselves.
 - **No backticks in shell prompts you suggest the operator paste.**
 - **No em dashes anywhere.** Use colons, periods, semicolons, or parentheses. The wireframes contain em dashes; the rule still applies.
-- **No `Co-Authored-By: Claude` trailers, no `Generated with Claude Code` footer, no robot emoji, no AI attribution.** Commits read as if Mahimai authored them directly.
+- **No `Co-Authored-By: Claude` trailers, no `Generated with Claude Code` footer, no robot emoji, no AI attribution.** Commits read as if the maintainer authored them directly.
 - The API route `app/api/token/route.ts` is the only server-side code. It mints LiveKit AccessTokens from visitor-pasted credentials and never logs or persists them.
 
 ## File conventions
@@ -75,7 +75,7 @@ There is no test suite. CI runs `lint`, `format:check`, and `build`. Smoke tests
 
 Production:
 
-- `NEXT_PUBLIC_SITE_URL` (e.g. `https://playground.mahimai.ca`). Used by `generateMetadata` for the `metadataBase`.
+- `NEXT_PUBLIC_SITE_URL` (e.g. `https://your-playground-domain.example.com`). Used by `generateMetadata` for the `metadataBase`.
 
 Local (`.env.local`, optional for the marketing surfaces):
 
@@ -118,9 +118,9 @@ Do not stage `.env*` files (only `.env.example` is committed), `.next/`, `node_m
 
 ## Voice and tone
 
-The playground reads to two audiences: technical buyers and indie engineers comparing voice stacks. The voice in headlines and body is direct, slightly opinionated, and never marketing-fluffy. Skip qualifiers (very, really, just, simply) and hedges (might, perhaps, maybe). Show concrete behaviour.
+The playground reads to indie engineers and developers comparing voice stacks. The voice in headlines and body is direct, slightly opinionated, never marketing-fluffy. Skip qualifiers (very, really, just, simply) and hedges (might, perhaps, maybe). Show concrete behaviour.
 
-The brand wordmark in chrome is `mahimai` lowercase. Page-level prose uses `Mahimai AI` capitalised.
+The brand wordmark in chrome is `playground` lowercase. Page-level prose uses `voice playground` lowercase. Do NOT promote any specific company, consultancy, or hosted product in user-facing copy; this is a standalone tool for the awesome-voice-apps catalogue.
 
 ## What goes where
 
@@ -128,7 +128,7 @@ The brand wordmark in chrome is `mahimai` lowercase. Page-level prose uses `Mahi
 - A per-demo React surface (M2): into `components/demos/<slug>/index.ts`. Registers a component map.
 - A reusable utility: into `lib/<domain>/`.
 - A new manifest field: zod schema in `lib/demos/schema.ts` first, then loader, then UI.
-- A planning artifact (Refinery doc, Foundry blueprint, design notes): Linear, not the repo.
+- A planning artifact (design notes, scope docs, follow-up lists): planning system of choice, not the repo.
 - An agent / Python concern: `../awesome-voice-apps`, not here. Exception: the `publish_ui_event` helper that ships in T36 lives in `awesome-voice-apps/templates/livekit-base/agent.py`.
 
 ## Out of scope for this repo

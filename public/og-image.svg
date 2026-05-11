@@ -14,7 +14,7 @@
     <rect x="6" y="6" width="1080" height="510" stroke-width="1.5" rx="4" opacity="0.4"/>
   </g>
 
-  <!-- Mahimai AI mark, sourced from public/brand/goat.svg -->
+  <!-- Goat mark, sourced from public/brand/goat.svg -->
   <svg x="100" y="100" width="220" height="220" viewBox="0 0 528 528">
     <path fill="#000000" opacity="1.000000" stroke="none" 
 	d="
@@ -451,16 +451,16 @@ z"/>
 
   <!-- Brand lockup to right of goat -->
   <g transform="translate(360 175)">
-    <text x="0" y="0" fill="#1a1a1a" font-family="Caveat, Kalam, cursive" font-size="72" font-weight="700">Mahimai AI</text>
-    <text x="4" y="38" fill="#6b6b6b" font-family="JetBrains Mono, monospace" font-size="18" letter-spacing="2">// PLAYGROUND</text>
+    <text x="0" y="0" fill="#1a1a1a" font-family="Caveat, Kalam, cursive" font-size="72" font-weight="700">voice playground</text>
+    <text x="4" y="38" fill="#6b6b6b" font-family="JetBrains Mono, monospace" font-size="18" letter-spacing="2">// OPEN SOURCE</text>
   </g>
 
   <!-- Headline -->
-  <text x="100" y="400" fill="#1a1a1a" font-family="Caveat, Kalam, cursive" font-size="92" font-weight="700">Voice AI agents</text>
-  <text x="100" y="480" fill="#1a1a1a" font-family="Caveat, Kalam, cursive" font-size="92" font-weight="700">that don't stop at hello.</text>
+  <text x="100" y="400" fill="#1a1a1a" font-family="Caveat, Kalam, cursive" font-size="92" font-weight="700">talk to an agent.</text>
+  <text x="100" y="480" fill="#1a1a1a" font-family="Caveat, Kalam, cursive" font-size="92" font-weight="700">not a brochure.</text>
 
   <!-- Sub copy -->
-  <text x="100" y="540" fill="#3b3b3b" font-family="Kalam, cursive" font-size="26">Browse the cookbook. Bring your keys. Talk to the agent.</text>
+  <text x="100" y="540" fill="#3b3b3b" font-family="Kalam, cursive" font-size="26">A standalone UI for the awesome-voice-apps catalogue.</text>
 
   <!-- CTA -->
   <g transform="translate(100 565)">
@@ -468,11 +468,11 @@ z"/>
     <text x="100" y="32" fill="#fafaf7" font-family="Kalam, cursive" font-size="22" font-weight="700" text-anchor="middle">try a demo →</text>
   </g>
 
-  <!-- NEVER LOCKED IN stamp, rotated -->
+  <!-- BYO KEYS stamp, rotated -->
   <g transform="rotate(8 1080 95)">
-    <rect x="1000" y="80" width="170" height="34" fill="#fafaf7" stroke="#c46a3a" stroke-width="2" rx="3"/>
-    <text x="1085" y="103" fill="#c46a3a" font-family="JetBrains Mono, monospace" font-size="14" letter-spacing="2" text-anchor="middle" font-weight="700">NEVER LOCKED IN</text>
+    <rect x="1015" y="80" width="155" height="34" fill="#fafaf7" stroke="#c46a3a" stroke-width="2" rx="3"/>
+    <text x="1092" y="103" fill="#c46a3a" font-family="JetBrains Mono, monospace" font-size="14" letter-spacing="2" text-anchor="middle" font-weight="700">BYO KEYS</text>
   </g>
 
-  <text x="1080" y="600" fill="#6b6b6b" font-family="JetBrains Mono, monospace" font-size="14" text-anchor="end">playground.mahimai.ca</text>
+  <text x="1080" y="600" fill="#6b6b6b" font-family="JetBrains Mono, monospace" font-size="14" text-anchor="end">awesome-voice-apps</text>
 </svg>

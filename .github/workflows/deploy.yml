@@ -17,7 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://playground.mahimai.ca
     steps:
       - uses: actions/checkout@v4
         with:

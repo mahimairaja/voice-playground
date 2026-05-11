@@ -1,12 +1,12 @@
-# Mahimai AI playground
+# voice playground
 
-A Next.js 15 frontend that lets visitors talk to the voice agents catalogued in [`awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps). Production at `playground.mahimai.ca`.
+A standalone Next.js 15 UI for the voice agents catalogued in [`awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps). Pick a demo, paste your provider keys, talk to it in your browser, watch the agent mount UI on the canvas.
 
-Visitors bring their own provider keys (OpenAI, Deepgram, Cartesia, LiveKit), paste them into a credentials drawer, and the playground mints a short-lived LiveKit token in their browser. No keys are ever logged or persisted server-side.
+Visitors bring their own provider keys (OpenAI, Deepgram, Cartesia, LiveKit). The keys live only in the visitor's localStorage. The playground mints a short-lived LiveKit token in their browser. No keys are logged or persisted server-side.
 
 ## What this repo ships
 
-- A brand-faithful marketing surface (landing, demos index, per-demo page, about) using the wireframe primitives sourced from `.brand/mahimai-wireframes.html`.
+- A marketing surface (landing, demos index, per-demo page, about) styled as an ink-on-paper field manual with the brand wireframe primitives.
 - A bring-your-own-keys credentials store, drawer, and missing/rejected banner.
 - A LiveKit voice surface composed from `@agents-ui/*` components, with a live transcript that toggles without disrupting the call.
 - A generative UI dispatcher (Zustand store + `RoomEvent.DataReceived` listener) so demo-side agents can mount, update, and unmount React components on a canvas as the call progresses.
@@ -37,7 +37,7 @@ The token route at `app/api/token/route.ts` is the only server-side code; it rea
 Optional env vars (`.env.local`):
 
 ```env
-NEXT_PUBLIC_SITE_URL=https://playground.mahimai.ca
+NEXT_PUBLIC_SITE_URL=https://your-playground-domain.example.com
 ```
 
 `NEXT_PUBLIC_SITE_URL` sets `metadataBase` for the OG and Twitter card preview URLs. Defaults to `http://localhost:3000` when unset.
@@ -59,19 +59,19 @@ components/
 ├── brand/                 Logo, TopBar, Footer (mascot, dot/wordmark/tag, status row)
 ├── playground/            CredentialsDrawer, CredentialsBanner, VoiceSurface, Transcript
 ├── generative/Canvas.tsx  Reads the dispatcher store, renders via the registry
-├── demos/                 (M2) per-demo bundles: components/demos/<slug>/index.ts
+├── demos/                 Per-demo bundles: components/demos/<slug>/index.ts
 ├── agents-ui/             Upstream @agents-ui/* registry (re-pullable, prefer overrides)
 └── ui/                    Shadcn primitives (button, alert, etc.)
 
 lib/
 ├── demos/                 Build-time manifest loader (server-only) + zod schema
-├── credentials/           localStorage store + optional async provider ping
+├── credentials/           localStorage store (voice_playground: namespace) + optional ping
 ├── generative-ui/         protocol.ts (zod envelope) + registry.ts + dispatcher.ts (zustand)
 ├── theme.ts, mode.ts      Typed wrappers around next-themes + sketchy/clean toggle
 └── utils.ts               Server config + sandbox token source
 
 styles/
-├── brand.css              Verbatim port of .brand/mahimai-wireframes.html (do not edit)
+├── brand.css              Verbatim port of the brand wireframes (do not edit)
 └── globals.css            Tailwind v4 @theme tokens + dark-mode bridge to brand vars
 ```
 
@@ -80,19 +80,7 @@ styles/
 
 ## Deployment
 
-Production deploys to Vercel (Hobby tier) at `playground.mahimai.ca`.
-
-### DNS
-
-Point a CNAME on the `playground` subdomain to Vercel:
-
-| Type  | Host       | Target                | TTL  |
-| ----- | ---------- | --------------------- | ---- |
-| CNAME | playground | cname.vercel-dns.com. | 3600 |
-
-After the record propagates (usually under five minutes for a CNAME at the registrar level), add `playground.mahimai.ca` as a custom domain inside the Vercel project. Vercel issues the TLS certificate automatically.
-
-> **TODO:** Mahimai owns the actual DNS edit at the registrar (Cloudflare or wherever `mahimai.ca` is hosted). The Ralph loop cannot place this record; it can only document the contract.
+Production deploys to Vercel. Set the production domain inside the Vercel project; the framework is auto-detected via `vercel.json`.
 
 ### CI
 
@@ -104,12 +92,10 @@ CI is configured in `.github/workflows/`. The required GitHub repository secrets
 
 Vercel pins the production function runtime to Node 20 via `package.json#engines.node`. The framework field in `vercel.json` is set so Vercel auto-detects the Next.js build pipeline.
 
-## Project context
+## Repos
 
-- **Refinery (REQ-AVA-PLAY-001 to 006):** [https://linear.app/mahimairaja/document/m1-playground-v1-refinery-e54e5fb0c21d](https://linear.app/mahimairaja/document/m1-playground-v1-refinery-e54e5fb0c21d)
-- **Foundry Blueprint (Implementation items 1 to 37):** [https://linear.app/mahimairaja/document/m1-playground-v1-foundry-blueprint-81ab5a0bd72b](https://linear.app/mahimairaja/document/m1-playground-v1-foundry-blueprint-81ab5a0bd72b)
-- **Project hub:** [https://linear.app/mahimairaja/project/awesome-voice-apps-1fa19b5f36d2](https://linear.app/mahimairaja/project/awesome-voice-apps-1fa19b5f36d2)
-- **Sister repo:** [`awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps) (the voice agents catalogue)
+- **This playground:** [`mahimairaja/voice-playground`](https://github.com/mahimairaja/voice-playground)
+- **Agents catalogue:** [`mahimailabs/awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps)
 
 ## License
 
