@@ -133,3 +133,34 @@
     @apply bg-background text-foreground;
   }
 }
+
+/*
+ * Dark-mode bridge for the Mahimai brand palette.
+ *
+ * brand.css (sourced verbatim from .brand/mahimai-wireframes.html) declares
+ * its dark values under the 'body.dark' selector. next-themes adds 'dark'
+ * to the <html> element, not <body>, so 'body.dark' never matches in this
+ * app. Mirroring the brand dark vars under 'html.dark body' raises the
+ * specificity above 'body.dark' and triggers the same palette switch on
+ * the next-themes class.
+ *
+ * Keep these values in sync with brand.css's 'body.dark' block.
+ */
+html.dark body {
+  --paper: #14130f;
+  --paper-2: #1c1b17;
+  --ink: #f2efe6;
+  --ink-2: #cfcabd;
+  --ink-soft: #8e8a7d;
+  --line: #f2efe6;
+  --line-soft: #5a574f;
+  --accent: oklch(0.75 0.16 55);
+  --accent-soft: oklch(0.28 0.07 55);
+  --accent-hex: #e4a06a;
+  --accent-soft-hex: #3e2d1d;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 0
+  );
+}
