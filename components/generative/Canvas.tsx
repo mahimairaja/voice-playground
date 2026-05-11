@@ -44,25 +44,13 @@ export function Canvas({ slug, className, emptyState }: CanvasProps) {
 
   const cardCount = instances.length;
   return (
-    <div
-      className={cn('relative w-full', className)}
-      data-canvas-slug={slug}
-      data-canvas-state="populated"
-      style={{
-        background: 'var(--paper-2)',
-        border: '1.5px solid var(--ink)',
-        borderRadius: 6,
-        boxShadow: '4px 4px 0 var(--ink)',
-        padding: 14,
-      }}
+    <WhiteboardFrame
+      slug={slug}
+      className={className}
+      state="populated"
+      heading="what the agent put up"
+      meta={`${cardCount} card${cardCount === 1 ? '' : 's'}`}
     >
-      <header className="flex items-baseline justify-between gap-2">
-        <p className="tiny-mono">· drawn by agent</p>
-        <p className="tiny-mono">
-          {cardCount} card{cardCount === 1 ? '' : 's'}
-        </p>
-      </header>
-      <div className="line mt-2 mb-3"></div>
       <div className="flex flex-col gap-3">
         {instances.map((instance) => {
           const Component = resolve(slug, instance.component);
@@ -89,6 +77,59 @@ export function Canvas({ slug, className, emptyState }: CanvasProps) {
           );
         })}
       </div>
+      <NextChips />
+    </WhiteboardFrame>
+  );
+}
+
+interface WhiteboardFrameProps {
+  slug: string;
+  className?: string;
+  state: 'populated' | 'empty';
+  heading: string;
+  meta: string;
+  children: React.ReactNode;
+}
+
+function WhiteboardFrame({
+  slug,
+  className,
+  state,
+  heading,
+  meta,
+  children,
+}: WhiteboardFrameProps) {
+  return (
+    <div
+      className={cn('relative w-full', className)}
+      data-canvas-slug={slug}
+      data-canvas-state={state}
+      style={{
+        background: 'var(--paper-2)',
+        border: '1.5px solid var(--ink)',
+        borderRadius: 6,
+        boxShadow: '4px 4px 0 var(--ink)',
+        padding: 14,
+        paddingBottom: 36,
+      }}
+    >
+      <header className="flex items-baseline justify-between gap-2">
+        <p className="tiny-mono">· drawn by agent</p>
+        <p className="tiny-mono">{meta}</p>
+      </header>
+      <h3
+        className="mt-1"
+        style={{
+          fontFamily: 'var(--hand-title)',
+          fontWeight: 700,
+          fontSize: 22,
+          lineHeight: 1.05,
+        }}
+      >
+        {heading}
+      </h3>
+      <div className="line mt-2 mb-3"></div>
+      {children}
       {/* chalk eraser */}
       <span
         aria-hidden="true"
@@ -108,6 +149,29 @@ export function Canvas({ slug, className, emptyState }: CanvasProps) {
   );
 }
 
+function NextChips() {
+  return (
+    <div className="mt-4">
+      <div className="line soft mb-2"></div>
+      <p className="tiny-mono">· next</p>
+      <div className="mt-2 flex flex-wrap items-center gap-2">
+        <span className="chip">book viewing</span>
+        <span className="chip">send PDFs</span>
+        <span
+          className="chip"
+          title="planned for a future release"
+          style={{
+            borderStyle: 'dashed',
+            color: 'var(--ink-soft)',
+          }}
+        >
+          compare
+        </span>
+      </div>
+    </div>
+  );
+}
+
 interface DefaultEmptyProps {
   slug: string;
   registered: boolean;
@@ -117,23 +181,44 @@ function DefaultEmpty({ slug, registered }: DefaultEmptyProps) {
   if (!registered) {
     const known = listComponents(slug);
     return (
-      <div className="box dashed" style={{ padding: 18 }}>
-        <p className="tiny-mono">canvas · waiting</p>
-        <p className="p-hand sm" style={{ marginTop: 6 }}>
+      <WhiteboardFrame slug={slug} state="empty" heading="waiting on the bundle" meta="0 cards">
+        <p className="p-hand sm">
           No components registered for <span className="kbd">{slug}</span> yet. The per-demo bundle{' '}
           <span className="kbd">components/demos/{slug}/index.ts</span> ships in M2.
           {known.length > 0 ? ` Found: ${known.join(', ')}.` : ''}
         </p>
-      </div>
+        <PlaceholderRow />
+      </WhiteboardFrame>
     );
   }
 
   return (
-    <div className="box dashed" style={{ padding: 18 }}>
-      <p className="tiny-mono">canvas · idle</p>
-      <p className="p-hand sm" style={{ marginTop: 6 }}>
-        The agent has not mounted any components yet. They appear here in real time.
+    <WhiteboardFrame slug={slug} state="empty" heading="agent will draw here" meta="0 cards">
+      <p className="p-hand sm">
+        Cards from the agent appear here in real time. Each one mounts, updates, or unmounts on its
+        own.
       </p>
+      <PlaceholderRow />
+    </WhiteboardFrame>
+  );
+}
+
+function PlaceholderRow() {
+  return (
+    <div className="mt-3 grid grid-cols-3 gap-2">
+      {[0, 1, 2].map((i) => (
+        <div
+          key={i}
+          aria-hidden="true"
+          style={{
+            border: '1.2px dashed var(--line-soft)',
+            borderRadius: 4,
+            background:
+              'repeating-linear-gradient(135deg, transparent 0 6px, rgba(0,0,0,.05) 6px 7px), var(--paper)',
+            height: 56,
+          }}
+        />
+      ))}
     </div>
   );
 }
