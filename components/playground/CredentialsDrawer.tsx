@@ -22,8 +22,21 @@ const PROVIDER_LABEL: Record<string, string> = {
   livekit_api_secret: 'LiveKit API secret',
 };
 
+const PROVIDER_PLACEHOLDER: Record<string, string> = {
+  openai: 'sk-...',
+  deepgram: 'dg_... (or hex)',
+  cartesia: 'paste API key',
+  livekit: 'wss://your-project.livekit.cloud',
+  livekit_api_key: 'API...',
+  livekit_api_secret: 'secret...',
+};
+
 function labelFor(key: string): string {
   return PROVIDER_LABEL[key] ?? key;
+}
+
+function placeholderFor(key: string): string {
+  return PROVIDER_PLACEHOLDER[key] ?? 'paste key';
 }
 
 interface CredentialsDrawerProps {
@@ -141,12 +154,12 @@ export function CredentialsDrawer({
 
           <div className="flex-1 px-5 py-5">
             <p className="p-hand sm">
-              Pasted keys live in your browser&apos;s localStorage under
+              Your tokens are generated in your browser. Our server never sees the raw keys. Pasted
+              values live only in your browser&apos;s localStorage under
               <span className="kbd" style={{ marginLeft: 4 }}>
                 mahimai_playground:cred
               </span>
-              . Nothing is logged server-side. Closing the tab keeps them; clearing site data wipes
-              them.
+              . Closing the tab keeps them; clearing site data wipes them.
             </p>
 
             {requiredCredentials.length === 0 ? (
@@ -188,7 +201,7 @@ export function CredentialsDrawer({
                         onChange={(e) => setValues((v) => ({ ...v, [key]: e.currentTarget.value }))}
                         autoComplete="off"
                         spellCheck={false}
-                        placeholder="paste key here"
+                        placeholder={placeholderFor(key)}
                         className="w-full px-3 py-2 transition-colors outline-none focus:border-2"
                         style={{
                           background: 'var(--paper)',
@@ -226,7 +239,7 @@ export function CredentialsDrawer({
                 className="btn accent brand-accent cursor-pointer"
                 disabled={requiredCredentials.length === 0}
               >
-                Save keys
+                Save &amp; start →
               </button>
             </div>
           </footer>
