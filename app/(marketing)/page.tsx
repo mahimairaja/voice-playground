@@ -52,7 +52,7 @@ export default function HomePage() {
             Recent demos
           </h2>
           <span className="tiny-mono">
-            recent · top {Math.max(demos.length, 1)} of {demos.length || '—'}
+            recent · top {Math.max(demos.length, 1)} of {demos.length || '0'}
           </span>
         </div>
         <div className="line mt-3 mb-6"></div>
