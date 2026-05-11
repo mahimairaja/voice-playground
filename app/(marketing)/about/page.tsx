@@ -39,24 +39,31 @@ const PRINCIPLES: Principle[] = [
 export default function AboutPage() {
   return (
     <main className="mx-auto max-w-5xl px-6 pt-24 pb-16 md:pt-28">
-      <header>
-        <p className="tiny-mono">{'// field manual · v1'}</p>
-        <h1 className="h-hand xxl mt-3 leading-[0.95]">
-          What this is.
+      <header className="relative">
+        <p className="tiny-mono">· field manual · v1</p>
+        <h1
+          className="mt-2 leading-[0.92]"
+          style={{
+            fontFamily: 'var(--hand-title)',
+            fontWeight: 700,
+            fontSize: 'clamp(40px, 6vw, 64px)',
+          }}
+        >
+          what this is.
           <br />
-          <span style={{ color: 'var(--accent-hex)' }}>What it isn&apos;t.</span>
+          <span style={{ color: 'var(--accent-hex)' }}>what it isn&apos;t.</span>
         </h1>
-        <p className="p-hand mt-4 max-w-xl">
-          A small Canadian shop that ships voice agents end-to-end. This playground is where you can
+        <p className="p-hand mt-4 max-w-xl text-[14px]">
+          a small Canadian shop that ships voice agents end-to-end. this playground is where you can
           talk to them in your browser before you hire us.
         </p>
       </header>
 
-      <section aria-labelledby="positioning" className="mt-12">
+      <section aria-labelledby="positioning" className="mt-10">
         <h2 id="positioning" className="sr-only">
           Positioning
         </h2>
-        <div className="line"></div>
+        <div className="line wavy"></div>
         <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
           <div className="box" style={{ padding: 18 }}>
             <p className="tiny-mono">· IS</p>
@@ -84,6 +91,42 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      <section aria-labelledby="stack" className="mt-10">
+        <p id="stack" className="tiny-mono">
+          · the stack
+        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="chip accent brand-accent">Next 15</span>
+          <span className="chip">LiveKit</span>
+          <span className="chip">Deepgram</span>
+          <span className="chip">OpenAI</span>
+          <span className="chip">Cartesia</span>
+          <span className="chip">zod</span>
+          <span className="chip">zustand</span>
+        </div>
+      </section>
+
+      <div className="relative mt-12">
+        <div
+          className="box ml-auto"
+          style={{
+            padding: 14,
+            width: 240,
+            background: 'var(--paper-2)',
+            transform: 'rotate(-1.5deg)',
+          }}
+        >
+          <p className="tiny-mono">· shipped from</p>
+          <p
+            className="mt-1"
+            style={{ fontFamily: 'var(--hand-title)', fontWeight: 700, fontSize: 22 }}
+          >
+            toronto · ✦
+          </p>
+          <p className="tiny-mono mt-1">MIT · BYO keys</p>
+        </div>
+      </div>
 
       <section aria-label="Letter from the founder" className="mt-14">
         <div className="line"></div>
