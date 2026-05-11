@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Canvas } from '@/components/generative/Canvas';
 import { CredentialsBanner } from '@/components/playground/CredentialsBanner';
 import { CredentialsDrawer } from '@/components/playground/CredentialsDrawer';
 import { VoiceSurface } from '@/components/playground/VoiceSurface';
@@ -95,30 +96,7 @@ export default async function DemoPage({ params }: DemoPageProps) {
             </span>
           </div>
           <div className="ab-body">
-            <div
-              className="box dashed"
-              data-placeholder="Canvas"
-              style={{ padding: 28, minHeight: 160, textAlign: 'center' }}
-            >
-              <p className="tiny-mono">canvas · pending T28</p>
-              {demo.ui_components.length > 0 ? (
-                <p className="p-hand mt-3">
-                  The agent for this demo can mount {demo.ui_components.length} component
-                  {demo.ui_components.length === 1 ? '' : 's'}:{' '}
-                  {demo.ui_components.map((c) => (
-                    <span key={c} className="kbd" style={{ marginRight: 6 }}>
-                      {c}
-                    </span>
-                  ))}
-                </p>
-              ) : (
-                <p className="p-hand mt-3">This demo declares no generative UI components.</p>
-              )}
-              <p className="p-hand sm mt-4">
-                The dispatcher (T27) decodes mount/update/unmount events on the LiveKit data channel
-                and the Canvas (T28) renders them through the registry (T26).
-              </p>
-            </div>
+            <Canvas slug={demo.slug} />
           </div>
         </div>
       </section>

@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
+import { Room } from 'livekit-client';
 import { RoomAudioRenderer, RoomContext, useVoiceAssistant } from '@livekit/components-react';
 import { AgentAudioVisualizerBar } from '@/components/agents-ui/agent-audio-visualizer-bar';
 import { AgentControlBar } from '@/components/agents-ui/agent-control-bar';
 import { StartAudioButton } from '@/components/agents-ui/start-audio-button';
 import { Transcript } from '@/components/playground/Transcript';
 import { useDemoSession } from '@/hooks/useDemoSession';
+import { useUiDispatcher } from '@/lib/generative-ui/dispatcher';
 import { cn } from '@/lib/shadcn/utils';
 
 interface VoiceSurfaceProps {
@@ -26,6 +28,7 @@ export function VoiceSurface({ slug, requiredCredentials, className }: VoiceSurf
     return (
       <RoomContext.Provider value={room}>
         <RoomAudioRenderer />
+        <DispatcherBinding room={room} />
         <SurfaceShell stamp={state === 'live' ? 'LIVE' : 'CONNECTING'} className={className}>
           <LiveBody onDisconnect={disconnect} />
         </SurfaceShell>
@@ -109,6 +112,11 @@ function IdleBody({ state, error, onConnect }: IdleBodyProps) {
       </button>
     </>
   );
+}
+
+function DispatcherBinding({ room }: { room: Room }) {
+  useUiDispatcher(room);
+  return null;
 }
 
 interface LiveBodyProps {
