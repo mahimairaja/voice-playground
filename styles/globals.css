@@ -160,6 +160,82 @@
   --accent-soft: var(--accent-soft-hex);
 }
 
+/*
+ * Wireframe chrome primitives that live in '.brand/mahimai-wireframes.html'
+ * but were not ported into 'styles/brand.css'. They are kept here so the
+ * brand.css file stays a verbatim subset of the wireframe palette / primitives,
+ * and the chrome (header brand mark, page tabs) ports cleanly on top.
+ */
+.brand {
+  font-family: var(--hand-title);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand .dot {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+.brand .dot::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.brand .tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-left: 6px;
+}
+
+.tab {
+  font-family: var(--hand);
+  font-size: 17px;
+  padding: 6px 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 22px 24px 21px 25px;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  transform: rotate(-0.4deg);
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+.tab:hover {
+  transform: rotate(0deg) translateY(-1px);
+}
+.tab:nth-child(even) {
+  transform: rotate(0.5deg);
+  border-radius: 24px 22px 26px 21px;
+}
+.tab[aria-selected='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* Clean-mode flattens the sketchy chrome. Matches brand.css's body.clean rules. */
+body.clean .brand {
+  font-family: var(--sans);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+body.clean .tab {
+  transform: none;
+  border-radius: 6px;
+}
+
 html.dark body {
   --paper: #14130f;
   --paper-2: #1c1b17;
