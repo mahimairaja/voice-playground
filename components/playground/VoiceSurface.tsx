@@ -5,6 +5,7 @@ import { RoomAudioRenderer, RoomContext, useVoiceAssistant } from '@livekit/comp
 import { AgentAudioVisualizerBar } from '@/components/agents-ui/agent-audio-visualizer-bar';
 import { AgentControlBar } from '@/components/agents-ui/agent-control-bar';
 import { StartAudioButton } from '@/components/agents-ui/start-audio-button';
+import { Transcript } from '@/components/playground/Transcript';
 import { useDemoSession } from '@/hooks/useDemoSession';
 import { cn } from '@/lib/shadcn/utils';
 
@@ -156,6 +157,7 @@ function LiveBody({ onDisconnect }: LiveBodyProps) {
         />
         <StartAudioButton size="sm" variant="ghost" label="Click to allow audio playback" />
       </div>
+      <Transcript className="w-full max-w-2xl" />
     </>
   );
 }
