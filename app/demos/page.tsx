@@ -33,11 +33,18 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
   return (
     <main className="mx-auto max-w-5xl px-6 pt-24 pb-16 md:pt-28">
       <header>
-        <p className="tiny-mono">{'// playground v1 · /demos'}</p>
-        <h1 className="h-hand xxl mt-3 leading-[0.95]">Demos</h1>
+        <p className="tiny-mono">
+          · the corkboard · {allDemos.length} pinned
+          {activeCategory ? ` · ${activeCategory}` : ''}
+        </p>
+        <h1 className="h-hand xxl mt-3 leading-[0.95]">
+          Pick a demo.
+          <br />
+          <span style={{ color: 'var(--accent-hex)' }}>Talk to it.</span>
+        </h1>
         <p className="p-hand mt-4 max-w-xl">
           Live voice agents you can talk to in the browser. Bring your own provider keys (we never
-          see them), then pick something to call.
+          see them), pick a card off the board, start the call.
         </p>
       </header>
 
@@ -75,38 +82,58 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
         {visibleDemos.length === 0 ? (
           <EmptyState activeCategory={activeCategory} totalDemos={allDemos.length} />
         ) : (
-          <ul role="list" className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {visibleDemos.map((demo, i) => (
-              <li key={demo.slug}>
-                <Link
-                  href={`/demos/${demo.slug}`}
-                  className="ab block transition-transform duration-200 ease-out hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2"
-                  style={{ outlineColor: 'var(--accent-hex)' }}
+          <ul role="list" className="grid grid-cols-1 gap-7 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+            {visibleDemos.map((demo, i) => {
+              const tilt = ((i % 3) - 1) * 1.2;
+              const pin =
+                i % 3 === 0 ? 'var(--accent-hex)' : i % 3 === 1 ? 'var(--ink)' : '#d4a657';
+              return (
+                <li
+                  key={demo.slug}
+                  style={{ transform: `rotate(${tilt}deg)`, position: 'relative' }}
                 >
-                  <div className="ab-head">
-                    <span className="label">/demos/{demo.slug}</span>
-                    <span className="meta">
-                      {String(i + 1).padStart(2, '0')} ·{' '}
-                      {String(visibleDemos.length).padStart(2, '0')}
-                    </span>
-                  </div>
-                  <div className="ab-body">
-                    <h3 className="h-hand">{demo.title}</h3>
-                    <span className="chip" style={{ marginTop: 6 }}>
-                      {demo.category}
-                    </span>
-                    <p className="p-hand sm" style={{ marginTop: 10 }}>
-                      {demo.description}
-                    </p>
-                    {demo.required_credentials.length > 0 && (
-                      <p className="tiny-mono" style={{ marginTop: 12 }}>
-                        keys · {demo.required_credentials.join(' · ')}
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      top: -7,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 12,
+                      height: 12,
+                      borderRadius: '50%',
+                      background: pin,
+                      border: '1.5px solid var(--ink)',
+                      zIndex: 2,
+                    }}
+                  />
+                  <Link
+                    href={`/demos/${demo.slug}`}
+                    className="ab block transition-transform duration-200 ease-out hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2"
+                    style={{ outlineColor: 'var(--accent-hex)' }}
+                  >
+                    <div className="ab-head">
+                      <span className="label">/demos/{demo.slug}</span>
+                      <span className="meta">▶ try</span>
+                    </div>
+                    <div className="ab-body">
+                      <h3 className="h-hand">{demo.title}</h3>
+                      <span className="chip" style={{ marginTop: 6 }}>
+                        {demo.category}
+                      </span>
+                      <p className="p-hand sm" style={{ marginTop: 10 }}>
+                        {demo.description}
                       </p>
-                    )}
-                  </div>
-                </Link>
-              </li>
-            ))}
+                      {demo.required_credentials.length > 0 && (
+                        <p className="tiny-mono" style={{ marginTop: 12 }}>
+                          keys · {demo.required_credentials.join(' · ')}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>

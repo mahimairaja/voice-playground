@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { Logo } from '@/components/brand/Logo';
 import { getAllDemos } from '@/lib/demos';
 
+const PIN_COLORS = ['var(--accent-hex)', 'var(--ink)', '#d4a657'];
+
 export default function HomePage() {
   const demos = getAllDemos().slice(0, 3);
   const accentColor: React.CSSProperties = { color: 'var(--accent-hex)' };
@@ -24,7 +26,7 @@ export default function HomePage() {
         </div>
 
         <div>
-          <p className="tiny-mono">{'// playground v1 · index'}</p>
+          <p className="tiny-mono">{'// lab notebook · entry 04'}</p>
           <h1 className="h-hand xxl mt-3 leading-[0.95]">
             Voice AI agents
             <br />
@@ -33,34 +35,64 @@ export default function HomePage() {
             <span style={accentColor}>at hello.</span>
           </h1>
           <p className="p-hand mt-5 max-w-md">
-            Talk to live demos in your browser. Bring your own keys, your own stack, your own data.
-            We don&apos;t lock you in.
+            Paste your provider keys, pick a demo, hear the stack work in your browser. Open source.
+            Nothing stored.
           </p>
           <div className="line wavy mt-6 max-w-xs"></div>
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <Link href="/demos" className="btn accent brand-accent">
-              Browse the demos →
+              Open the demos →
             </Link>
-            <span className="tiny-mono">no signup · no card</span>
+            <Link href="/about" className="btn">
+              How it works
+            </Link>
           </div>
+          <p
+            className="mt-3 italic"
+            style={{
+              fontFamily: 'var(--hand-title)',
+              color: 'var(--accent-hex)',
+              fontSize: 16,
+            }}
+          >
+            ↑ talks back in &lt;600ms
+          </p>
         </div>
       </section>
 
-      <section aria-labelledby="recent-demos" className="mt-24">
+      <section aria-labelledby="try-one" className="mt-24">
         <div className="flex items-end justify-between gap-3">
-          <h2 id="recent-demos" className="h-hand xl">
-            Recent demos
+          <h2 id="try-one" className="h-hand xl">
+            Try one now
           </h2>
           <span className="tiny-mono">
-            recent · top {Math.max(demos.length, 1)} of {demos.length || '0'}
+            · pinned · {Math.max(demos.length, 0)} of {demos.length || '0'}
           </span>
         </div>
-        <div className="line mt-3 mb-6"></div>
+        <div className="line mt-3 mb-8"></div>
 
         {demos.length === 0 ? (
-          <div className="box dashed">
-            <p className="p-hand">
-              Nothing here yet. Demos live in the sibling{' '}
+          <div
+            aria-label="No demos pinned yet"
+            className="box hatch"
+            style={{ padding: 22, position: 'relative' }}
+          >
+            <span
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                top: -7,
+                left: 24,
+                width: 12,
+                height: 12,
+                borderRadius: '50%',
+                background: 'var(--accent-hex)',
+                border: '1.5px solid var(--ink)',
+              }}
+            />
+            <p className="tiny-mono">· corkboard · empty for now</p>
+            <p className="p-hand mt-2">
+              Demos live in the sibling{' '}
               <a
                 href="https://github.com/mahimailabs/awesome-voice-apps"
                 target="_blank"
@@ -69,26 +101,44 @@ export default function HomePage() {
               >
                 awesome-voice-apps
               </a>{' '}
-              repo and appear here as soon as one ships a{' '}
+              repo and pin themselves here as soon as one ships a{' '}
               <span className="kbd">playground.json</span>.
             </p>
           </div>
         ) : (
-          <ul role="list" className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <ul role="list" className="grid grid-cols-1 gap-7 md:grid-cols-3">
             {demos.map((demo, i) => {
-              const tilt = i === 0 ? '-0.4deg' : i === 2 ? '0.5deg' : undefined;
+              const tilts = [-1.2, 0.4, 1.0];
+              const tilt = tilts[i] ?? 0;
+              const pin = PIN_COLORS[i % PIN_COLORS.length];
               return (
-                <li key={demo.slug} style={tilt ? { transform: `rotate(${tilt})` } : undefined}>
+                <li
+                  key={demo.slug}
+                  style={{ transform: `rotate(${tilt}deg)`, position: 'relative' }}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      top: -7,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 12,
+                      height: 12,
+                      borderRadius: '50%',
+                      background: pin,
+                      border: '1.5px solid var(--ink)',
+                      zIndex: 2,
+                    }}
+                  />
                   <Link
                     href={`/demos/${demo.slug}`}
-                    className="ab block transition-transform duration-200 ease-out hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2"
+                    className="ab block transition-transform duration-200 ease-out hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2"
                     style={{ outlineColor: 'var(--accent-hex)' }}
                   >
                     <div className="ab-head">
                       <span className="label">/demos/{demo.slug}</span>
-                      <span className="meta">
-                        {String(i + 1).padStart(2, '0')} · {String(demos.length).padStart(2, '0')}
-                      </span>
+                      <span className="meta">▶ try</span>
                     </div>
                     <div className="ab-body">
                       <h3 className="h-hand">{demo.title}</h3>
@@ -113,14 +163,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section aria-label="About link" className="mt-24">
-        <div className="line soft"></div>
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-          <p className="p-hand sm max-w-md">
-            More about how we work, what ships in 90 days, and why we don&apos;t take retainers.
-          </p>
-          <Link href="/about" className="btn">
-            Read the about →
+      <section aria-label="Closing strip" className="mt-24">
+        <div className="line"></div>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+          <p className="tiny-mono">· no keys logged · BYO providers · MIT</p>
+          <Link href="/about" className="tiny-mono underline underline-offset-4">
+            · what this is, what it isn&apos;t →
           </Link>
         </div>
       </section>

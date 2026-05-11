@@ -40,13 +40,50 @@ export default function AboutPage() {
   return (
     <main className="mx-auto max-w-5xl px-6 pt-24 pb-16 md:pt-28">
       <header>
-        <p className="tiny-mono">{'// playground v1 · about'}</p>
-        <h1 className="h-hand xxl mt-3 leading-[0.95]">About Mahimai AI</h1>
+        <p className="tiny-mono">{'// field manual · v1'}</p>
+        <h1 className="h-hand xxl mt-3 leading-[0.95]">
+          What this is.
+          <br />
+          <span style={{ color: 'var(--accent-hex)' }}>What it isn&apos;t.</span>
+        </h1>
         <p className="p-hand mt-4 max-w-xl">
           A small Canadian shop that ships voice agents end-to-end. This playground is where you can
           talk to them in your browser before you hire us.
         </p>
       </header>
+
+      <section aria-labelledby="positioning" className="mt-12">
+        <h2 id="positioning" className="sr-only">
+          Positioning
+        </h2>
+        <div className="line"></div>
+        <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="box" style={{ padding: 18 }}>
+            <p className="tiny-mono">· IS</p>
+            <h3 className="h-hand xl" style={{ marginTop: 6 }}>
+              Voice AI infrastructure, hand-built.
+            </h3>
+            <ul className="p-hand mt-3 space-y-2">
+              <li>· A working stack. STT, LLM, TTS, RTC, wired and shipped.</li>
+              <li>· Source code you own on day one. Self-host or we host.</li>
+              <li>· Open by default. The same agents live in our public repo.</li>
+              <li>· Milestone-billed engineering. We are paid to build, then leave.</li>
+            </ul>
+          </div>
+          <div className="box dashed" style={{ padding: 18 }}>
+            <p className="tiny-mono">· ISN&apos;T</p>
+            <h3 className="h-hand xl" style={{ marginTop: 6 }}>
+              Not a platform you rent.
+            </h3>
+            <ul className="p-hand mt-3 space-y-2">
+              <li>· Not a chatbot. These agents talk and listen.</li>
+              <li>· Not a SaaS. No seats, no MRR, no quotas.</li>
+              <li>· Not a managed service. Your keys, your providers, your cloud.</li>
+              <li>· Not stored. Nothing said in a demo lives on our server.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
 
       <section aria-label="Letter from the founder" className="mt-14">
         <div className="line"></div>
