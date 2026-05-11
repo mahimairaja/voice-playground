@@ -161,6 +161,18 @@
 }
 
 /*
+ * Healthy / OK signal color. brand.css does not define a green token because
+ * the wireframe palette uses terracotta for "live" (which the v1 review
+ * flagged as misleading). This pair lives here so the brand file stays a
+ * verbatim subset of the wireframe; consumers opt in via 'var(--vg-green)'
+ * inline (e.g. VoiceSurface's healthy LIVE stamp).
+ */
+:root {
+  --vg-green: #2d7a4f;
+  --vg-green-soft: #d6efde;
+}
+
+/*
  * Wireframe chrome primitives that live in '.brand/mahimai-wireframes.html'
  * but were not ported into 'styles/brand.css'. They are kept here so the
  * brand.css file stays a verbatim subset of the wireframe palette / primitives,
@@ -248,6 +260,8 @@ html.dark body {
   --accent-soft: oklch(0.28 0.07 55);
   --accent-hex: #e4a06a;
   --accent-soft-hex: #3e2d1d;
+  --vg-green: #6dbf8f;
+  --vg-green-soft: #1c3a26;
   background-image: radial-gradient(
     circle at 1px 1px,
     rgba(255, 255, 255, 0.05) 1px,
