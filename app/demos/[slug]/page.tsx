@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { CredentialsBanner } from '@/components/playground/CredentialsBanner';
 import { CredentialsDrawer } from '@/components/playground/CredentialsDrawer';
 import { getAllDemos, getDemoBySlug } from '@/lib/demos';
 
@@ -64,7 +65,13 @@ export default async function DemoPage({ params }: DemoPageProps) {
         </div>
       </section>
 
-      <section aria-label="Voice surface" className="mt-10">
+      {demo.required_credentials.length > 0 && (
+        <div className="mt-10">
+          <CredentialsBanner requiredCredentials={demo.required_credentials} />
+        </div>
+      )}
+
+      <section aria-label="Voice surface" className="mt-6">
         <div className="ab">
           <div className="ab-head">
             <span className="label">/call</span>

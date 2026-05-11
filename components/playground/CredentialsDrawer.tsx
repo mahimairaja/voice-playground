@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Eye, EyeOff, X } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import {
+  CRED_OPEN_DRAWER_EVENT,
   type CredentialMap,
   clearAll,
   getCredentials,
@@ -64,6 +65,13 @@ export function CredentialsDrawer({
     setRevealed({});
     setSavedFlash(false);
   }, [isOpen, requiredCredentials]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onRequest = () => handleOpenChange(true);
+    window.addEventListener(CRED_OPEN_DRAWER_EVENT, onRequest);
+    return () => window.removeEventListener(CRED_OPEN_DRAWER_EVENT, onRequest);
+  }, [handleOpenChange]);
 
   const handleSave = useCallback(() => {
     const trimmed: CredentialMap = {};

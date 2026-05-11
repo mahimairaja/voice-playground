@@ -11,6 +11,21 @@
 
 export const CRED_PREFIX = 'mahimai_playground:cred:';
 
+/**
+ * Fired on the window after any 'saveCredentials' or 'clearAll' call so
+ * same-tab consumers (e.g. the missing-keys banner) can re-read storage. The
+ * native 'storage' event covers cross-tab updates but does NOT fire in the
+ * tab that wrote.
+ */
+export const CRED_CHANGE_EVENT = 'mahimai-credentials-changed';
+
+/**
+ * Dispatched on the window to ask any listening 'CredentialsDrawer' to open.
+ * Lets the missing/rejected banner trigger the drawer without a parent
+ * wrapper holding shared state.
+ */
+export const CRED_OPEN_DRAWER_EVENT = 'mahimai-open-credentials-drawer';
+
 export type CredentialMap = Record<string, string>;
 
 function getStorage(): Storage | null {
@@ -24,6 +39,15 @@ function getStorage(): Storage | null {
 
 function namespacedKey(name: string): string {
   return `${CRED_PREFIX}${name}`;
+}
+
+function emitChange(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.dispatchEvent(new Event(CRED_CHANGE_EVENT));
+  } catch {
+    /* ignore */
+  }
 }
 
 /**
@@ -65,6 +89,7 @@ export function saveCredentials(map: CredentialMap): void {
       /* quota or private mode; skip */
     }
   }
+  emitChange();
 }
 
 /**
@@ -91,6 +116,7 @@ export function clearAll(): void {
       /* skip */
     }
   }
+  emitChange();
 }
 
 /**
