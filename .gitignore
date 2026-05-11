@@ -9,6 +9,9 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+.claude
+.agents
+.brand
 
 # testing
 /coverage
@@ -40,3 +43,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright smoke artifacts (Ralph loop screenshots, mcp scratch dir)
+.playwright-mcp/
+/smoke-*.png

@@ -75,11 +75,22 @@
 
 @theme inline {
   --font-sans:
-    var(--font-public-sans), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    var(--sans), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
   --font-mono:
-    var(--font-commit-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
+    var(--mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+  --font-hand: var(--hand);
+  --font-hand-title: var(--hand-title);
+
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-soft: var(--ink-soft);
+  --color-line-soft: var(--line-soft);
+  --color-accent-brand: var(--accent);
+  --color-accent-brand-soft: var(--accent-soft);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -121,4 +132,125 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/*
+ * Dark-mode bridge for the Mahimai brand palette.
+ *
+ * brand.css (sourced verbatim from .brand/mahimai-wireframes.html) declares
+ * its dark values under the 'body.dark' selector. next-themes adds 'dark'
+ * to the <html> element, not <body>, so 'body.dark' never matches in this
+ * app. Mirroring the brand dark vars under 'html.dark body' raises the
+ * specificity above 'body.dark' and triggers the same palette switch on
+ * the next-themes class.
+ *
+ * Keep these values in sync with brand.css's 'body.dark' block.
+ */
+/*
+ * brand.css primitives ('.brand .dot', '.btn.accent', '.chip.accent',
+ * '.box.accent', '.stamp', etc.) reference 'var(--accent)' / 'var(--accent-soft)'.
+ * globals.css's :root overrides those with shadcn's subdued accent (consumed
+ * by shadcn components for hover and secondary surfaces, see T05 journal). On
+ * any element that should render the brand terracotta, opt in by adding the
+ * 'brand-accent' class to re-alias the var locally to '--accent-hex' /
+ * '--accent-soft-hex' (which brand.css defines and globals.css does not touch).
+ */
+.brand-accent {
+  --accent: var(--accent-hex);
+  --accent-soft: var(--accent-soft-hex);
+}
+
+/*
+ * Wireframe chrome primitives that live in '.brand/mahimai-wireframes.html'
+ * but were not ported into 'styles/brand.css'. They are kept here so the
+ * brand.css file stays a verbatim subset of the wireframe palette / primitives,
+ * and the chrome (header brand mark, page tabs) ports cleanly on top.
+ */
+.brand {
+  font-family: var(--hand-title);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand .dot {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+.brand .dot::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.brand .tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-left: 6px;
+}
+
+.tab {
+  font-family: var(--hand);
+  font-size: 17px;
+  padding: 6px 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 22px 24px 21px 25px;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  transform: rotate(-0.4deg);
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+.tab:hover {
+  transform: rotate(0deg) translateY(-1px);
+}
+.tab:nth-child(even) {
+  transform: rotate(0.5deg);
+  border-radius: 24px 22px 26px 21px;
+}
+.tab[aria-selected='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* Clean-mode flattens the sketchy chrome. Matches brand.css's body.clean rules. */
+body.clean .brand {
+  font-family: var(--sans);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+body.clean .tab {
+  transform: none;
+  border-radius: 6px;
+}
+
+html.dark body {
+  --paper: #14130f;
+  --paper-2: #1c1b17;
+  --ink: #f2efe6;
+  --ink-2: #cfcabd;
+  --ink-soft: #8e8a7d;
+  --line: #f2efe6;
+  --line-soft: #5a574f;
+  --accent: oklch(0.75 0.16 55);
+  --accent-soft: oklch(0.28 0.07 55);
+  --accent-hex: #e4a06a;
+  --accent-soft-hex: #3e2d1d;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 0
+  );
 }

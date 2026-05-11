@@ -33,19 +33,20 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'LiveKit',
-  pageTitle: 'LiveKit Voice Agent',
-  pageDescription: 'A voice agent built with LiveKit',
+  companyName: 'Mahimai AI',
+  pageTitle: 'Mahimai AI playground',
+  pageDescription:
+    'Live voice agent demos. Bring your own provider keys and talk to one in your browser.',
 
   supportsChatInput: true,
   supportsVideoInput: true,
   supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
-  logo: '/lk-logo.svg',
-  accent: '#002cf2',
-  logoDark: '/lk-logo-dark.svg',
-  accentDark: '#1fd5f9',
+  logo: '/brand/goat.svg',
+  accent: '#c46a3a',
+  logoDark: '/brand/goat.svg',
+  accentDark: '#e4a06a',
   startButtonText: 'Start call',
 
   // optional: audio visualization configuration
