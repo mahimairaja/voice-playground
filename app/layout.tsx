@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import Script from 'next/script';
 import { ThemeProvider } from '@/components/app/theme-provider';
 import { ThemeToggle } from '@/components/app/theme-toggle';
+import { PRE_PAINT_MODE_SCRIPT } from '@/lib/mode';
 import { getAppConfig, getStyles } from '@/lib/utils';
 import '@/styles/brand.css';
 import '@/styles/globals.css';
@@ -52,6 +54,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" suppressHydrationWarning className="scroll-smooth font-sans antialiased">
       <head>{styles && <style>{styles}</style>}</head>
       <body className="overflow-x-hidden">
+        <Script id="mahimai-mode-pre-paint" strategy="beforeInteractive">
+          {PRE_PAINT_MODE_SCRIPT}
+        </Script>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
