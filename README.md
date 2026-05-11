@@ -188,6 +188,32 @@ AGENT_NAME=
 
 These are required for the voice agent functionality to work with your LiveKit project.
 
+## Deployment
+
+The Mahimai AI playground deploys to Vercel (Hobby tier) at the custom domain `playground.mahimai.ca`.
+
+### DNS
+
+Point an apex or subdomain record at Vercel. The recommended setup is a CNAME on the `playground` subdomain to `cname.vercel-dns.com`:
+
+| Type  | Host       | Target                | TTL  |
+| ----- | ---------- | --------------------- | ---- |
+| CNAME | playground | cname.vercel-dns.com. | 3600 |
+
+After the record propagates (usually under five minutes for a CNAME at the registrar level), add `playground.mahimai.ca` as a custom domain inside the Vercel project. Vercel issues the TLS certificate automatically.
+
+> **TODO:** Mahimai owns the actual DNS edit at the registrar (Cloudflare or wherever `mahimai.ca` is hosted). The Ralph loop cannot place this record; it can only document the contract.
+
+### CI
+
+CI is configured in `.github/workflows/`. Required GitHub repository secrets for the production deploy:
+
+- `VERCEL_TOKEN` (account- or project-scoped token from Vercel settings)
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+Vercel pins the production function runtime to Node 20 via `package.json#engines.node`. The framework field in `vercel.json` is set so Vercel auto-detects the Next.js build pipeline.
+
 ## Contributing
 
 This template is open source and we welcome contributions! Please open a PR or issue through GitHub, and don't forget to join us in the [LiveKit Community Slack](https://livekit.io/join-slack)!
