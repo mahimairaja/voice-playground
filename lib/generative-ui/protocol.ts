@@ -54,3 +54,39 @@ export function decodeUiEvent(payload: Uint8Array): UiEvent | null {
     return null;
   }
 }
+
+/**
+ * Convention: end-of-call cost summary.
+ *
+ * The agent publishes the call's cost breakdown right before disconnect as a
+ * normal 'ui_event' on the same 'ui' topic, with two reserved fields:
+ *   - 'component': 'Cost'
+ *   - 'id': 'final_cost'
+ *
+ * Example payload (matches 'CostPanelProps' in components/demos/
+ * _primitives/CostPanel.tsx):
+ *
+ *   {
+ *     "type": "ui_event",
+ *     "component": "Cost",
+ *     "action": "mount",
+ *     "id": "final_cost",
+ *     "props": {
+ *       "total_usd": 0.04,
+ *       "lines": [
+ *         { "label": "STT", "value": "$0.01" },
+ *         { "label": "LLM", "value": "$0.02" },
+ *         { "label": "TTS", "value": "$0.01" }
+ *       ]
+ *     }
+ *   }
+ *
+ * Reusing the existing envelope means: same rAF coalesce, same warn path,
+ * same store. The 'EndedBody' branch in VoiceSurface reads the store for an
+ * instance with id 'final_cost' once 'state === "ended"' and renders the
+ * registered 'Cost' component. The dispatcher does NOT clear the store on
+ * room disconnect; the slug-keyed effect there clears only when the visitor
+ * switches demos.
+ */
+export const FINAL_COST_INSTANCE_ID = 'final_cost';
+export const COST_COMPONENT_NAME = 'Cost';

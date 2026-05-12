@@ -10,7 +10,9 @@ import { Transcript } from '@/components/playground/Transcript';
 import { useDemoSession } from '@/hooks/useDemoSession';
 import { CRED_CHANGE_EVENT, CRED_PREFIX } from '@/lib/credentials/store';
 import { missingCredentials } from '@/lib/credentials/validate';
-import { useUiDispatcher } from '@/lib/generative-ui/dispatcher';
+import { selectInstances, useUiDispatcher, useUiStore } from '@/lib/generative-ui/dispatcher';
+import { COST_COMPONENT_NAME, FINAL_COST_INSTANCE_ID } from '@/lib/generative-ui/protocol';
+import { resolve } from '@/lib/generative-ui/registry';
 import { cn } from '@/lib/shadcn/utils';
 
 const STACK_ROWS: { kind: string; provider: string }[] = [
@@ -37,11 +39,19 @@ export function VoiceSurface({ slug, requiredCredentials, className }: VoiceSurf
     return (
       <RoomContext.Provider value={room}>
         <RoomAudioRenderer />
-        <DispatcherBinding room={room} />
+        <DispatcherBinding room={room} slug={slug} />
         <SurfaceShell stamp={state === 'live' ? 'LIVE' : 'CONNECTING'} className={className}>
           <LiveBody onDisconnect={disconnect} />
         </SurfaceShell>
       </RoomContext.Provider>
+    );
+  }
+
+  if (state === 'ended') {
+    return (
+      <SurfaceShell stamp={null} className={className}>
+        <EndedBody slug={slug} onReconnect={connect} />
+      </SurfaceShell>
     );
   }
 
@@ -180,8 +190,8 @@ function IdleBody({ state, error, onConnect, keysReady }: IdleBodyProps) {
   );
 }
 
-function DispatcherBinding({ room }: { room: Room }) {
-  useUiDispatcher(room);
+function DispatcherBinding({ room, slug }: { room: Room; slug: string }) {
+  useUiDispatcher(room, slug);
   return null;
 }
 
@@ -301,6 +311,59 @@ function LiveBody({ onDisconnect }: LiveBodyProps) {
 
       <Transcript className="w-full" />
     </>
+  );
+}
+
+interface EndedBodyProps {
+  slug: string;
+  onReconnect: () => void;
+}
+
+function EndedBody({ slug, onReconnect }: EndedBodyProps) {
+  const instances = useUiStore(selectInstances);
+  const finalCost = instances.find((i) => i.id === FINAL_COST_INSTANCE_ID);
+  const CostComponent = finalCost ? resolve(slug, COST_COMPONENT_NAME) : undefined;
+
+  return (
+    <div className="flex flex-1 flex-col gap-4">
+      <header className="text-center">
+        <p className="tiny-mono">· vitals · ended</p>
+        <h3
+          className="mt-1"
+          style={{
+            fontFamily: 'var(--hand-title)',
+            fontWeight: 700,
+            fontSize: 30,
+            lineHeight: 1.05,
+          }}
+        >
+          call ended.
+        </h3>
+      </header>
+
+      {finalCost && CostComponent ? (
+        <CostComponent
+          {...finalCost.props}
+          data-instance-id={finalCost.id}
+          data-instance-mounted-at={finalCost.mountedAt}
+        />
+      ) : (
+        <p className="p-hand sm text-center" style={{ color: 'var(--ink-soft)' }}>
+          The agent did not publish a cost summary for this call. You can still start another.
+        </p>
+      )}
+
+      <div className="flex justify-center">
+        <button
+          type="button"
+          onClick={onReconnect}
+          className="btn accent brand-accent cursor-pointer"
+          aria-label="Start another session"
+        >
+          try again →
+        </button>
+      </div>
+    </div>
   );
 }
 

@@ -81,12 +81,18 @@ export function selectInstances(state: UiStoreState): UiInstance[] {
  * Binds a LiveKit Room to the dispatcher. Pass null when the session is not
  * live (the hook becomes a no-op and the store is left intact). Call once
  * inside a component that lives inside the active RoomContext.
+ *
+ * Pass 'slug' so the store can be cleared when the visitor switches demos.
+ * The room-disconnect cleanup intentionally does NOT clear the store; the
+ * end-of-call Cost panel needs to persist into the EndedBody view in
+ * 'components/playground/VoiceSurface.tsx'. The slug-keyed effect below
+ * does the clearing on demo change (and on first mount, which is a no-op
+ * when the store is already empty).
  */
-export function useUiDispatcher(room: Room | null): void {
+export function useUiDispatcher(room: Room | null, slug?: string): void {
   useEffect(() => {
     if (!room) return;
 
-    const store = useUiStore.getState();
     let warned = false;
 
     const pendingUpdates = new Map<string, Record<string, unknown>>();
@@ -149,7 +155,14 @@ export function useUiDispatcher(room: Room | null): void {
         rafHandle = null;
       }
       pendingUpdates.clear();
-      store.clear();
+      // Intentionally do NOT clear the store here. EndedBody reads it
+      // post-disconnect to show the final Cost panel.
     };
   }, [room]);
+
+  useEffect(() => {
+    // Reset the store whenever the visitor switches demos. Also runs on
+    // first mount, which is a no-op when the store is already empty.
+    useUiStore.getState().clear();
+  }, [slug]);
 }
