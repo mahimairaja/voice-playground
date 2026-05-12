@@ -148,6 +148,7 @@ export function useDemoSession({
       });
 
       await r.connect(tokenResponse.wsUrl, tokenResponse.token);
+      await r.localParticipant.setMicrophoneEnabled(true);
 
       roomRef.current = r;
       setRoom(r);

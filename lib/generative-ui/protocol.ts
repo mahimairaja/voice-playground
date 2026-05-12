@@ -14,10 +14,16 @@ import { z } from 'zod';
  * - 'update': merge incoming 'props' into the existing instance's props. No-op
  *   if 'id' does not match a mounted instance.
  * - 'unmount': remove the instance. No-op if 'id' does not match.
+ *
+ * End-of-call cost summaries reuse the same event shape with:
+ * - 'component': 'Cost'
+ * - 'id': 'final_cost'
  */
 
 export const UI_EVENT_TYPE = 'ui_event' as const;
 export const UI_EVENT_TOPIC = 'ui';
+export const COST_COMPONENT_NAME = 'Cost';
+export const FINAL_COST_INSTANCE_ID = 'final_cost';
 
 export const UiActionSchema = z.enum(['mount', 'update', 'unmount']);
 export type UiAction = z.infer<typeof UiActionSchema>;

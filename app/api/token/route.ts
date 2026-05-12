@@ -106,7 +106,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     at.addGrant(grant);
 
     token = await at.toJwt();
-  } catch (err) {
+  } catch {
     /*
      * The SDK can throw for malformed key shapes. Strip any chance of leaking
      * the secret by reporting only a generic error message.

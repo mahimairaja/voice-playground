@@ -60,7 +60,7 @@ export function Transcript({ defaultOpen = false, className }: TranscriptProps) 
     <section aria-label="Live transcript" className={cn('w-full', className)}>
       <div className="flex items-center justify-between gap-3">
         <span className="tiny-mono">
-          /transcript{' '}
+          · TRANSCRIPT{' '}
           {merged.length > 0 ? `· ${merged.length} line${merged.length === 1 ? '' : 's'}` : ''}
         </span>
         <button
@@ -89,7 +89,7 @@ export function Transcript({ defaultOpen = false, className }: TranscriptProps) 
         className="max-h-72 overflow-y-auto"
       >
         {merged.length === 0 ? (
-          <p className="p-hand sm">Waiting for the first message ...</p>
+          <p className="p-hand sm">waiting for the first message.</p>
         ) : (
           <AgentChatTranscript agentState={agentState} messages={merged} />
         )}

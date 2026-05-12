@@ -32,7 +32,7 @@ function hexToRgb(hexColor: string) {
 
       return color;
     }
-  } catch (error) {
+  } catch {
     console.error(
       `Invalid hex color '${hexColor}'.\nFalling back to default color '${DEFAULT_COLOR}'.`
     );
@@ -270,10 +270,9 @@ interface AuraShaderProps {
   brightness?: number;
 
   /**
-   * Display mode for different backgrounds
-   * - 'dark': Optimized for dark backgrounds (default)
-   * - 'light': Optimized for light/white backgrounds (inverts colors)
-   * @default 'dark'
+   * Display mode for different backgrounds.
+   * The playground is light-only, so the default is the light shader path.
+   * @default 'light'
    */
   themeMode?: 'dark' | 'light';
 }
@@ -288,9 +287,7 @@ function AuraShader({
   color = DEFAULT_COLOR,
   colorShift = 1.0,
   brightness = 1.0,
-  themeMode = typeof window !== 'undefined' && document.documentElement.classList.contains('dark')
-    ? 'dark'
-    : 'light',
+  themeMode = 'light',
   ref,
   className,
   ...props

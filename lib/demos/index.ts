@@ -1,6 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import 'server-only';
+import {
+  REFERENCE_CATEGORIES,
+  REFERENCE_CORKBOARD_CARDS,
+  REFERENCE_DEMO_MANIFEST,
+  REFERENCE_LANDING_CARDS,
+  REFERENCE_PINNED_COUNT,
+  type ReferenceCorkboardCard,
+  type ReferencePreviewCard,
+} from './reference-data';
 import { type DemoManifest, DemoManifestSchema } from './schema';
 
 /**
@@ -70,10 +79,18 @@ function loadAllManifests(): DemoManifest[] {
   return manifests;
 }
 
-const ALL_DEMOS: readonly DemoManifest[] = loadAllManifests();
+const REAL_DEMOS: readonly DemoManifest[] = loadAllManifests();
+const USING_REFERENCE_SEED = REAL_DEMOS.length === 0;
+const ALL_DEMOS: readonly DemoManifest[] = USING_REFERENCE_SEED
+  ? [REFERENCE_DEMO_MANIFEST]
+  : REAL_DEMOS;
 
 export function getAllDemos(): readonly DemoManifest[] {
   return ALL_DEMOS;
+}
+
+export function isUsingReferenceSeed(): boolean {
+  return USING_REFERENCE_SEED;
 }
 
 export function getDemoBySlug(slug: string): DemoManifest | undefined {
@@ -85,5 +102,31 @@ export function getDemosByCategory(category: string): readonly DemoManifest[] {
 }
 
 export function getDemoCategories(): readonly string[] {
+  if (USING_REFERENCE_SEED) return REFERENCE_CATEGORIES.filter((category) => category !== 'all');
   return Array.from(new Set(ALL_DEMOS.map((demo) => demo.category))).sort();
+}
+
+export function getLandingPreviewCards(): readonly ReferencePreviewCard[] {
+  if (USING_REFERENCE_SEED) return REFERENCE_LANDING_CARDS;
+  return ALL_DEMOS.slice(0, 3).map((demo) => ({
+    title: demo.title,
+    body: demo.description,
+    slug: demo.slug,
+    cta: '▶ play',
+  }));
+}
+
+export function getCorkboardCards(): readonly ReferenceCorkboardCard[] {
+  if (USING_REFERENCE_SEED) return REFERENCE_CORKBOARD_CARDS;
+  return ALL_DEMOS.map((demo) => ({
+    category: demo.category,
+    title: demo.title,
+    stat: demo.card_stat ?? '▶ try',
+    slug: demo.slug,
+    description: demo.description,
+  }));
+}
+
+export function getPinnedCount(): number {
+  return USING_REFERENCE_SEED ? REFERENCE_PINNED_COUNT : ALL_DEMOS.length;
 }

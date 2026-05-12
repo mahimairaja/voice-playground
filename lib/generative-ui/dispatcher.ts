@@ -81,12 +81,15 @@ export function selectInstances(state: UiStoreState): UiInstance[] {
  * Binds a LiveKit Room to the dispatcher. Pass null when the session is not
  * live (the hook becomes a no-op and the store is left intact). Call once
  * inside a component that lives inside the active RoomContext.
+ *
+ * The room cleanup does not clear the store. EndedBody reads the final Cost
+ * card after disconnect. The slug effect clears on demo change and before a
+ * new session starts.
  */
-export function useUiDispatcher(room: Room | null): void {
+export function useUiDispatcher(room: Room | null, slug?: string): void {
   useEffect(() => {
     if (!room) return;
 
-    const store = useUiStore.getState();
     let warned = false;
 
     const pendingUpdates = new Map<string, Record<string, unknown>>();
@@ -149,7 +152,10 @@ export function useUiDispatcher(room: Room | null): void {
         rafHandle = null;
       }
       pendingUpdates.clear();
-      store.clear();
     };
   }, [room]);
+
+  useEffect(() => {
+    useUiStore.getState().clear();
+  }, [slug]);
 }

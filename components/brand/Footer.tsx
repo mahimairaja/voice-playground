@@ -9,7 +9,7 @@ interface FooterProps {
 
 export function Footer({
   status = 'STATUS: OPERATIONAL',
-  builtBy = 'Built by Mahimai AI',
+  builtBy = 'open source · MIT',
   className,
 }: FooterProps) {
   const year = new Date().getFullYear();
