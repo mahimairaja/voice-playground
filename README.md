@@ -42,6 +42,46 @@ NEXT_PUBLIC_SITE_URL=https://your-playground-domain.example.com
 
 `NEXT_PUBLIC_SITE_URL` sets `metadataBase` for the OG and Twitter card preview URLs. Defaults to `http://localhost:3000` when unset.
 
+## How demos sync
+
+Demo manifests live in the sibling [`awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps) repo, one folder per slug under `demos/<slug>/playground.json`. The build-time loader at `lib/demos/index.ts` reads from `../awesome-voice-apps/demos/` relative to this repo on disk. Production builds on Vercel do not check that sibling out automatically, so `scripts/sync-demos.mjs` runs as the `prebuild` npm script:
+
+- On Vercel (`VERCEL=1`): always `rm -rf ../awesome-voice-apps` then shallow-clone `AVA_REPO` at `AVA_REF` (defaults: the open-source repo on `main`). Vercel reuses build cache across deploys; a stale clone would silently freeze the catalogue.
+- Locally: clone if the sibling is missing, otherwise reuse what the developer has on disk.
+
+Configurable env (optional, defaults match the open-source repo):
+
+```env
+AVA_REPO=https://github.com/mahimailabs/awesome-voice-apps.git
+AVA_REF=main
+```
+
+`pnpm build` runs the sync automatically. Local dev (`pnpm dev`) reads the sibling directly without re-cloning.
+
+## Out-of-band setup
+
+These three steps are manual one-time actions outside this repo's CI. They cannot be scripted from here and live in operator notes:
+
+1. **Vercel deploy hook.** In the `voice-playground` Vercel project settings, create a deploy hook for the `main` branch. Copy the resulting URL.
+2. **Store the hook URL in `awesome-voice-apps`.** Add it as a repository secret named `PLAYGROUND_DEPLOY_HOOK`.
+3. **Notify workflow in `awesome-voice-apps`.** Add `.github/workflows/notify-playground.yml` to that repo (single job, single step):
+   ```yaml
+   name: Notify playground
+   on:
+     push:
+       branches: [main]
+   jobs:
+     notify:
+       runs-on: ubuntu-latest
+       steps:
+         - name: POST the deploy hook
+           env:
+             HOOK_URL: ${{ secrets.PLAYGROUND_DEPLOY_HOOK }}
+           run: curl -X POST "$HOOK_URL"
+   ```
+
+Once those are in place, a push to `awesome-voice-apps`'s `main` branch rebuilds the playground automatically (and `scripts/sync-demos.mjs` pulls the new manifests).
+
 ## Architecture at a glance
 
 ```

@@ -12,67 +12,93 @@ This document describes how to add one.
 
 ## File layout
 
-A per-demo bundle lives at `components/demos/<slug>/`:
+A per-demo bundle lives at `components/demos/<slug>/`. The canonical example is `components/demos/drive-thru-coffee/index.tsx`:
 
 ```
 components/demos/drive-thru-coffee/
-├── index.ts          # registers the components on import
-├── Cart.tsx          # one file per component, PascalCase name
-├── Total.tsx
-└── ...
+└── index.tsx         # imports primitives, registers a component map
 ```
+
+Most demos do not need their own component files. Compose the five shared primitives in `components/demos/_primitives/` (Card / KeyValue / List / ButtonRow / Cost) with demo-specific titles and prop shapes. Drop down to a custom component file only when no primitive fits.
 
 The folder name MUST match the manifest slug in `awesome-voice-apps/demos/<slug>/playground.json`. The build-time loader (`lib/demos/index.ts`) cross-checks slug to folder; a mismatch fails the build.
 
 ## Component contract
 
-Each component receives a single props object decoded from the agent's `mount` or `update` event. The store types props as `Record<string, unknown>`, so the component is responsible for narrowing what it cares about.
+Each component receives a single props object decoded from the agent's `mount` or `update` event. The store types props as `Record<string, unknown>`, so the component is responsible for narrowing what it cares about. The shared primitives in `components/demos/_primitives/` already do this for the common shapes:
 
-```tsx
-// components/demos/drive-thru-coffee/Cart.tsx
-'use client';
+- `CardPanel` for a single contextual box (title + body + optional image + footer).
+- `KeyValuePanel` for labeled rows where the last row reads as a total.
+- `ListPanel` for vertical title/subtitle/right/image rows (optionally linked).
+- `ButtonRowPanel` for a row of `.btn` actions. Buttons without `href` dispatch a `voice-playground:cta` `CustomEvent` on the window so the demo bundle can respond.
+- `CostPanel` for the reserved end-of-call summary (see "End-of-call cost" below).
 
-interface CartProps {
-  items?: Array<{ name: string; qty: number; price: number }>;
-}
-
-export function Cart(props: Record<string, unknown>) {
-  const items = (props as CartProps).items ?? [];
-  return (
-    <div className="box" style={{ padding: 14 }}>
-      <p className="tiny-mono">/cart · {items.length} items</p>
-      <ul className="mt-2 space-y-1">
-        {items.map((item, i) => (
-          <li key={i} className="p-hand sm">
-            {item.qty} × {item.name}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-```
-
-Use brand.css primitives (`.box`, `.box.dashed`, `.h-hand`, `.p-hand`, `.tiny-mono`, `.chip`, `.line`) so the components feel native to the playground. Tailwind utilities are fine on top.
+Use brand.css primitives (`.box`, `.box.dashed`, `.h-hand`, `.p-hand`, `.tiny-mono`, `.chip`, `.line`) when you do need to write a custom component. Tailwind utilities are fine on top.
 
 ## Registering the bundle
 
-The bundle's `index.ts` imports each component and calls `registerForDemo` exactly once. The call has to run at module-load time so the components are in the registry before the dispatcher receives its first event.
+The bundle's `index.tsx` wraps primitives with demo-specific titles and calls `registerForDemo` once at module load. The drive-thru-coffee example:
 
-```ts
-// components/demos/drive-thru-coffee/index.ts
-import { registerForDemo } from '@/lib/generative-ui/registry';
-import { Cart } from './Cart';
-import { Total } from './Total';
+```tsx
+// components/demos/drive-thru-coffee/index.tsx
+import type { ComponentType } from 'react';
+import {
+  ButtonRowPanel,
+  type ButtonRowPanelProps,
+  CostPanel,
+  type CostPanelProps,
+  KeyValuePanel,
+  type KeyValuePanelProps,
+  ListPanel,
+  type ListPanelProps,
+} from '@/components/demos/_primitives';
+import { type GenerativeComponent, registerForDemo } from '@/lib/generative-ui/registry';
 
-registerForDemo('drive-thru-coffee', { Cart, Total });
+function asGenerative<P>(C: ComponentType<P>): GenerativeComponent {
+  return C as unknown as GenerativeComponent;
+}
 
-// Re-export so the per-demo page can pull the bundle in via a side-effect
-// import.
-export {};
+function Order(props: Omit<ListPanelProps, 'title'>) {
+  return <ListPanel title="your order" {...props} />;
+}
+function Total(props: Omit<KeyValuePanelProps, 'title'>) {
+  return <KeyValuePanel title="running total" {...props} />;
+}
+function Checkout(props: Omit<ButtonRowPanelProps, 'title'>) {
+  return <ButtonRowPanel title="ready when you are" {...props} />;
+}
+function Cost(props: CostPanelProps) {
+  return <CostPanel {...props} />;
+}
+
+registerForDemo('drive-thru-coffee', {
+  Order: asGenerative(Order),
+  Total: asGenerative(Total),
+  Checkout: asGenerative(Checkout),
+  Cost: asGenerative(Cost),
+});
 ```
 
-Then import the bundle from `app/demos/[slug]/page.tsx` (or a small registration helper that maps slug to dynamic import). M2 will introduce the per-slug import wiring; for now, document the call site in the per-demo PR.
+Then add a `case` to the switch in `components/demos/DemoBundleLoader.tsx`:
+
+```ts
+case '<your-slug>':
+  await import('@/components/demos/<your-slug>');
+  break;
+```
+
+The loader is already mounted from `app/demos/[slug]/page.tsx`; the explicit switch keeps each demo bundle in its own Next.js chunk.
+
+## End-of-call cost
+
+`CostPanel` is special: the agent publishes the call's final cost summary right before disconnect using the convention in `lib/generative-ui/protocol.ts`:
+
+- `component: 'Cost'`
+- `id: 'final_cost'`
+
+The playground retains this instance past room disconnect (the dispatcher's slug-keyed clear runs on demo change, not on session end). `VoiceSurface`'s `EndedBody` reads the store for an instance with id `final_cost`, resolves the demo's registered `Cost` component, and renders it with a "try again →" CTA.
+
+Wire `Cost` into every demo bundle if you want the end-of-call breakdown to appear.
 
 ## Wire-protocol shape
 

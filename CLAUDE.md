@@ -64,7 +64,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 | --------------------- | ------------------------------------------------------------------------------------- |
 | `pnpm install`        | Install deps. Node 20 pin emits a warning on Node 22 dev machines, harmless.          |
 | `pnpm dev`            | Next dev with Turbopack on http://localhost:3000.                                     |
-| `pnpm build`          | Production build. The CI gate.                                                        |
+| `pnpm build`          | Production build. Runs `scripts/sync-demos.mjs` first (the `prebuild` hook).          |
 | `pnpm lint`           | ESLint plus Next core-web-vitals plus prettier.                                       |
 | `pnpm format`         | Prettier write. Use `pnpm exec prettier --write <file>` to format a single file.      |
 | `pnpm shadcn:install` | Re-pull every `@agents-ui/*` component from the registry. Prompts before overwriting. |
@@ -80,8 +80,24 @@ Production:
 Local (`.env.local`, optional for the marketing surfaces):
 
 - `NEXT_PUBLIC_SITE_URL` for OG link previews to render the right absolute URLs.
+- `AVA_REPO` and `AVA_REF` override the sibling repo / ref that `scripts/sync-demos.mjs` clones. Defaults match the open-source `mahimailabs/awesome-voice-apps` at `main`.
 
 The token route does NOT read any env var. Visitor credentials come from the request body.
+
+## Build-time demo sync
+
+`pnpm build` runs `scripts/sync-demos.mjs` first (via the `prebuild` npm script). The script clones the sibling `awesome-voice-apps` repo so the build-time loader at `lib/demos/index.ts` finds manifests under `../awesome-voice-apps/demos/<slug>/playground.json`.
+
+- On Vercel (`VERCEL=1`): always rm + clone fresh. The build cache reuses the workspace across deploys and a stale clone would silently freeze the catalogue.
+- Locally: clone if missing, reuse if present. Developers with a local checkout of `awesome-voice-apps` at `../awesome-voice-apps` keep their working state.
+
+Adding a new demo:
+
+1. Create the manifest in `awesome-voice-apps/demos/<slug>/playground.json`.
+2. Create the React bundle at `components/demos/<slug>/index.tsx` in this repo (register a component map via `registerForDemo`).
+3. Add a `case '<slug>'` to the `switch` in `components/demos/DemoBundleLoader.tsx` so Next bundles the demo code statically.
+
+`components/demos/drive-thru-coffee/index.tsx` is the canonical example.
 
 ## Generative UI protocol
 
