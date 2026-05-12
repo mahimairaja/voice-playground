@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { DemoBundleLoader } from '@/components/demos/DemoBundleLoader';
 import { Canvas } from '@/components/generative/Canvas';
 import { CredentialsBanner } from '@/components/playground/CredentialsBanner';
 import { CredentialsDrawer } from '@/components/playground/CredentialsDrawer';
@@ -185,6 +186,7 @@ export default async function DemoPage({ params }: DemoPageProps) {
 
             <p className="tiny-mono">· agent mounted ↓</p>
             <div className="mt-2 rounded-[6px]" style={{ background: 'var(--paper)' }}>
+              <DemoBundleLoader slug={demo.slug} />
               <Canvas slug={demo.slug} className="p-3" />
             </div>
           </div>
