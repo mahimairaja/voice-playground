@@ -6,7 +6,6 @@ import * as Dialog from '@radix-ui/react-dialog';
 import {
   CRED_OPEN_DRAWER_EVENT,
   type CredentialMap,
-  clearAll,
   getCredentials,
   saveCredentials,
 } from '@/lib/credentials/store';
@@ -18,12 +17,27 @@ const PROVIDER_LABEL: Record<string, string> = {
   deepgram: 'Deepgram',
   cartesia: 'Cartesia',
   livekit: 'LiveKit',
+  livekit_url: 'LiveKit URL',
   livekit_api_key: 'LiveKit API key',
   livekit_api_secret: 'LiveKit API secret',
 };
 
+const PROVIDER_PLACEHOLDER: Record<string, string> = {
+  openai: 'sk-...',
+  deepgram: 'dg_... (or hex)',
+  cartesia: 'paste API key',
+  livekit: 'wss://your-project.livekit.cloud',
+  livekit_url: 'wss://your-project.livekit.cloud',
+  livekit_api_key: 'API...',
+  livekit_api_secret: 'secret...',
+};
+
 function labelFor(key: string): string {
   return PROVIDER_LABEL[key] ?? key;
+}
+
+function placeholderFor(key: string): string {
+  return PROVIDER_PLACEHOLDER[key] ?? 'paste key';
 }
 
 interface CredentialsDrawerProps {
@@ -82,15 +96,6 @@ export function CredentialsDrawer({
     setTimeout(() => handleOpenChange(false), 350);
   }, [values, onSaved, handleOpenChange]);
 
-  const handleClearAll = useCallback(() => {
-    clearAll();
-    const blanks: CredentialMap = {};
-    for (const k of requiredCredentials) blanks[k] = '';
-    setValues(blanks);
-    setRevealed({});
-    onSaved?.(blanks);
-  }, [requiredCredentials, onSaved]);
-
   return (
     <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
       {trigger ? (
@@ -121,14 +126,17 @@ export function CredentialsDrawer({
           </Dialog.Description>
 
           <header
-            className="flex items-center justify-between gap-3 border-b px-5 py-3"
+            className="flex items-start justify-between gap-3 border-b px-5 py-4"
             style={{ borderColor: 'var(--ink)', background: 'var(--paper-2)' }}
           >
             <div>
-              <p className="tiny-mono">/credentials</p>
+              <p className="tiny-mono">· vault · local only</p>
               <h2 className="h-hand xl" style={{ marginTop: 2 }}>
-                Provider keys
+                your keys.
               </h2>
+              <p className="tiny-mono mt-1" style={{ letterSpacing: 0, textTransform: 'none' }}>
+                nothing leaves this browser.
+              </p>
             </div>
             <Dialog.Close
               className="cursor-pointer rounded p-1 transition-opacity hover:opacity-70 focus-visible:outline-2"
@@ -140,15 +148,6 @@ export function CredentialsDrawer({
           </header>
 
           <div className="flex-1 px-5 py-5">
-            <p className="p-hand sm">
-              Pasted keys live in your browser&apos;s localStorage under
-              <span className="kbd" style={{ marginLeft: 4 }}>
-                mahimai_playground:cred
-              </span>
-              . Nothing is logged server-side. Closing the tab keeps them; clearing site data wipes
-              them.
-            </p>
-
             {requiredCredentials.length === 0 ? (
               <div className="box dashed mt-4" style={{ padding: 14 }}>
                 <p className="p-hand sm">This demo does not need any provider keys.</p>
@@ -159,65 +158,100 @@ export function CredentialsDrawer({
                   const reveal = revealed[key] === true;
                   const inputId = `cred-${key}`;
                   return (
-                    <li key={key}>
-                      <label
-                        htmlFor={inputId}
-                        className="tiny-mono mb-1 flex items-center justify-between gap-2"
-                      >
-                        <span>
-                          {labelFor(key)}
-                          {!KNOWN.has(key) && (
-                            <span style={{ marginLeft: 6, opacity: 0.6 }}>(no live check)</span>
-                          )}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setRevealed((r) => ({ ...r, [key]: !r[key] }))}
-                          className="flex cursor-pointer items-center gap-1 transition-opacity hover:opacity-70"
-                          aria-label={reveal ? `Hide ${labelFor(key)}` : `Show ${labelFor(key)}`}
-                          aria-pressed={reveal}
+                    <li key={key} className="flex items-start gap-3">
+                      <KeySlot ok={Boolean(values[key]?.trim())} />
+                      <div className="flex-1">
+                        <label
+                          htmlFor={inputId}
+                          className="tiny-mono mb-1 flex items-center justify-between gap-2"
                         >
-                          {reveal ? <EyeOff size={12} /> : <Eye size={12} />}
-                          <span>{reveal ? 'hide' : 'show'}</span>
-                        </button>
-                      </label>
-                      <input
-                        id={inputId}
-                        type={reveal ? 'text' : 'password'}
-                        value={values[key] ?? ''}
-                        onChange={(e) => setValues((v) => ({ ...v, [key]: e.currentTarget.value }))}
-                        autoComplete="off"
-                        spellCheck={false}
-                        placeholder="paste key here"
-                        className="w-full px-3 py-2 transition-colors outline-none focus:border-2"
-                        style={{
-                          background: 'var(--paper)',
-                          color: 'var(--ink)',
-                          fontFamily: 'var(--mono)',
-                          fontSize: 13,
-                          border: `1.5px ${values[key] ? 'solid' : 'dashed'} var(--ink)`,
-                          borderRadius: 4,
-                        }}
-                      />
+                          <span>
+                            {labelFor(key)}
+                            {!KNOWN.has(key) && (
+                              <span style={{ marginLeft: 6, opacity: 0.6 }}>(no live check)</span>
+                            )}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setRevealed((r) => ({ ...r, [key]: !r[key] }))}
+                            className="flex cursor-pointer items-center gap-1 transition-opacity hover:opacity-70"
+                            aria-label={reveal ? `Hide ${labelFor(key)}` : `Show ${labelFor(key)}`}
+                            aria-pressed={reveal}
+                          >
+                            {reveal ? <EyeOff size={12} /> : <Eye size={12} />}
+                            <span>{reveal ? 'hide' : 'show'}</span>
+                          </button>
+                        </label>
+                        <input
+                          id={inputId}
+                          type={reveal ? 'text' : 'password'}
+                          value={values[key] ?? ''}
+                          onChange={(e) =>
+                            setValues((v) => ({ ...v, [key]: e.currentTarget.value }))
+                          }
+                          autoComplete="off"
+                          spellCheck={false}
+                          placeholder={placeholderFor(key)}
+                          className="w-full px-3 py-2 transition-colors outline-none focus:border-2"
+                          style={{
+                            background: 'var(--paper)',
+                            color: 'var(--ink)',
+                            fontFamily: 'var(--mono)',
+                            fontSize: 13,
+                            border: `1.5px ${values[key] ? 'solid' : 'dashed'} var(--ink)`,
+                            borderRadius: 4,
+                          }}
+                        />
+                      </div>
+                      {values[key]?.trim() && (
+                        <span
+                          aria-hidden="true"
+                          style={{
+                            background: 'var(--paper)',
+                            border: '1.5px solid var(--vg-green)',
+                            borderRadius: 3,
+                            color: 'var(--vg-green)',
+                            fontFamily: 'var(--mono)',
+                            fontSize: 9,
+                            letterSpacing: '0.16em',
+                            marginTop: 16,
+                            padding: '2px 6px',
+                            textTransform: 'uppercase',
+                            transform: 'rotate(-6deg)',
+                          }}
+                        >
+                          OK
+                        </span>
+                      )}
                     </li>
                   );
                 })}
               </ul>
             )}
+            <p
+              className="mt-5"
+              style={{
+                color: 'var(--accent-hex)',
+                fontFamily: 'var(--hand-title)',
+                fontSize: 14,
+                fontStyle: 'italic',
+              }}
+            >
+              ↑ token mints in your browser. server sees nothing.
+            </p>
+            <p className="p-hand sm mt-3" style={{ color: 'var(--ink-soft)' }}>
+              Stored in localStorage under <span className="kbd">mahimai_playground:cred</span>.
+              Closing the tab keeps them; clearing site data wipes them.
+            </p>
           </div>
 
           <footer
             className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 border-t px-5 py-3"
             style={{ borderColor: 'var(--ink)', background: 'var(--paper-2)' }}
           >
-            <button
-              type="button"
-              onClick={handleClearAll}
-              className="btn cursor-pointer"
-              style={{ color: 'var(--ink-soft)' }}
-            >
-              Clear all
-            </button>
+            <Dialog.Close className="btn cursor-pointer" style={{ color: 'var(--ink-soft)' }}>
+              cancel
+            </Dialog.Close>
             <div className="flex items-center gap-3">
               {savedFlash && <span className="tiny-mono">saved</span>}
               <button
@@ -226,12 +260,44 @@ export function CredentialsDrawer({
                 className="btn accent brand-accent cursor-pointer"
                 disabled={requiredCredentials.length === 0}
               >
-                Save keys
+                lock &amp; start →
               </button>
             </div>
           </footer>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
+  );
+}
+
+function KeySlot({ ok }: { ok: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        background: ok ? 'var(--vg-green-soft)' : 'var(--paper)',
+        border: '1.5px solid var(--ink)',
+        borderRadius: '4px 4px 14px 14px',
+        flex: '0 0 auto',
+        height: 34,
+        marginTop: 14,
+        position: 'relative',
+        width: 26,
+      }}
+    >
+      {ok && (
+        <span
+          style={{
+            background: 'var(--vg-green)',
+            borderRadius: 2,
+            height: 3,
+            left: 5,
+            position: 'absolute',
+            right: 5,
+            top: 5,
+          }}
+        />
+      )}
+    </span>
   );
 }

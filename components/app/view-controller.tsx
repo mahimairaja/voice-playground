@@ -1,6 +1,5 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { AnimatePresence, motion } from 'motion/react';
 import { useSessionContext } from '@livekit/components-react';
 import type { AppConfig } from '@/app-config';
@@ -34,7 +33,6 @@ interface ViewControllerProps {
 
 export function ViewController({ appConfig }: ViewControllerProps) {
   const { isConnected, start } = useSessionContext();
-  const { resolvedTheme } = useTheme();
 
   return (
     <AnimatePresence mode="wait">
@@ -57,11 +55,7 @@ export function ViewController({ appConfig }: ViewControllerProps) {
           supportsScreenShare={appConfig.supportsScreenShare}
           isPreConnectBufferEnabled={appConfig.isPreConnectBufferEnabled}
           audioVisualizerType={appConfig.audioVisualizerType}
-          audioVisualizerColor={
-            resolvedTheme === 'dark'
-              ? appConfig.audioVisualizerColorDark
-              : appConfig.audioVisualizerColor
-          }
+          audioVisualizerColor={appConfig.audioVisualizerColor}
           audioVisualizerColorShift={appConfig.audioVisualizerColorShift}
           audioVisualizerBarCount={appConfig.audioVisualizerBarCount}
           audioVisualizerGridRowCount={appConfig.audioVisualizerGridRowCount}

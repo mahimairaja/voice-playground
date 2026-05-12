@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import Script from 'next/script';
-import { ThemeProvider } from '@/components/app/theme-provider';
-import { ThemeToggle } from '@/components/app/theme-toggle';
-import { Footer } from '@/components/brand/Footer';
 import { TopBar } from '@/components/brand/TopBar';
 import { PRE_PAINT_MODE_SCRIPT } from '@/lib/mode';
 import { getAppConfig, getStyles } from '@/lib/utils';
@@ -58,19 +55,8 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <Script id="mahimai-mode-pre-paint" strategy="beforeInteractive">
           {PRE_PAINT_MODE_SCRIPT}
         </Script>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <TopBar />
-          {children}
-          <Footer />
-          <div className="group fixed bottom-0 left-1/2 z-50 mb-2 -translate-x-1/2">
-            <ThemeToggle className="translate-y-20 transition-transform delay-150 duration-300 group-hover:translate-y-0" />
-          </div>
-        </ThemeProvider>
+        <TopBar />
+        {children}
       </body>
     </html>
   );

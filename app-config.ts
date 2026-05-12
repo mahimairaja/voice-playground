@@ -11,12 +11,9 @@ export interface AppConfig {
   logo: string;
   startButtonText: string;
   accent?: string;
-  logoDark?: string;
-  accentDark?: string;
 
   audioVisualizerType?: 'bar' | 'wave' | 'grid' | 'radial' | 'aura';
   audioVisualizerColor?: `#${string}`;
-  audioVisualizerColorDark?: `#${string}`;
   audioVisualizerColorShift?: number;
   audioVisualizerBarCount?: number;
   audioVisualizerGridRowCount?: number;
@@ -33,8 +30,8 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Mahimai AI',
-  pageTitle: 'Mahimai AI playground',
+  companyName: 'voice playground',
+  pageTitle: 'voice playground',
   pageDescription:
     'Live voice agent demos. Bring your own provider keys and talk to one in your browser.',
 
@@ -45,14 +42,11 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
 
   logo: '/brand/goat.svg',
   accent: '#c46a3a',
-  logoDark: '/brand/goat.svg',
-  accentDark: '#e4a06a',
   startButtonText: 'Start call',
 
   // optional: audio visualization configuration
   // audioVisualizerType: 'bar',
   // audioVisualizerColor: '#002cf2',
-  // audioVisualizerColorDark: '#1fd5f9',
   // audioVisualizerColorShift: 0.3,
   // audioVisualizerBarCount: 5,
   // audioVisualizerType: 'radial',

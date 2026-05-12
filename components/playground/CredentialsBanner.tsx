@@ -19,6 +19,7 @@ const PROVIDER_LABEL: Record<string, string> = {
   deepgram: 'Deepgram',
   cartesia: 'Cartesia',
   livekit: 'LiveKit',
+  livekit_url: 'LiveKit URL',
   livekit_api_key: 'LiveKit API key',
   livekit_api_secret: 'LiveKit API secret',
 };

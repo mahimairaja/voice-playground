@@ -2,8 +2,6 @@
 @import 'tw-animate-css';
 @source "../node_modules/streamdown/dist/index.js";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -37,40 +35,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.269 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.371 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.439 0 0);
+  --vg-green: #2d7a4f;
+  --vg-green-soft: #d6efde;
 }
 
 @theme inline {
@@ -135,18 +101,6 @@
 }
 
 /*
- * Dark-mode bridge for the Mahimai brand palette.
- *
- * brand.css (sourced verbatim from .brand/mahimai-wireframes.html) declares
- * its dark values under the 'body.dark' selector. next-themes adds 'dark'
- * to the <html> element, not <body>, so 'body.dark' never matches in this
- * app. Mirroring the brand dark vars under 'html.dark body' raises the
- * specificity above 'body.dark' and triggers the same palette switch on
- * the next-themes class.
- *
- * Keep these values in sync with brand.css's 'body.dark' block.
- */
-/*
  * brand.css primitives ('.brand .dot', '.btn.accent', '.chip.accent',
  * '.box.accent', '.stamp', etc.) reference 'var(--accent)' / 'var(--accent-soft)'.
  * globals.css's :root overrides those with shadcn's subdued accent (consumed
@@ -194,8 +148,8 @@
   font-family: var(--mono);
   font-size: 11px;
   color: var(--ink-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+  text-transform: none;
+  letter-spacing: 0.08em;
   margin-left: 6px;
 }
 
@@ -225,6 +179,21 @@
   color: var(--paper);
 }
 
+.key-state {
+  align-items: center;
+  background: var(--paper);
+  border: 1.2px solid var(--ink);
+  border-radius: 999px;
+  color: var(--vg-green);
+  display: inline-flex;
+  font-family: var(--mono);
+  font-size: 10px;
+  gap: 5px;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  text-transform: uppercase;
+}
+
 /* Clean-mode flattens the sketchy chrome. Matches brand.css's body.clean rules. */
 body.clean .brand {
   font-family: var(--sans);
@@ -234,23 +203,4 @@ body.clean .brand {
 body.clean .tab {
   transform: none;
   border-radius: 6px;
-}
-
-html.dark body {
-  --paper: #14130f;
-  --paper-2: #1c1b17;
-  --ink: #f2efe6;
-  --ink-2: #cfcabd;
-  --ink-soft: #8e8a7d;
-  --line: #f2efe6;
-  --line-soft: #5a574f;
-  --accent: oklch(0.75 0.16 55);
-  --accent-soft: oklch(0.28 0.07 55);
-  --accent-hex: #e4a06a;
-  --accent-soft-hex: #3e2d1d;
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgba(255, 255, 255, 0.05) 1px,
-    transparent 0
-  );
 }

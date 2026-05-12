@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: '404 · Mahimai AI playground',
+  title: '404 · voice playground',
   description: 'The page you tried to visit does not exist.',
 };
 

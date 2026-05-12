@@ -1,6 +1,6 @@
 # Contributing
 
-The Mahimai AI playground hosts the React side of the demos catalogued in the sibling [`awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps) repo. Each demo can ship a small bundle of React components that the agent worker mounts on the canvas as the call progresses (cart, total, ticker, status badge, whatever the demo needs).
+The voice playground hosts the React side of the demos catalogued in the sibling [`awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps) repo. Each demo can ship a small bundle of React components that the agent worker mounts on the canvas as the call progresses.
 
 This document describes how to add one.
 
@@ -23,6 +23,11 @@ components/demos/drive-thru-coffee/
 ```
 
 The folder name MUST match the manifest slug in `awesome-voice-apps/demos/<slug>/playground.json`. The build-time loader (`lib/demos/index.ts`) cross-checks slug to folder; a mismatch fails the build.
+
+Optional manifest fields:
+
+- `card_stat`: short metric shown on the corkboard card.
+- `default_surface`: one of `clipboard_walkie`, `vitals_monitor`, or `whiteboard`. Missing manifests default to `clipboard_walkie`.
 
 ## Component contract
 
@@ -72,7 +77,7 @@ registerForDemo('drive-thru-coffee', { Cart, Total });
 export {};
 ```
 
-Then import the bundle from `app/demos/[slug]/page.tsx` (or a small registration helper that maps slug to dynamic import). M2 will introduce the per-slug import wiring; for now, document the call site in the per-demo PR.
+Then add the slug to `components/demos/DemoBundleLoader.tsx`. The dynamic route imports that helper once, so the core route stays manifest-driven.
 
 ## Wire-protocol shape
 
@@ -91,6 +96,24 @@ Action semantics:
 - `unmount`: remove by `id`. No-op if no match.
 
 Schema lives in `lib/generative-ui/protocol.ts`. The Python helper that emits the envelope ships in `awesome-voice-apps/templates/livekit-base/agent.py` as `publish_ui_event`.
+
+Final cost summaries keep the shared convention: `component: "Cost"` and `id: "final_cost"`.
+
+CTA components dispatch browser events on `mahimai:cta`. Agents and page-level listeners should use that event name.
+
+## Demo surfaces
+
+The per-demo route can render three reusable shells without demo-specific React in the core route:
+
+- `clipboard_walkie`: transcript-forward call panel plus a mounted UI clipboard.
+- `vitals_monitor`: call health, stack, and latency monitor.
+- `whiteboard`: canvas-first layout for agent-written state.
+
+The selected surface comes from `playground.json#default_surface` and can be overridden while connected by LiveKit room metadata:
+
+```json
+{ "surface": "whiteboard" }
+```
 
 ## Naming
 

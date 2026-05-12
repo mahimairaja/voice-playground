@@ -76,14 +76,11 @@ export const getAppConfig = cache(async (headers: Headers): Promise<AppConfig> =
  * @returns A string of styles
  */
 export function getStyles(appConfig: AppConfig) {
-  const { accent, accentDark } = appConfig;
+  const { accent } = appConfig;
 
   return [
     accent
       ? `:root { --primary: ${accent}; --primary-hover: color-mix(in srgb, ${accent} 80%, #000); }`
-      : '',
-    accentDark
-      ? `.dark { --primary: ${accentDark}; --primary-hover: color-mix(in srgb, ${accentDark} 80%, #000); }`
       : '',
   ]
     .filter(Boolean)

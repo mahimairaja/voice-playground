@@ -1,14 +1,14 @@
-# CLAUDE.md
+# AGENTS.md
 
-Operating instructions for any Claude session working in this repo. Auto loaded by Claude Code. The shorter and sharper this file is, the better the playground holds up.
+Operating instructions for any Codex session working in this repo. Auto loaded by Codex. The shorter and sharper this file is, the better the playground holds up.
 
 ## What this repo is
 
-A standalone voice playground. Public site at `playground.mahimai.ca`. A Next.js 15 frontend that lets visitors talk to the voice agents catalogued in the sister repo `awesome-voice-apps` (sibling on disk: `../awesome-voice-apps`). Visitors bring their own provider keys, paste them in the credentials drawer, and the playground mints a short-lived LiveKit token in their browser.
+A standalone open-source playground: a Next.js 15 frontend that lets visitors talk to the voice agents catalogued in the sister repo `awesome-voice-apps` (sibling on disk: `../awesome-voice-apps`). Visitors bring their own provider keys, paste them in the credentials drawer, and the playground mints a short-lived LiveKit token in their browser. This is NOT a hosted product, NOT a consultancy site, NOT a marketing surface for any specific company.
 
 If a piece of work does not advance one of these, it does not belong in this repo:
 
-1. Render the cookbook (the marketing landing, demo index, per-demo page) with the brand intact.
+1. Render the catalogue (landing, demo index, per-demo page, about) with the brand intact.
 2. Connect a visitor to a demo (credentials drawer, token route, voice surface, transcript).
 3. Render the agent's generative UI (canvas plus dispatcher plus per-demo component bundles).
 
@@ -18,27 +18,27 @@ When the operator opens a fresh session and asks for help, default to **brainsto
 
 ## Tech stack
 
-| Layer           | Choice                                                                                               |
-| --------------- | ---------------------------------------------------------------------------------------------------- |
-| Framework       | Next.js 15 App Router, React 19, TypeScript                                                          |
-| Package manager | pnpm (never npm or yarn)                                                                             |
-| Styling         | Tailwind v4 plus brand.css primitives. shadcn registry at `components/ui/`. `@agents-ui/*` registry. |
-| Validation      | zod (manifest schema, UI-event envelope, token route body)                                           |
-| State           | zustand (the generative-UI store only). React state everywhere else.                                 |
-| Theming         | Light-only app surfaces. `body.clean` keeps the sketchy/clean mode toggle via `lib/mode.ts`.         |
-| Voice runtime   | livekit-client plus `@livekit/components-react`. Visitor-supplied LiveKit URL/key/secret.            |
-| Hosting         | Vercel Hobby tier, Node 20 pin via `package.json#engines.node` and `vercel.json`.                    |
+| Layer           | Choice                                                                                                     |
+| --------------- | ---------------------------------------------------------------------------------------------------------- |
+| Framework       | Next.js 15 App Router, React 19, TypeScript                                                                |
+| Package manager | pnpm (never npm or yarn)                                                                                   |
+| Styling         | Tailwind v4 plus brand.css primitives. shadcn registry at `components/ui/`. `@agents-ui/*` registry.       |
+| Validation      | zod (manifest schema, UI-event envelope, token route body)                                                 |
+| State           | zustand (the generative-UI store only). React state everywhere else.                                       |
+| Theming         | next-themes for light/dark, body.clean toggle for sketchy/clean modes (see `lib/theme.ts`, `lib/mode.ts`). |
+| Voice runtime   | livekit-client plus `@livekit/components-react`. Visitor-supplied LiveKit URL/key/secret.                  |
+| Hosting         | Vercel Hobby tier, Node 20 pin via `package.json#engines.node` and `vercel.json`.                          |
 
 The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`, NOT in this repo. The playground only ships the visitor-side client.
 
 ## Hard constraints
 
-- **Brand assets are in place. Do not regenerate `public/brand/goat.svg`, `styles/brand.css`, the favicon set, or `public/og-image.png`.** Source of truth for design is `.brand/mahimai-wireframes.html`.
+- **Brand assets are in place. Do not regenerate `public/brand/goat.svg`, `styles/brand.css`, the favicon set, or `public/og-image.png`.** Source of truth for the design is the wireframe HTML in `.brand/` (gitignored). The seven curated wireframe variants live under `references/` and are the visual contract for the rendered surfaces.
 - **Do not edit `styles/brand.css` directly.** It mirrors the wireframes verbatim. Theme overrides go in `styles/globals.css` (the `@theme inline` block) or via the `brand-accent` opt-in class for elements that need terracotta where shadcn overrode `--accent`.
 - **No demo-specific React components in this repo.** `components/demos/<slug>/*` is reserved for the per-demo bundles that ship in M2. The current iteration only provides the registry, dispatcher, and Canvas; bundles register themselves.
 - **No backticks in shell prompts you suggest the operator paste.**
 - **No em dashes anywhere.** Use colons, periods, semicolons, or parentheses. The wireframes contain em dashes; the rule still applies.
-- **No `Co-Authored-By: Claude` trailers, no `Generated with Claude Code` footer, no robot emoji, no AI attribution.** Commits read as if Mahimai authored them directly.
+- **No `Co-Authored-By: Codex` trailers, no `Generated with Codex` footer, no robot emoji, no AI attribution.** Commits read as if the maintainer authored them directly.
 - The API route `app/api/token/route.ts` is the only server-side code. It mints LiveKit AccessTokens from visitor-pasted credentials and never logs or persists them.
 
 ## File conventions
@@ -48,7 +48,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 - `app/demos/[slug]/page.tsx` is the per-demo page. Uses `generateStaticParams` from `getAllDemos()` and `dynamicParams = false`, so unknown slugs 404 at the route layer.
 - `app/api/token/route.ts` is the only API route.
 - `app/error.tsx` (client) and `app/not-found.tsx` (server) are brand-styled.
-- `app/layout.tsx` mounts the brand chrome (`TopBar`, `Script` for the clean-mode pre-paint) and `generateMetadata` for icons / OG.
+- `app/layout.tsx` mounts the brand chrome (`TopBar`, `Footer`, `ThemeProvider`, `Script` for the clean-mode pre-paint) and `generateMetadata` for icons / OG.
 - `components/brand/` is brand chrome: `Logo`, `TopBar`, `Footer`. All consume brand.css primitive classes.
 - `components/playground/` is the demo runtime: `CredentialsDrawer`, `CredentialsBanner`, `VoiceSurface`, `Transcript`. Coordinates the visitor session.
 - `components/generative/Canvas.tsx` reads from the dispatcher store and renders per-demo components via the registry.
@@ -56,7 +56,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 - `lib/demos/` is the build-time manifest loader. `server-only` guarded.
 - `lib/credentials/` is the localStorage store plus the optional async provider ping.
 - `lib/generative-ui/` is the protocol schema, registry, and dispatcher.
-- `lib/mode.ts`, `lib/utils.ts` are app-wide utilities.
+- `lib/theme.ts`, `lib/mode.ts`, `lib/utils.ts` are app-wide utilities.
 
 ## Commands
 
@@ -64,7 +64,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 | --------------------- | ------------------------------------------------------------------------------------- |
 | `pnpm install`        | Install deps. Node 20 pin emits a warning on Node 22 dev machines, harmless.          |
 | `pnpm dev`            | Next dev with Turbopack on http://localhost:3000.                                     |
-| `pnpm build`          | Production build. Runs `scripts/sync-demos.mjs` first through the `prebuild` hook.    |
+| `pnpm build`          | Production build. Runs `scripts/sync-demos.mjs` first (the `prebuild` hook).          |
 | `pnpm lint`           | ESLint plus Next core-web-vitals plus prettier.                                       |
 | `pnpm format`         | Prettier write. Use `pnpm exec prettier --write <file>` to format a single file.      |
 | `pnpm shadcn:install` | Re-pull every `@agents-ui/*` component from the registry. Prompts before overwriting. |
@@ -75,14 +75,29 @@ There is no test suite. CI runs `lint`, `format:check`, and `build`. Smoke tests
 
 Production:
 
-- `NEXT_PUBLIC_SITE_URL` (e.g. `https://playground.mahimai.ca`). Used by `generateMetadata` for the `metadataBase`.
+- `NEXT_PUBLIC_SITE_URL` (e.g. `https://your-playground-domain.example.com`). Used by `generateMetadata` for the `metadataBase`.
 
 Local (`.env.local`, optional for the marketing surfaces):
 
 - `NEXT_PUBLIC_SITE_URL` for OG link previews to render the right absolute URLs.
-- `AVA_REPO` and `AVA_REF` override the sibling repo / ref that `scripts/sync-demos.mjs` clones. Defaults match `mahimailabs/awesome-voice-apps` at `main`.
+- `AVA_REPO` and `AVA_REF` override the sibling repo / ref that `scripts/sync-demos.mjs` clones. Defaults match the open-source `mahimailabs/awesome-voice-apps` at `main`.
 
 The token route does NOT read any env var. Visitor credentials come from the request body.
+
+## Build-time demo sync
+
+`pnpm build` runs `scripts/sync-demos.mjs` first (via the `prebuild` npm script). The script clones the sibling `awesome-voice-apps` repo so the build-time loader at `lib/demos/index.ts` finds manifests under `../awesome-voice-apps/demos/<slug>/playground.json`.
+
+- On Vercel (`VERCEL=1`): always rm + clone fresh. The build cache reuses the workspace across deploys and a stale clone would silently freeze the catalogue.
+- Locally: clone if missing, reuse if present. Developers with a local checkout of `awesome-voice-apps` at `../awesome-voice-apps` keep their working state.
+
+Adding a new demo:
+
+1. Create the manifest in `awesome-voice-apps/demos/<slug>/playground.json`.
+2. Create the React bundle at `components/demos/<slug>/index.tsx` in this repo (register a component map via `registerForDemo`).
+3. Add a `case '<slug>'` to the `switch` in `components/demos/DemoBundleLoader.tsx` so Next bundles the demo code statically.
+
+`components/demos/drive-thru-coffee/index.tsx` is the canonical example.
 
 ## Generative UI protocol
 
@@ -106,8 +121,6 @@ Action semantics:
 
 Schema lives in `lib/generative-ui/protocol.ts`. Per-demo components register themselves into `lib/generative-ui/registry.ts` via `registerForDemo(slug, map)`. The dispatcher (`lib/generative-ui/dispatcher.ts`) holds the live store; the Canvas reads from it.
 
-Final cost summaries keep `component: "Cost"` and `id: "final_cost"`. CTA listeners use `mahimai:cta`.
-
 ## Commit conventions
 
 Match the format the milestone branch already uses:
@@ -121,9 +134,9 @@ Do not stage `.env*` files (only `.env.example` is committed), `.next/`, `node_m
 
 ## Voice and tone
 
-The playground reads to indie engineers and developers comparing voice stacks. The voice in headlines and body is direct, slightly opinionated, and never marketing-fluffy. Skip qualifiers (very, really, just, simply) and hedges (might, perhaps, maybe). Show concrete behaviour.
+The playground reads to indie engineers and developers comparing voice stacks. The voice in headlines and body is direct, slightly opinionated, never marketing-fluffy. Skip qualifiers (very, really, just, simply) and hedges (might, perhaps, maybe). Show concrete behaviour.
 
-The brand wordmark in chrome is `mahimai` lowercase. Page-level prose uses `voice playground` lowercase.
+The brand wordmark in chrome is `playground` lowercase. Page-level prose uses `voice playground` lowercase. Do NOT promote any specific company, consultancy, or hosted product in user-facing copy; this is a standalone tool for the awesome-voice-apps catalogue.
 
 ## What goes where
 
@@ -131,7 +144,7 @@ The brand wordmark in chrome is `mahimai` lowercase. Page-level prose uses `voic
 - A per-demo React surface (M2): into `components/demos/<slug>/index.ts`. Registers a component map.
 - A reusable utility: into `lib/<domain>/`.
 - A new manifest field: zod schema in `lib/demos/schema.ts` first, then loader, then UI.
-- A planning artifact (Refinery doc, Foundry blueprint, design notes): Linear, not the repo.
+- A planning artifact (design notes, scope docs, follow-up lists): planning system of choice, not the repo.
 - An agent / Python concern: `../awesome-voice-apps`, not here. Exception: the `publish_ui_event` helper that ships in T36 lives in `awesome-voice-apps/templates/livekit-base/agent.py`.
 
 ## Out of scope for this repo
