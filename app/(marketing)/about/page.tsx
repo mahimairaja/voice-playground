@@ -26,7 +26,7 @@ export default function AboutPage() {
         <p className="p-hand mt-4 max-w-xl text-[14px]">
           an open-source UI for the{' '}
           <a
-            href="https://github.com/mahimailabs/awesome-voice-apps"
+            href="https://github.com/mahimairaja/awesome-voice-apps"
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-4"

@@ -1,6 +1,6 @@
 # voice playground
 
-A light-only Next.js 15 frontend for trying the voice agents catalogued in [`awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps). Visitors bring provider keys, paste them into the credentials vault, and the playground mints a short-lived LiveKit token in the browser.
+A light-only Next.js 15 frontend for trying the voice agents catalogued in [`awesome-voice-apps`](https://github.com/mahimairaja/awesome-voice-apps). Visitors bring provider keys, paste them into the credentials vault, and the playground mints a short-lived LiveKit token in the browser.
 
 This is a standalone playground, not a hosted product. Keys are stored only in browser localStorage and are never logged or persisted server-side.
 
@@ -112,7 +112,7 @@ pnpm lint
 pnpm build
 ```
 
-`pnpm build` runs `scripts/sync-demos.mjs` first. Locally it reuses `../awesome-voice-apps` when present; on Vercel it clones a fresh copy using `AVA_REPO` and `AVA_REF`.
+`pnpm build` runs `scripts/sync-demos.mjs` first. Locally it reuses `../awesome-voice-apps` when present; on Vercel it clones a fresh copy using `AVA_REPO` and `AVA_REF`. If GitHub cannot be read, the build continues with the reference seed catalogue unless `AVA_SYNC_STRICT=1`.
 
 ## License
 

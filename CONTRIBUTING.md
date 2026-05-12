@@ -1,6 +1,6 @@
 # Contributing
 
-The voice playground hosts the React side of the demos catalogued in the sibling [`awesome-voice-apps`](https://github.com/mahimailabs/awesome-voice-apps) repo. Each demo can ship a small bundle of React components that the agent worker mounts on the canvas as the call progresses.
+The voice playground hosts the React side of the demos catalogued in the sibling [`awesome-voice-apps`](https://github.com/mahimairaja/awesome-voice-apps) repo. Each demo can ship a small bundle of React components that the agent worker mounts on the canvas as the call progresses.
 
 This document describes how to add one.
 

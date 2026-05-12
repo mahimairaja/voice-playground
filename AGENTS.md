@@ -80,7 +80,7 @@ Production:
 Local (`.env.local`, optional for the marketing surfaces):
 
 - `NEXT_PUBLIC_SITE_URL` for OG link previews to render the right absolute URLs.
-- `AVA_REPO` and `AVA_REF` override the sibling repo / ref that `scripts/sync-demos.mjs` clones. Defaults match the open-source `mahimailabs/awesome-voice-apps` at `main`.
+- `AVA_REPO` and `AVA_REF` override the sibling repo / ref that `scripts/sync-demos.mjs` clones. Defaults match the open-source `mahimairaja/awesome-voice-apps` at `main`.
 
 The token route does NOT read any env var. Visitor credentials come from the request body.
 

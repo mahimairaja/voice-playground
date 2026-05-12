@@ -220,7 +220,7 @@ function EmptyState({ activeCategory, totalDemos }: EmptyStateProps) {
         <p className="p-hand mt-2">
           Demos live in the sibling{' '}
           <a
-            href="https://github.com/mahimailabs/awesome-voice-apps"
+            href="https://github.com/mahimairaja/awesome-voice-apps"
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-4"

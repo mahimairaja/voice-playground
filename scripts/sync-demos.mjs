@@ -3,10 +3,11 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const REPO = process.env.AVA_REPO ?? 'https://github.com/mahimailabs/awesome-voice-apps.git';
+const REPO = process.env.AVA_REPO ?? 'https://github.com/mahimairaja/awesome-voice-apps.git';
 const REF = process.env.AVA_REF ?? 'main';
 const TARGET = path.resolve(process.cwd(), '..', 'awesome-voice-apps');
 const IS_VERCEL = process.env.VERCEL === '1';
+const IS_STRICT = process.env.AVA_SYNC_STRICT === '1';
 
 function log(message) {
   console.log(`[sync-demos] ${message}`);
@@ -17,6 +18,15 @@ function clone() {
   execFileSync('git', ['clone', '--depth', '1', '--branch', REF, REPO, TARGET], {
     stdio: 'inherit',
   });
+}
+
+function warnAndContinue(err) {
+  const message = err instanceof Error ? err.message : String(err);
+  console.warn(`[sync-demos] clone failed: ${message}`);
+  console.warn(
+    '[sync-demos] continuing without sibling manifests; reference seed data will render'
+  );
+  if (IS_STRICT) process.exit(1);
 }
 
 try {
@@ -35,6 +45,5 @@ try {
     log(`reusing local sibling at ${TARGET}`);
   }
 } catch (err) {
-  console.error(`[sync-demos] clone failed: ${err instanceof Error ? err.message : String(err)}`);
-  process.exit(1);
+  warnAndContinue(err);
 }

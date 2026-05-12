@@ -80,9 +80,14 @@ Production:
 Local (`.env.local`, optional for the marketing surfaces):
 
 - `NEXT_PUBLIC_SITE_URL` for OG link previews to render the right absolute URLs.
-- `AVA_REPO` and `AVA_REF` override the sibling repo / ref that `scripts/sync-demos.mjs` clones. Defaults match `mahimailabs/awesome-voice-apps` at `main`.
+- `AVA_REPO` and `AVA_REF` override the sibling repo / ref that `scripts/sync-demos.mjs` clones. Defaults match `mahimairaja/awesome-voice-apps` at `main`.
+- `AVA_SYNC_STRICT=1` makes clone failures fail the build. By default, failed sync falls back to the reference seed catalogue.
 
 The token route does NOT read any env var. Visitor credentials come from the request body.
+
+## Build-time demo sync
+
+`pnpm build` runs `scripts/sync-demos.mjs` first. Locally it reuses `../awesome-voice-apps` when present and clones it when missing. On Vercel it removes stale cached siblings before cloning. If the clone fails and `AVA_SYNC_STRICT` is not `1`, the build continues and the seeded reference catalogue renders.
 
 ## Generative UI protocol
 
