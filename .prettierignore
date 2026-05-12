@@ -5,5 +5,10 @@ pnpm-lock.yaml
 .next/
 .env*
 
+# Design source-of-truth: brand.css mirrors the wireframes verbatim
+# (see CLAUDE.md), and references/ holds the original wireframe HTML.
+styles/brand.css
+references/
+
 
 
