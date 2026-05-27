@@ -17,6 +17,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './'),
+      // 'server-only' is a Next.js runtime guard; in Vitest it's irrelevant
+      // and importing it throws. Alias to an empty module so the modules
+      // that import it (lib/demos, lib/cookbook) can be exercised in tests.
+      'server-only': resolve(__dirname, './test-stubs/server-only.ts'),
     },
   },
 });

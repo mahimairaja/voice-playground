@@ -1,12 +1,23 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getAllDemos, getDemoCategories } from '@/lib/demos';
+import { CatalogError } from '@/components/playground/CatalogError';
+import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
+import { CatalogFetchError } from '@/lib/cookbook/manifest';
+import {
+  type PlannedDemo,
+  type ShippedDemo,
+  getAllPlanned,
+  getAllShipped,
+  getDemoCategories,
+} from '@/lib/demos';
 
 /**
- * F1.1 minimal restyle. The shipped-vs-planned + URL-synced category filter
- * rebuild is REQ-AVA-DEMOS-001 and deferred to F1.2. This pass only ensures
- * the index renders cleanly under the new dark + cyan tokens.
+ * F1.2 demos-index rebuild. Renders shipped + planned cards together,
+ * filtered by an optional '?category=' URL param. Explicit '<CatalogError>'
+ * when the cookbook fetch fails. No reference-seed fallback; missing data
+ * is an honest signal.
  */
+
 export const metadata: Metadata = {
   title: 'Demos · voice playground',
   description:
@@ -29,16 +40,30 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
   const { category: rawCategory } = await searchParams;
   const activeCategory = pickCategory(rawCategory);
 
-  const allDemos = getAllDemos();
-  const categories = getDemoCategories();
-  const visible = activeCategory ? allDemos.filter((d) => d.category === activeCategory) : allDemos;
+  let shipped: readonly ShippedDemo[] = [];
+  let categories: readonly string[] = [];
+  let catalogError: CatalogFetchError | null = null;
+  try {
+    [shipped, categories] = await Promise.all([getAllShipped(), getDemoCategories()]);
+  } catch (err) {
+    if (err instanceof CatalogFetchError) catalogError = err;
+    else throw err;
+  }
+  const planned = getAllPlanned();
+
+  const visibleShipped = activeCategory
+    ? shipped.filter((d) => d.category === activeCategory)
+    : shipped;
+  const visiblePlanned = activeCategory
+    ? planned.filter((d) => d.category === activeCategory)
+    : planned;
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-16">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-mono text-[10.5px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
-            · DEMOS · {allDemos.length} SHIPPED
+            · DEMOS · {shipped.length} SHIPPED · {planned.length} PLANNED
             {activeCategory ? ` · ${activeCategory}` : ''}
           </p>
           <h1 className="mt-2 text-[28px] font-semibold tracking-tight text-[color:var(--color-text)]">
@@ -68,31 +93,24 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
       </header>
 
       <section aria-label="Demo list" className="mt-10">
-        {visible.length === 0 ? (
-          <EmptyState activeCategory={activeCategory} totalDemos={allDemos.length} />
+        {catalogError ? (
+          <CatalogError cause={catalogError.cause} />
+        ) : visibleShipped.length + visiblePlanned.length === 0 ? (
+          <EmptyState
+            activeCategory={activeCategory}
+            totalShipped={shipped.length}
+            totalPlanned={planned.length}
+          />
         ) : (
           <ul role="list" className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {visible.map((demo) => (
+            {visibleShipped.map((demo) => (
               <li key={demo.slug}>
-                <Link
-                  href={`/demos/${demo.slug}`}
-                  className="block h-full rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-4 transition-colors hover:border-[color:var(--color-accent)]"
-                >
-                  <p className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
-                    {demo.category}
-                  </p>
-                  <h3 className="mt-1.5 text-[16px] font-semibold tracking-tight text-[color:var(--color-text)]">
-                    {demo.title}
-                  </h3>
-                  {demo.card_stat ? (
-                    <p className="mt-1 font-mono text-[11px] text-[color:var(--color-accent)]">
-                      {demo.card_stat}
-                    </p>
-                  ) : null}
-                  <p className="mt-3 text-[12.5px] text-[color:var(--color-text-mute)]">
-                    {demo.description}
-                  </p>
-                </Link>
+                <ShippedCard demo={demo} />
+              </li>
+            ))}
+            {visiblePlanned.map((demo) => (
+              <li key={demo.slug}>
+                <PlannedCard demo={demo} />
               </li>
             ))}
           </ul>
@@ -134,12 +152,65 @@ function CategoryChip({ label, href, active }: CategoryChipProps) {
   );
 }
 
-interface EmptyStateProps {
-  activeCategory: string | null;
-  totalDemos: number;
+function ShippedCard({ demo }: { demo: ShippedDemo }) {
+  return (
+    <div className="flex h-full flex-col rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-4 transition-colors hover:border-[color:var(--color-accent)]">
+      <Link href={`/demos/${demo.slug}`} className="block flex-1">
+        <p className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
+          {demo.category}
+        </p>
+        <h3 className="mt-1.5 text-[16px] font-semibold tracking-tight text-[color:var(--color-text)]">
+          {demo.title}
+        </h3>
+        {demo.card_stat ? (
+          <p className="mt-1 font-mono text-[11px] text-[color:var(--color-accent)]">
+            {demo.card_stat}
+          </p>
+        ) : null}
+        <p className="mt-3 text-[12.5px] text-[color:var(--color-text-mute)]">{demo.description}</p>
+      </Link>
+      <div className="mt-3 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-3">
+        <CookbookSourceLink slug={demo.slug} variant="inline" />
+        <Link
+          href={`/demos/${demo.slug}`}
+          className="font-mono text-[10px] tracking-[0.06em] text-[color:var(--color-accent)] uppercase hover:underline"
+        >
+          ▶ play
+        </Link>
+      </div>
+    </div>
+  );
 }
 
-function EmptyState({ activeCategory, totalDemos }: EmptyStateProps) {
+function PlannedCard({ demo }: { demo: PlannedDemo }) {
+  return (
+    <a
+      href={demo.github_link}
+      target="_blank"
+      rel="noreferrer noopener"
+      className="flex h-full flex-col rounded-[var(--radius-card)] border border-dashed border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-4 opacity-70 transition-opacity hover:opacity-100"
+    >
+      <p className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
+        {demo.category} · PLANNED
+      </p>
+      <h3 className="mt-1.5 text-[16px] font-semibold tracking-tight text-[color:var(--color-text-dim)]">
+        {demo.title}
+      </h3>
+      <p className="mt-1 font-mono text-[10px] tracking-[0.06em] text-[color:var(--color-text-mute)] uppercase">
+        target {demo.target_date}
+      </p>
+      <p className="mt-3 text-[12.5px] text-[color:var(--color-text-mute)]">{demo.why}</p>
+    </a>
+  );
+}
+
+interface EmptyStateProps {
+  activeCategory: string | null;
+  totalShipped: number;
+  totalPlanned: number;
+}
+
+function EmptyState({ activeCategory, totalShipped, totalPlanned }: EmptyStateProps) {
   if (activeCategory) {
     return (
       <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-6 text-[13px] text-[color:var(--color-text-mute)]">
@@ -152,10 +223,10 @@ function EmptyState({ activeCategory, totalDemos }: EmptyStateProps) {
       </div>
     );
   }
-  if (totalDemos === 0) {
+  if (totalShipped === 0 && totalPlanned === 0) {
     return (
       <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-6 text-[13px] text-[color:var(--color-text-mute)]">
-        No shipped demos yet. Demos live in the{' '}
+        No demos yet. New ones land in the{' '}
         <a
           href="https://github.com/mahimairaja/awesome-voice-apps"
           target="_blank"
@@ -163,11 +234,7 @@ function EmptyState({ activeCategory, totalDemos }: EmptyStateProps) {
           className="text-[color:var(--color-accent)] hover:underline"
         >
           awesome-voice-apps cookbook ↗
-        </a>{' '}
-        and appear here once they ship a{' '}
-        <code className="font-mono text-[12px] text-[color:var(--color-text-dim)]">
-          playground.json
-        </code>
+        </a>
         .
       </div>
     );
