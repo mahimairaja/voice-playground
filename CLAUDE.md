@@ -36,7 +36,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 
 ## Hard constraints
 
-- **`lib/design/tokens.ts` is the design source of truth.** Every color, radius, spacing stop comes from there and is mirrored into `styles/globals.css`'s `@theme inline` block. Anything beyond the documented palette (`--color-bg`, `--color-surface`, `--color-text*`, `--color-accent`, `--color-warning`, `--color-danger`) needs an explicit reason in the PR.
+- **`lib/design/tokens.ts` is the design source of truth.** Every color, radius, spacing stop comes from there and is mirrored into `styles/globals.css`'s `@theme inline` block. The documented palette is: surfaces (`--color-bg`, `--color-surface`, `--color-surface-2`), borders (`--color-border`, `--color-border-strong`, `--color-border-dim`), text scale (`--color-text`, `--color-text-dim`, `--color-text-mute`, `--color-text-fade`), accent (`--color-accent`, `--color-accent-soft`), and status (`--color-warning`, `--color-danger`). Any new token needs an explicit reason in the PR.
 - **Single accent: cyan `#2DD4BF`.** Used only for primary CTAs, live-state indicators, the active-route underline, and per-surface highlights.
 - **Dark only.** No light theme, no `body.clean` toggle, no system-preference switch. `<html class="dark">` is forced in `app/layout.tsx`.
 - **Type: Geist + Geist Mono only.** Loaded once in `app/layout.tsx` via `next/font/google`. Do not introduce Caveat, Kalam, JetBrains Mono, or any other web font.
@@ -156,12 +156,12 @@ The brand wordmark in chrome is `mahimai` lowercase. Page-level prose uses `voic
 - The agent worker itself. Lives in `../awesome-voice-apps`.
 - Voice Arena (scenario picker, stack picker, rating, leaderboard). Separate milestone.
 - Sentry, PostHog, Plausible, any telemetry.
-- An automated test suite. Manual smoke only.
+- Component / E2E test infrastructure (RTL, Playwright). Pure-module Vitest coverage of `lib/credentials/*` ships in F1.1; component and end-to-end smoke remain manual.
 - Mobile-optimised layouts beyond what the upstream shell provides.
 
 ## When the operator asks for the next change
 
 1. Read `.agents/design.md` and `.agents/TODO.md` to confirm the current milestone scope.
 2. If the request is in scope, propose the smallest commit and confirm before coding. If not, surface the mismatch and ask whether to log a follow-up or extend scope.
-3. Honour the brand: the wireframes file under `.brand/` is the design source of truth, brand.css is its CSS port, and primitives (`.ab`, `.box`, `.btn`, `.chip`, `.h-hand`, `.p-hand`, `.tiny-mono`, `.line`, `.stamp`) cover almost every surface.
+3. Honour the visual system: `lib/design/tokens.ts` is the source of truth, mirrored into `styles/globals.css`. Single cyan accent, Geist + Geist Mono only, no wireframe primitives.
 4. Build via `pnpm build` before declaring done.
