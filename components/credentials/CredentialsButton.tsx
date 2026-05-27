@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { LIVEKIT_KEYS } from '@/lib/credentials/store';
 import { useCredentials } from '@/lib/credentials/useCredentials';
 import { CredentialsSheet } from './CredentialsSheet';
 
 /**
  * Per-demo trigger for the credentials sheet. Three visual states:
  *
- *   - ready (all required keys present): cyan pill, "● KEYS · READY".
+ *   - ready (all three LiveKit keys present): cyan pill, "● LIVEKIT · READY".
  *   - partial (some missing): ghost button, "Set keys · N missing".
  *   - storage unavailable: disabled ghost, "Storage blocked".
  *
@@ -16,12 +17,11 @@ import { CredentialsSheet } from './CredentialsSheet';
  */
 
 interface CredentialsButtonProps {
-  requiredKeys: readonly string[];
   demoTitle: string;
 }
 
-export function CredentialsButton({ requiredKeys, demoTitle }: CredentialsButtonProps) {
-  const { isReady, missing, unavailable } = useCredentials(requiredKeys);
+export function CredentialsButton({ demoTitle }: CredentialsButtonProps) {
+  const { isReady, missing, unavailable } = useCredentials(LIVEKIT_KEYS);
   const [open, setOpen] = useState(false);
 
   let label: string;
@@ -31,7 +31,7 @@ export function CredentialsButton({ requiredKeys, demoTitle }: CredentialsButton
     classes =
       'border border-[color:var(--color-border)] text-[color:var(--color-text-fade)] cursor-not-allowed';
   } else if (isReady) {
-    label = `● KEYS · READY · ${requiredKeys.length}/${requiredKeys.length}`;
+    label = '● LIVEKIT · READY';
     classes =
       'border border-[color:var(--color-accent)] text-[color:var(--color-accent)] hover:bg-[color:var(--color-accent-soft)]';
   } else {
@@ -50,12 +50,7 @@ export function CredentialsButton({ requiredKeys, demoTitle }: CredentialsButton
       >
         {label}
       </button>
-      <CredentialsSheet
-        open={open}
-        onOpenChange={setOpen}
-        requiredKeys={requiredKeys}
-        demoTitle={demoTitle}
-      />
+      <CredentialsSheet open={open} onOpenChange={setOpen} demoTitle={demoTitle} />
     </>
   );
 }

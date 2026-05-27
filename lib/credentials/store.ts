@@ -12,6 +12,14 @@
 export const CRED_PREFIX = 'mahimai_playground:cred:';
 
 /**
+ * The three LiveKit credentials are the only keys the playground ever asks the
+ * visitor to paste. Provider keys (OpenAI, Deepgram, ElevenLabs, etc.) live in
+ * the agent's own '.env' on the developer's machine. Consumers should import
+ * this constant rather than re-declaring it locally.
+ */
+export const LIVEKIT_KEYS = ['livekit_url', 'livekit_api_key', 'livekit_api_secret'] as const;
+
+/**
  * Fired on the window after any 'saveCredentials' or 'clearAll' call so
  * same-tab consumers (e.g. the missing-keys banner) can re-read storage. The
  * native 'storage' event covers cross-tab updates but does NOT fire in the

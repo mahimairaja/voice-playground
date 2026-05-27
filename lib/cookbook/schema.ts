@@ -33,7 +33,6 @@ export const CatalogValueSchema = z.object({
   description: z.string().min(1).max(160),
   who_for: z.string().min(1),
   recording_url: z.union([z.string().url(), z.null()]),
-  required_credentials: z.array(z.string().min(1)).min(1),
   ui_components: z.array(z.string().min(1)),
   /** Optional one-line stat shown on the card (e.g. 'menu: 12 items'). */
   card_stat: z.string().min(1).optional(),

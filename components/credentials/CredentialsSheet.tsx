@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import type { CredentialMap } from '@/lib/credentials/store';
-import { CRED_OPEN_DRAWER_EVENT } from '@/lib/credentials/store';
+import { CRED_OPEN_DRAWER_EVENT, LIVEKIT_KEYS } from '@/lib/credentials/store';
 import { useCredentials } from '@/lib/credentials/useCredentials';
 
 /**
- * Right-side sheet for the per-demo credentials flow. Renders one masked input
- * per item in 'requiredKeys', driven by the demo's manifest. Saves to the
- * existing 'mahimai_playground:cred:<name>' localStorage entries.
+ * Right-side sheet for the LiveKit credentials flow. Renders one masked input
+ * for each of the three 'LIVEKIT_KEYS' values. Saves to the existing
+ * 'mahimai_playground:cred:<name>' localStorage entries.
  *
  * Also listens for 'CRED_OPEN_DRAWER_EVENT' on the window so banners or other
  * affordances can open it without holding shared parent state.
@@ -18,16 +18,11 @@ import { useCredentials } from '@/lib/credentials/useCredentials';
 interface CredentialsSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  requiredKeys: readonly string[];
   demoTitle: string;
 }
 
-export function CredentialsSheet({
-  open,
-  onOpenChange,
-  requiredKeys,
-  demoTitle,
-}: CredentialsSheetProps) {
+export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsSheetProps) {
+  const requiredKeys = LIVEKIT_KEYS;
   const { values, missing, saveMany, clearAll, unavailable } = useCredentials(requiredKeys);
   const [draft, setDraft] = useState<CredentialMap>(values);
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
@@ -109,11 +104,11 @@ export function CredentialsSheet({
                 CREDENTIALS · NOTHING LEAVES YOUR BROWSER
               </div>
               <Dialog.Title className="mt-1 text-[15px] font-semibold tracking-tight text-[color:var(--color-text)]">
-                {demoTitle} · {requiredKeys.length} keys
+                {demoTitle} · LiveKit credentials
               </Dialog.Title>
               <Dialog.Description className="mt-1 text-[12.5px] text-[color:var(--color-text-mute)]">
-                LiveKit creds mint the room token in the browser. The rest travel to your local
-                agent via participant attributes when the call starts.
+                LiveKit creds mint the room token in your browser. Provider keys (OpenAI,
+                ElevenLabs, etc.) live in your local agent&apos;s .env.
               </Dialog.Description>
             </div>
             <Dialog.Close

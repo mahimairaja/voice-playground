@@ -7,7 +7,6 @@ const validPayload = {
     description: 'Takes a coffee order, modifies items mid-flow, totals the cart.',
     who_for: 'Cafes that want voice ordering without ripping out their POS.',
     recording_url: null,
-    required_credentials: ['livekit_url'],
     ui_components: ['Order'],
   },
 };
