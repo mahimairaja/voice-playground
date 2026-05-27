@@ -6,6 +6,7 @@
     "node": "20.x"
   },
   "scripts": {
+    "predev": "node scripts/sync-demos.mjs",
     "dev": "next dev --turbopack",
     "prebuild": "node scripts/sync-demos.mjs",
     "build": "next build",

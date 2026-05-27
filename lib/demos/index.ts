@@ -1,6 +1,5 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import 'server-only';
+import bakedRaw from './_generated.json';
 import {
   REFERENCE_CATEGORIES,
   REFERENCE_CORKBOARD_CARDS,
@@ -13,90 +12,60 @@ import {
 import { type DemoManifest, DemoManifestSchema } from './schema';
 
 /**
- * Loader output. The on-disk schema allows 'slug' to be omitted (in which case
- * the folder name is the slug). The loader normalizes that, so consumers can
+ * Loader output. The schema allows 'slug' to be omitted (in which case the
+ * folder name is the slug); the bake step normalizes that, so consumers can
  * rely on 'slug' always being present.
  */
 export type LoadedDemoManifest = DemoManifest & { slug: string };
 
 /**
- * Build-time loader for demo manifests.
+ * Build-time demo manifests, baked from the awesome-voice-apps cookbook by
+ * 'scripts/sync-demos.mjs' (the 'prebuild' hook) into
+ * 'lib/demos/_generated.json'. The loader imports that JSON statically so
+ * the manifests ride along inside the deploy artifacts: a Vercel serverless
+ * function does not have access to the sibling clone target at runtime, so
+ * any 'fs.readdirSync(<sibling>)' read would silently return empty and fall
+ * back to the reference seed.
  *
- * Reads every '<sibling>/awesome-voice-apps/demos/<slug>/playground.json',
- * validates against 'DemoManifestSchema', and exposes typed accessors. The
- * read happens once at module init, so 'pnpm build' fails fast if any
- * manifest is malformed.
- *
- * If the sibling repo is not present (e.g. in a Vercel build that does not
- * fetch awesome-voice-apps), the loader logs a warning and returns no
- * manifests rather than crashing. The deploy task (T31) will arrange for
- * the sibling to be available at build time.
+ * If the bake step did not run (e.g. someone hand-typechecked without the
+ * sibling repo cloned), '_generated.json' starts as '[]' and the loader
+ * falls back to the reference seed. The build is always paired with a
+ * fresh bake, so production deploys always carry the latest manifests.
  */
-const DEMOS_ROOT = path.resolve(process.cwd(), '..', 'awesome-voice-apps', 'demos');
-
-function loadAllManifests(): LoadedDemoManifest[] {
-  if (!fs.existsSync(DEMOS_ROOT)) {
-    console.warn(
-      `[lib/demos] No demo manifests loaded: '${DEMOS_ROOT}' does not exist. ` +
-        'Demo pages will be empty until the sibling awesome-voice-apps repo is in place.'
-    );
-    return [];
-  }
-
-  const entries = fs.readdirSync(DEMOS_ROOT, { withFileTypes: true });
-  const manifests: LoadedDemoManifest[] = [];
-
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-    if (entry.name.startsWith('.') || entry.name.startsWith('_')) continue;
-
-    const manifestPath = path.join(DEMOS_ROOT, entry.name, 'playground.json');
-    if (!fs.existsSync(manifestPath)) continue;
-
-    const raw = fs.readFileSync(manifestPath, 'utf-8');
-
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(raw);
-    } catch (err) {
-      throw new Error(
-        `Demo manifest at ${manifestPath} is not valid JSON: ${(err as Error).message}`
-      );
-    }
-
-    const result = DemoManifestSchema.safeParse(parsed);
+function validateAll(raw: unknown[]): LoadedDemoManifest[] {
+  const out: LoadedDemoManifest[] = [];
+  for (const entry of raw) {
+    const result = DemoManifestSchema.safeParse(entry);
     if (!result.success) {
       const issues = result.error.issues
         .map((i) => `  - ${i.path.join('.') || '<root>'}: ${i.message}`)
         .join('\n');
-      throw new Error(`Demo manifest at ${manifestPath} failed validation:\n${issues}`);
+      const slugHint =
+        typeof (entry as { slug?: unknown })?.slug === 'string'
+          ? ` (slug '${(entry as { slug: string }).slug}')`
+          : '';
+      throw new Error(`Demo manifest failed validation${slugHint}:\n${issues}`);
     }
-
-    const slug = result.data.slug ?? entry.name;
-    if (result.data.slug && result.data.slug !== entry.name) {
+    const slug = result.data.slug;
+    if (!slug || slug.length === 0) {
       throw new Error(
-        `Demo manifest at ${manifestPath} declares slug '${result.data.slug}' ` +
-          `but lives in folder '${entry.name}'. Either omit slug (folder name wins) or match.`
+        "Baked demo manifest is missing 'slug'. 'scripts/sync-demos.mjs' must inject the folder name."
       );
     }
-
-    manifests.push({ ...result.data, slug });
+    out.push({ ...result.data, slug });
   }
-
-  manifests.sort((a, b) => a.slug.localeCompare(b.slug));
-  return manifests;
+  out.sort((a, b) => a.slug.localeCompare(b.slug));
+  return out;
 }
 
 function asLoaded(m: DemoManifest): LoadedDemoManifest {
   if (!m.slug || m.slug.length === 0) {
-    throw new Error(
-      "DemoManifest is missing 'slug'. Either declare it in the manifest or load via 'loadAllManifests' so the folder name is injected."
-    );
+    throw new Error("DemoManifest is missing 'slug'.");
   }
   return { ...m, slug: m.slug };
 }
 
-const REAL_DEMOS: readonly LoadedDemoManifest[] = loadAllManifests();
+const REAL_DEMOS: readonly LoadedDemoManifest[] = validateAll(bakedRaw as unknown[]);
 const USING_REFERENCE_SEED = REAL_DEMOS.length === 0;
 const ALL_DEMOS: readonly LoadedDemoManifest[] = USING_REFERENCE_SEED
   ? [asLoaded(REFERENCE_DEMO_MANIFEST)]
