@@ -74,7 +74,7 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
             card, run the agent locally, start the call.
           </p>
         </div>
-        {categories.length > 0 ? (
+        {categories.length > 1 ? (
           <nav
             aria-label="Filter by category"
             className="flex max-w-md flex-wrap items-center justify-end gap-2"

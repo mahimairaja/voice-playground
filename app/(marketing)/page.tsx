@@ -43,7 +43,7 @@ export default async function HomePage() {
           <p className="mt-5 max-w-[48ch] text-[15px] leading-[1.6] text-[color:var(--color-text-dim)]">
             A browser surface for voice agents from the awesome-voice-apps cookbook. Bring your own
             LiveKit credentials, run the agent locally with{' '}
-            <code className="font-mono text-[13px] text-[color:var(--color-accent)]">
+            <code className="rounded-[var(--radius-input)] bg-[color:var(--color-surface-2)] px-[6px] py-[2px] font-mono text-[12.5px] text-[color:var(--color-text)]">
               uv run python agent.py dev
             </code>
             , talk to it here. Nothing leaves the browser.
@@ -197,8 +197,8 @@ function PlannedCard({ demo }: { demo: PlannedDemo }) {
 function Step({ number, title, body }: { number: string; title: string; body: string }) {
   return (
     <div className="rounded-[var(--radius-panel)] border border-[color:var(--color-border-dim)] p-4">
-      <span className="font-mono text-[10px] tracking-[0.06em] text-[color:var(--color-accent)] uppercase">
-        {number} ·
+      <span className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-accent)] uppercase">
+        {number}
       </span>
       <h3 className="mt-1 text-[14px] font-semibold tracking-tight text-[color:var(--color-text)]">
         {title}
