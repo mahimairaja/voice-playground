@@ -18,45 +18,55 @@ When the operator opens a fresh session and asks for help, default to **brainsto
 
 ## Tech stack
 
-| Layer           | Choice                                                                                               |
-| --------------- | ---------------------------------------------------------------------------------------------------- |
-| Framework       | Next.js 15 App Router, React 19, TypeScript                                                          |
-| Package manager | pnpm (never npm or yarn)                                                                             |
-| Styling         | Tailwind v4 plus brand.css primitives. shadcn registry at `components/ui/`. `@agents-ui/*` registry. |
-| Validation      | zod (manifest schema, UI-event envelope, token route body)                                           |
-| State           | zustand (the generative-UI store only). React state everywhere else.                                 |
-| Theming         | Light-only app surfaces. `body.clean` keeps the sketchy/clean mode toggle via `lib/mode.ts`.         |
-| Voice runtime   | livekit-client plus `@livekit/components-react`. Visitor-supplied LiveKit URL/key/secret.            |
-| Hosting         | Vercel Hobby tier, Node 20 pin via `package.json#engines.node` and `vercel.json`.                    |
+| Layer           | Choice                                                                                                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework       | Next.js 15 App Router, React 19, TypeScript                                                                                                             |
+| Package manager | pnpm (never npm or yarn)                                                                                                                                |
+| Styling         | Tailwind v4 with the F1 dark + cyan tokens. shadcn registry at `components/ui/`. `@agents-ui/*` lives in `components/agents-ui/`.                       |
+| Design tokens   | `lib/design/tokens.ts` is the source of truth (palette, radius, spacing). `styles/globals.css` mirrors values into a Tailwind v4 `@theme inline` block. |
+| Fonts           | Geist + Geist Mono, loaded once in `app/layout.tsx` via `next/font/google`. No other web fonts.                                                         |
+| Validation      | zod (manifest schema, UI-event envelope, token route body, credentials types)                                                                           |
+| State           | zustand (the generative-UI store only). React state everywhere else.                                                                                    |
+| Theming         | Dark only. `<html class="dark">` is forced; there is no light theme and no system-preference switch.                                                    |
+| Voice runtime   | livekit-client plus `@livekit/components-react`. Visitor-supplied LiveKit URL/key/secret.                                                               |
+| Hosting         | Vercel Hobby tier, Node 20 pin via `package.json#engines.node` and `vercel.json`.                                                                       |
+| Tests           | Vitest (jsdom) for pure modules only. No RTL, no Playwright in CI.                                                                                      |
 
 The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`, NOT in this repo. The playground only ships the visitor-side client.
 
 ## Hard constraints
 
-- **Brand assets are in place. Do not regenerate `public/brand/goat.svg`, `styles/brand.css`, the favicon set, or `public/og-image.png`.** Source of truth for design is `.brand/mahimai-wireframes.html`.
-- **Do not edit `styles/brand.css` directly.** It mirrors the wireframes verbatim. Theme overrides go in `styles/globals.css` (the `@theme inline` block) or via the `brand-accent` opt-in class for elements that need terracotta where shadcn overrode `--accent`.
-- **No demo-specific React components in this repo.** `components/demos/<slug>/*` is reserved for the per-demo bundles that ship in M2. The current iteration only provides the registry, dispatcher, and Canvas; bundles register themselves.
+- **`lib/design/tokens.ts` is the design source of truth.** Every color, radius, spacing stop comes from there and is mirrored into `styles/globals.css`'s `@theme inline` block. Anything beyond the documented palette (`--color-bg`, `--color-surface`, `--color-text*`, `--color-accent`, `--color-warning`, `--color-danger`) needs an explicit reason in the PR.
+- **Single accent: cyan `#2DD4BF`.** Used only for primary CTAs, live-state indicators, the active-route underline, and per-surface highlights.
+- **Dark only.** No light theme, no `body.clean` toggle, no system-preference switch. `<html class="dark">` is forced in `app/layout.tsx`.
+- **Type: Geist + Geist Mono only.** Loaded once in `app/layout.tsx` via `next/font/google`. Do not introduce Caveat, Kalam, JetBrains Mono, or any other web font.
+- **No wireframe primitives.** `styles/brand.css`, `.brand`/`.box`/`.tab`/`.chip`/`.stamp`/`.h-hand`/`.p-hand` classes, paper-grid backgrounds, pushpins, scotch tape, stamps, and hand-drawn arrows are gone. Do not reintroduce them.
+- **`references/*.html` is historical only.** The wireframe HTML files are kept for archival reference. Do not consume them at runtime, do not reformat them with Prettier (they are in `.prettierignore`).
+- **No demo-specific React components in this repo.** `components/demos/<slug>/*` is reserved for the per-demo bundles that ship in F1.3. The current iteration only provides the registry, dispatcher, and Canvas; bundles register themselves.
 - **No backticks in shell prompts you suggest the operator paste.**
-- **No em dashes anywhere.** Use colons, periods, semicolons, or parentheses. The wireframes contain em dashes; the rule still applies.
+- **No em dashes anywhere.** Use colons, periods, semicolons, or parentheses.
 - **No `Co-Authored-By: Claude` trailers, no `Generated with Claude Code` footer, no robot emoji, no AI attribution.** Commits read as if Mahimai authored them directly.
-- The API route `app/api/token/route.ts` is the only server-side code. It mints LiveKit AccessTokens from visitor-pasted credentials and never logs or persists them.
+- The API route `app/api/token/route.ts` is the only server-side code. It mints LiveKit AccessTokens from visitor-pasted credentials and never logs or persists them. F1.2 deletes this route and moves token minting to the client.
 
 ## File conventions
 
-- `app/(marketing)/` is the marketing route group: `/` (landing) and `/about`. Both server-rendered, brand.css primitives only.
+- `app/(marketing)/` is the marketing route group: `/` (landing) and `/about`. Server-rendered.
 - `app/demos/page.tsx` is the demo index with a URL-driven category filter.
 - `app/demos/[slug]/page.tsx` is the per-demo page. Uses `generateStaticParams` from `getAllDemos()` and `dynamicParams = false`, so unknown slugs 404 at the route layer.
-- `app/api/token/route.ts` is the only API route.
-- `app/error.tsx` (client) and `app/not-found.tsx` (server) are brand-styled.
-- `app/layout.tsx` mounts the brand chrome (`TopBar`, `Script` for the clean-mode pre-paint) and `generateMetadata` for icons / OG.
-- `components/brand/` is brand chrome: `Logo`, `TopBar`, `Footer`. All consume brand.css primitive classes.
-- `components/playground/` is the demo runtime: `CredentialsDrawer`, `CredentialsBanner`, `VoiceSurface`, `Transcript`. Coordinates the visitor session.
+- `app/maintenance/page.tsx` is the dark-themed maintenance landing (App Router route, replaces the deleted `public/maintenance.html`).
+- `app/api/token/route.ts` is the only API route. Removed in F1.2 (client-side token mint).
+- `app/error.tsx` (client) and `app/not-found.tsx` (server) are dark-themed.
+- `app/layout.tsx` mounts `<PlaygroundHeader>` and `<PlaygroundFooter>`, forces the `dark` class on `<html>`, loads Geist + Geist Mono, and configures `generateMetadata`.
+- `components/layout/` is the global chrome: `PlaygroundHeader`, `PlaygroundFooter`.
+- `components/credentials/` is the per-demo keys UI: `CredentialsSheet`, `CredentialsButton`. The sheet listens for `CRED_OPEN_DRAWER_EVENT` so any other surface can ask it to open.
+- `components/playground/` is the demo runtime: `DemoRuntime`, `VoiceSurface`, `Transcript`. Coordinates the visitor session.
 - `components/generative/Canvas.tsx` reads from the dispatcher store and renders per-demo components via the registry.
 - `components/agents-ui/` is the upstream LiveKit `@agents-ui/*` registry. Edit in place if you must, but `pnpm shadcn:install` will overwrite. Prefer Tailwind class overrides on the consuming side.
-- `lib/demos/` is the build-time manifest loader. `server-only` guarded.
-- `lib/credentials/` is the localStorage store plus the optional async provider ping.
+- `lib/design/tokens.ts` is the design-token source of truth.
+- `lib/demos/` is the build-time manifest loader. `server-only` guarded. Exports `LoadedDemoManifest` (slug always present).
+- `lib/credentials/` is the localStorage store (`store.ts` per-key prefix `mahimai_playground:cred:<name>`), the optional provider ping (`validate.ts`), and the React hook (`useCredentials.ts`).
 - `lib/generative-ui/` is the protocol schema, registry, and dispatcher.
-- `lib/mode.ts`, `lib/utils.ts` are app-wide utilities.
+- `lib/utils.ts` is app-wide utilities.
 
 ## Commands
 
@@ -68,8 +78,9 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 | `pnpm lint`           | ESLint plus Next core-web-vitals plus prettier.                                       |
 | `pnpm format`         | Prettier write. Use `pnpm exec prettier --write <file>` to format a single file.      |
 | `pnpm shadcn:install` | Re-pull every `@agents-ui/*` component from the registry. Prompts before overwriting. |
+| `pnpm test`           | Run the Vitest pure-module suite (`lib/credentials/*.test.ts`).                       |
 
-There is no test suite. CI runs `lint`, `format:check`, and `build`. Smoke tests are manual (per `.agents/TODO.md` Phase 9).
+CI runs `lint`, `format:check`, `test`, and `build`. Component / E2E smoke is still manual.
 
 ## Required env vars
 

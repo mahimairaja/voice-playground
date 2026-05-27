@@ -11,14 +11,14 @@ import {
 import { AgentAudioVisualizerBar } from '@/components/agents-ui/agent-audio-visualizer-bar';
 import { Transcript } from '@/components/playground/Transcript';
 import { type SessionState, useDemoSession } from '@/hooks/useDemoSession';
-import { type DemoManifest } from '@/lib/demos/schema';
+import { type LoadedDemoManifest } from '@/lib/demos';
 import { type DemoSurface, parseRoomSurfaceMetadata } from '@/lib/demos/surface';
 import { useUiDispatcher, useUiStore } from '@/lib/generative-ui/dispatcher';
 import { resolve } from '@/lib/generative-ui/registry';
 import { cn } from '@/lib/shadcn/utils';
 
 interface VoiceSurfaceProps {
-  demo: DemoManifest;
+  demo: LoadedDemoManifest;
   requiredCredentials: readonly string[];
   surface: DemoSurface;
   onSurfaceChange: (surface: DemoSurface) => void;
@@ -94,7 +94,7 @@ function RoomMetadataBinding({
 }
 
 interface ReferenceSurfaceProps {
-  demo: DemoManifest;
+  demo: LoadedDemoManifest;
   surface: DemoSurface;
   state: SessionState;
   error: Error | null;

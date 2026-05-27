@@ -8,34 +8,29 @@ export const metadata: Metadata = {
 
 export default function NotFoundPage() {
   return (
-    <main className="mx-auto flex max-w-3xl flex-col items-start px-6 pt-28 pb-16">
-      <div className="ab brand-accent relative w-full">
-        <div className="ab-head">
-          <span className="label">/404</span>
-          <span className="meta">page not found</span>
-        </div>
-        <div className="ab-body" style={{ padding: 28 }}>
-          <p className="tiny-mono">{'// no-route'}</p>
-          <h1 className="h-hand xxl mt-3 leading-[0.95]">
-            That page <br />
-            doesn&apos;t live <br />
-            here.
-          </h1>
-          <p className="p-hand mt-5 max-w-md">
-            We may have moved it, the link may be old, or the URL may be a typo. Either way, the
-            playground keeps working.
-          </p>
-          <div className="line wavy mt-5 max-w-xs"></div>
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            <Link href="/" className="btn accent brand-accent">
-              Back to home →
-            </Link>
-            <Link href="/demos" className="btn">
-              Try a demo →
-            </Link>
-          </div>
-        </div>
-        <span className="stamp">404 · NOT FOUND</span>
+    <main className="mx-auto flex max-w-[520px] flex-col gap-4 px-6 py-24">
+      <span className="font-mono text-[10.5px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
+        {'// 404 · NO ROUTE'}
+      </span>
+      <h1 className="text-[28px] font-semibold tracking-tight text-[color:var(--color-text)]">
+        That page doesn&apos;t live here.
+      </h1>
+      <p className="text-[14px] text-[color:var(--color-text-dim)]">
+        We may have moved it, or the URL is a typo. The playground keeps working.
+      </p>
+      <div className="mt-4 flex items-center gap-3">
+        <Link
+          href="/demos"
+          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13px] font-semibold text-black hover:opacity-90"
+        >
+          → Back to demos
+        </Link>
+        <Link
+          href="/"
+          className="rounded-[var(--radius-button)] border border-[color:var(--color-border)] px-4 py-2 text-[13px] text-[color:var(--color-text)] hover:border-[color:var(--color-border-strong)]"
+        >
+          Home
+        </Link>
       </div>
     </main>
   );

@@ -26,6 +26,8 @@
 # misc
 .DS_Store
 *.pem
+.superpowers
+/screenshots
 
 # debug
 npm-debug.log*

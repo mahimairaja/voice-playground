@@ -1,11 +1,17 @@
 import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 import { headers } from 'next/headers';
-import Script from 'next/script';
-import { TopBar } from '@/components/brand/TopBar';
-import { PRE_PAINT_MODE_SCRIPT } from '@/lib/mode';
+import { PlaygroundFooter } from '@/components/layout/PlaygroundFooter';
+import { PlaygroundHeader } from '@/components/layout/PlaygroundHeader';
 import { getAppConfig, getStyles } from '@/lib/utils';
-import '@/styles/brand.css';
 import '@/styles/globals.css';
+
+const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans', display: 'swap' });
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
+  display: 'swap',
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const hdrs = await headers();
@@ -49,14 +55,12 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   const styles = getStyles(appConfig);
 
   return (
-    <html lang="en" suppressHydrationWarning className="scroll-smooth font-sans antialiased">
+    <html lang="en" className={`dark ${geistSans.variable} ${geistMono.variable}`}>
       <head>{styles && <style>{styles}</style>}</head>
-      <body className="overflow-x-hidden">
-        <Script id="mahimai-mode-pre-paint" strategy="beforeInteractive">
-          {PRE_PAINT_MODE_SCRIPT}
-        </Script>
-        <TopBar />
-        {children}
+      <body className="bg-[color:var(--color-bg)] text-[color:var(--color-text)] antialiased">
+        <PlaygroundHeader />
+        <main className="min-h-[calc(100dvh-56px-44px)]">{children}</main>
+        <PlaygroundFooter />
       </body>
     </html>
   );

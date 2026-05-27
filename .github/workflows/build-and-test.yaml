@@ -29,5 +29,8 @@ jobs:
       - name: Prettier
         run: pnpm format:check
 
+      - name: Vitest
+        run: pnpm test
+
       - name: Ensure build succeeds
         run: pnpm build

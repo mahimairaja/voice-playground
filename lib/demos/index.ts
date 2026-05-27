@@ -13,6 +13,13 @@ import {
 import { type DemoManifest, DemoManifestSchema } from './schema';
 
 /**
+ * Loader output. The on-disk schema allows 'slug' to be omitted (in which case
+ * the folder name is the slug). The loader normalizes that, so consumers can
+ * rely on 'slug' always being present.
+ */
+export type LoadedDemoManifest = DemoManifest & { slug: string };
+
+/**
  * Build-time loader for demo manifests.
  *
  * Reads every '<sibling>/awesome-voice-apps/demos/<slug>/playground.json',
@@ -27,7 +34,7 @@ import { type DemoManifest, DemoManifestSchema } from './schema';
  */
 const DEMOS_ROOT = path.resolve(process.cwd(), '..', 'awesome-voice-apps', 'demos');
 
-function loadAllManifests(): DemoManifest[] {
+function loadAllManifests(): LoadedDemoManifest[] {
   if (!fs.existsSync(DEMOS_ROOT)) {
     console.warn(
       `[lib/demos] No demo manifests loaded: '${DEMOS_ROOT}' does not exist. ` +
@@ -37,7 +44,7 @@ function loadAllManifests(): DemoManifest[] {
   }
 
   const entries = fs.readdirSync(DEMOS_ROOT, { withFileTypes: true });
-  const manifests: DemoManifest[] = [];
+  const manifests: LoadedDemoManifest[] = [];
 
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
@@ -65,27 +72,32 @@ function loadAllManifests(): DemoManifest[] {
       throw new Error(`Demo manifest at ${manifestPath} failed validation:\n${issues}`);
     }
 
-    if (result.data.slug !== entry.name) {
+    const slug = result.data.slug ?? entry.name;
+    if (result.data.slug && result.data.slug !== entry.name) {
       throw new Error(
         `Demo manifest at ${manifestPath} declares slug '${result.data.slug}' ` +
-          `but lives in folder '${entry.name}'. The two must match.`
+          `but lives in folder '${entry.name}'. Either omit slug (folder name wins) or match.`
       );
     }
 
-    manifests.push(result.data);
+    manifests.push({ ...result.data, slug });
   }
 
   manifests.sort((a, b) => a.slug.localeCompare(b.slug));
   return manifests;
 }
 
-const REAL_DEMOS: readonly DemoManifest[] = loadAllManifests();
+function asLoaded(m: DemoManifest): LoadedDemoManifest {
+  return { ...m, slug: m.slug ?? '' };
+}
+
+const REAL_DEMOS: readonly LoadedDemoManifest[] = loadAllManifests();
 const USING_REFERENCE_SEED = REAL_DEMOS.length === 0;
-const ALL_DEMOS: readonly DemoManifest[] = USING_REFERENCE_SEED
-  ? [REFERENCE_DEMO_MANIFEST]
+const ALL_DEMOS: readonly LoadedDemoManifest[] = USING_REFERENCE_SEED
+  ? [asLoaded(REFERENCE_DEMO_MANIFEST)]
   : REAL_DEMOS;
 
-export function getAllDemos(): readonly DemoManifest[] {
+export function getAllDemos(): readonly LoadedDemoManifest[] {
   return ALL_DEMOS;
 }
 
@@ -93,11 +105,11 @@ export function isUsingReferenceSeed(): boolean {
   return USING_REFERENCE_SEED;
 }
 
-export function getDemoBySlug(slug: string): DemoManifest | undefined {
+export function getDemoBySlug(slug: string): LoadedDemoManifest | undefined {
   return ALL_DEMOS.find((demo) => demo.slug === slug);
 }
 
-export function getDemosByCategory(category: string): readonly DemoManifest[] {
+export function getDemosByCategory(category: string): readonly LoadedDemoManifest[] {
   return ALL_DEMOS.filter((demo) => demo.category === category);
 }
 

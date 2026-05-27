@@ -5,10 +5,13 @@ pnpm-lock.yaml
 .next/
 .env*
 
-# Design source-of-truth: brand.css mirrors the wireframes verbatim
-# (see CLAUDE.md), and references/ holds the original wireframe HTML.
-styles/brand.css
+# Design source-of-truth: references/ holds the original wireframe HTML
+# kept for archival only (see CLAUDE.md). brand.css was removed in F1.1.
 references/
+
+# Brainstorm scratch — mockups served by the superpowers brainstorming
+# companion. Local-only, not checked in.
+.superpowers/
 
 
 

@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Room, RoomEvent } from 'livekit-client';
-import type { RejectionDetail } from '@/components/playground/CredentialsBanner';
 import { type CredentialMap, getCredentials } from '@/lib/credentials/store';
+import type { RejectionDetail } from '@/lib/credentials/types';
 import { missingCredentials } from '@/lib/credentials/validate';
 
 export type SessionState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
