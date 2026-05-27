@@ -121,7 +121,7 @@ interface CategoryChipProps {
 
 function CategoryChip({ label, href, active }: CategoryChipProps) {
   const classes = active
-    ? 'bg-[color:var(--color-accent)] text-black border-[color:var(--color-accent)]'
+    ? 'bg-[color:var(--color-accent)] text-[color:var(--color-bg)] border-[color:var(--color-accent)]'
     : 'border-[color:var(--color-border)] text-[color:var(--color-text-mute)] hover:border-[color:var(--color-border-strong)] hover:text-[color:var(--color-text)]';
   return (
     <Link

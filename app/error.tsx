@@ -42,7 +42,7 @@ export default function RouteError({ error, reset }: RouteErrorProps) {
         <button
           type="button"
           onClick={() => reset()}
-          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13px] font-semibold text-black hover:opacity-90"
+          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13px] font-semibold text-[color:var(--color-bg)] hover:opacity-90"
         >
           → Try again
         </button>

@@ -28,7 +28,7 @@ export default function HomePage() {
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link
               href="/demos"
-              className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13.5px] font-semibold text-black hover:opacity-90"
+              className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13.5px] font-semibold text-[color:var(--color-bg)] hover:opacity-90"
             >
               → Open demos
             </Link>
