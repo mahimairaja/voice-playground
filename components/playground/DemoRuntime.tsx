@@ -8,11 +8,10 @@ import { AgentCanvas } from '@/components/playground/AgentCanvas';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
 import { VoicePanel } from '@/components/playground/VoicePanel';
 import { useDemoSession } from '@/hooks/useDemoSession';
+import { LIVEKIT_KEYS } from '@/lib/credentials/store';
 import { useCredentials } from '@/lib/credentials/useCredentials';
 import type { ShippedDemo } from '@/lib/demos';
 import { useUiDispatcher } from '@/lib/generative-ui/dispatcher';
-
-const LIVEKIT_CREDENTIALS = ['livekit_url', 'livekit_api_key', 'livekit_api_secret'] as const;
 
 interface DemoRuntimeProps {
   demo: ShippedDemo;
@@ -32,12 +31,8 @@ interface DemoRuntimeProps {
  * can hit LiveKit hooks without per-component room threading.
  */
 export function DemoRuntime({ demo }: DemoRuntimeProps) {
-  const requiredCredentials = Array.from(
-    new Set([...demo.required_credentials, ...LIVEKIT_CREDENTIALS])
-  );
-
-  const session = useDemoSession({ slug: demo.slug, requiredCredentials });
-  const { isReady } = useCredentials(requiredCredentials);
+  const session = useDemoSession({ slug: demo.slug });
+  const { isReady } = useCredentials(LIVEKIT_KEYS);
 
   // Subscribe the dispatcher store to the LiveKit data channel; clears on
   // slug change (handled inside the hook).
@@ -62,7 +57,7 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
           </div>
           <div className="flex items-center gap-3">
             <CookbookSourceLink slug={demo.slug} variant="chip" />
-            <CredentialsButton requiredKeys={requiredCredentials} demoTitle={demo.title} />
+            <CredentialsButton demoTitle={demo.title} />
           </div>
         </div>
 

@@ -1,6 +1,9 @@
 /**
- * Browser-only credentials store. Visitor-pasted provider keys live in
- * localStorage under the namespace 'mahimai_playground:cred:<key>'. Nothing
+ * Browser-only credentials store. The playground only ever asks the visitor
+ * for the three 'LIVEKIT_KEYS' (livekit_url, livekit_api_key,
+ * livekit_api_secret) and persists them in localStorage under the namespace
+ * 'mahimai_playground:cred:<key>'. Provider keys (OpenAI, Deepgram,
+ * ElevenLabs, etc.) live in the agent developer's '.env', not here. Nothing
  * is sent to a server, nothing is logged. Closing the tab keeps the keys;
  * clearing site data wipes them.
  *
@@ -10,6 +13,14 @@
  */
 
 export const CRED_PREFIX = 'mahimai_playground:cred:';
+
+/**
+ * The three LiveKit credentials are the only keys the playground ever asks the
+ * visitor to paste. Provider keys (OpenAI, Deepgram, ElevenLabs, etc.) live in
+ * the agent's own '.env' on the developer's machine. Consumers should import
+ * this constant rather than re-declaring it locally.
+ */
+export const LIVEKIT_KEYS = ['livekit_url', 'livekit_api_key', 'livekit_api_secret'] as const;
 
 /**
  * Fired on the window after any 'saveCredentials' or 'clearAll' call so

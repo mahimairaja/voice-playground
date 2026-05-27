@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Room, RoomEvent } from 'livekit-client';
-import { type CredentialMap, getCredentials } from '@/lib/credentials/store';
+import { LIVEKIT_KEYS, getCredentials } from '@/lib/credentials/store';
 import type { RejectionDetail } from '@/lib/credentials/types';
 import { missingCredentials } from '@/lib/credentials/validate';
 import { MintTokenError, mintToken } from '@/lib/livekit/mintToken';
@@ -11,7 +11,6 @@ export type SessionState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 
 export interface UseDemoSessionOptions {
   slug: string;
-  requiredCredentials: readonly string[];
 }
 
 export interface UseDemoSessionReturn {
@@ -24,8 +23,6 @@ export interface UseDemoSessionReturn {
   setRejected: (detail: RejectionDetail | null) => void;
 }
 
-const LIVEKIT_KEYS = ['livekit_url', 'livekit_api_key', 'livekit_api_secret'] as const;
-
 class MissingCredentialsError extends Error {
   constructor(public readonly missing: readonly string[]) {
     super(`Missing required keys: ${missing.join(', ')}.`);
@@ -33,25 +30,7 @@ class MissingCredentialsError extends Error {
   }
 }
 
-/**
- * Returns the non-LiveKit credentials as a string map, suitable for
- * 'localParticipant.setAttributes'. The agent worker (F1.3) reads these to
- * configure its STT/LLM/TTS clients without needing its own .env.
- */
-function extractAgentAttributes(creds: CredentialMap): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const [key, value] of Object.entries(creds)) {
-    if (key.startsWith('livekit_')) continue;
-    if (!value || value.length === 0) continue;
-    out[key] = value;
-  }
-  return out;
-}
-
-export function useDemoSession({
-  slug,
-  requiredCredentials,
-}: UseDemoSessionOptions): UseDemoSessionReturn {
+export function useDemoSession({ slug }: UseDemoSessionOptions): UseDemoSessionReturn {
   const [state, setState] = useState<SessionState>('idle');
   const [error, setError] = useState<Error | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
@@ -87,14 +66,14 @@ export function useDemoSession({
     setRejectedState(null);
     setState('connecting');
 
+    let pendingRoom: Room | null = null;
     try {
-      const allRequired = Array.from(new Set([...LIVEKIT_KEYS, ...requiredCredentials]));
-      const missing = missingCredentials(allRequired);
+      const missing = missingCredentials(LIVEKIT_KEYS);
       if (missing.length > 0) {
         throw new MissingCredentialsError(missing);
       }
 
-      const creds = getCredentials(allRequired);
+      const creds = getCredentials(LIVEKIT_KEYS);
       const tokenResponse = await mintToken({
         livekit_url: creds.livekit_url,
         livekit_api_key: creds.livekit_api_key,
@@ -103,6 +82,7 @@ export function useDemoSession({
       });
 
       const r = new Room();
+      pendingRoom = r;
 
       r.on(RoomEvent.Disconnected, () => {
         if (roomRef.current === r) {
@@ -113,29 +93,29 @@ export function useDemoSession({
       });
 
       await r.connect(tokenResponse.wsUrl, tokenResponse.token);
-
-      const agentAttributes = extractAgentAttributes(creds);
-      if (Object.keys(agentAttributes).length > 0) {
-        try {
-          await r.localParticipant.setAttributes(agentAttributes);
-        } catch {
-          /* attribute publish is advisory: the agent template falls back to .env */
-        }
-      }
-
       await r.localParticipant.setMicrophoneEnabled(true);
 
       roomRef.current = r;
       setRoom(r);
       setState('live');
     } catch (err) {
+      // If a Room was constructed but never reached roomRef (connect or
+      // setMicrophoneEnabled threw partway through), dispose it explicitly.
+      // teardown() reads roomRef.current and would otherwise leak this one.
+      if (pendingRoom && roomRef.current !== pendingRoom) {
+        try {
+          await pendingRoom.disconnect();
+        } catch {
+          /* ignore disconnect failures during cleanup */
+        }
+      }
       await teardown('error');
       const e = err instanceof Error ? err : new Error('Unknown error connecting to session.');
       setError(e);
     } finally {
       inFlightRef.current = false;
     }
-  }, [slug, requiredCredentials, state, teardown]);
+  }, [slug, state, teardown]);
 
   const disconnect = useCallback(async () => {
     if (state !== 'live' && state !== 'connecting') return;

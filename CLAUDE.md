@@ -4,12 +4,12 @@ Operating instructions for any Claude session working in this repo. Auto loaded 
 
 ## What this repo is
 
-A standalone voice playground. Public site at `playground.mahimai.ca`. A Next.js 15 frontend that lets visitors talk to the voice agents catalogued in the sister repo `awesome-voice-apps`. The catalog is fetched at runtime from `raw.githubusercontent.com/mahimairaja/awesome-voice-apps/main/catalog.json` with a 5-minute Next.js cache. Visitors bring their own provider keys, paste them in the per-demo credentials sheet, and the playground mints a short-lived LiveKit token in their browser via `jose` (no server-side route).
+A standalone voice playground. Public site at `playground.mahimai.ca`. A Next.js 15 frontend that lets visitors talk to the voice agents catalogued in the sister repo `awesome-voice-apps`. The catalog is fetched at runtime from `raw.githubusercontent.com/mahimairaja/awesome-voice-apps/main/catalog.json` with a 5-minute Next.js cache. Visitors paste their three LiveKit values (URL, API key, secret) in the credentials sheet and the playground mints a short-lived token in their browser via `jose` (no server-side route). Provider keys (OpenAI, Deepgram, ElevenLabs, etc.) live in the agent's own `.env` on the developer's machine; the playground never touches them.
 
 If a piece of work does not advance one of these, it does not belong in this repo:
 
 1. Render the cookbook (the marketing landing, demo index, per-demo page) with the brand intact.
-2. Connect a visitor to a demo (credentials drawer, token route, voice surface, transcript).
+2. Connect a visitor to a demo (credentials drawer, in-browser JWT signing, voice surface, transcript).
 3. Render the agent's generative UI (canvas plus dispatcher plus per-demo component bundles).
 
 ## Default mode: brainstorm before code
@@ -25,7 +25,7 @@ When the operator opens a fresh session and asks for help, default to **brainsto
 | Styling         | Tailwind v4 with the F1 dark + cyan tokens. shadcn registry at `components/ui/`. `@agents-ui/*` lives in `components/agents-ui/`.                       |
 | Design tokens   | `lib/design/tokens.ts` is the source of truth (palette, radius, spacing). `styles/globals.css` mirrors values into a Tailwind v4 `@theme inline` block. |
 | Fonts           | Geist + Geist Mono, loaded once in `app/layout.tsx` via `next/font/google`. No other web fonts.                                                         |
-| Validation      | zod (manifest schema, UI-event envelope, token route body, credentials types)                                                                           |
+| Validation      | zod (catalog schema, UI-event envelope, credentials types)                                                                                              |
 | State           | zustand (the generative-UI store only). React state everywhere else.                                                                                    |
 | Theming         | Dark only. `<html class="dark">` is forced; there is no light theme and no system-preference switch.                                                    |
 | Voice runtime   | livekit-client plus `@livekit/components-react`. Visitor-supplied LiveKit URL/key/secret.                                                               |
@@ -57,7 +57,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 - `app/error.tsx` (client) and `app/not-found.tsx` (server) are dark-themed.
 - `app/layout.tsx` mounts `<PlaygroundHeader>` and `<PlaygroundFooter>`, forces the `dark` class on `<html>`, loads Geist + Geist Mono, and configures `generateMetadata`.
 - `components/layout/` is the global chrome: `PlaygroundHeader`, `PlaygroundFooter`.
-- `components/credentials/` is the per-demo keys UI: `CredentialsSheet`, `CredentialsButton`. The sheet listens for `CRED_OPEN_DRAWER_EVENT` so any other surface can ask it to open.
+- `components/credentials/` is the LiveKit-keys UI: `CredentialsSheet` (always renders the three `LIVEKIT_KEYS`), `CredentialsButton`. The sheet listens for `CRED_OPEN_DRAWER_EVENT` so any other surface can ask it to open.
 - `components/playground/` is the demo runtime: `DemoRuntime`, `VoicePanel`, `AgentCanvas`, `AgentCanvasEmpty`, `SessionTimer`, `Transcript`, `CookbookSourceLink`, `CatalogError`. Two-pane layout (voice left, agent canvas right).
 - `components/generative/Canvas.tsx` reads from the dispatcher store and renders per-demo components via the registry.
 - `components/agents-ui/` is the upstream LiveKit `@agents-ui/*` registry. Edit in place if you must, but `pnpm shadcn:install` will overwrite. Prefer Tailwind class overrides on the consuming side.
@@ -65,7 +65,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 - `lib/cookbook/` is the runtime catalog fetcher: `schema.ts` (zod mirror of `catalog.schema.json`), `manifest.ts` (`fetchCatalog`, `CatalogFetchError`, 5-minute `next: { revalidate }`), `url.ts` (URL constants, `demoSourceUrl`).
 - `lib/demos/` is a thin adapter over the cookbook fetcher: `index.ts` (`getAllShipped`, `getAllPlanned`, `getAllDemos`, `getShippedBySlug`, `getDemoCategories`), `planned.ts` (hand-curated upcoming demos).
 - `lib/livekit/mintToken.ts` mints the LiveKit JWT in the browser via `jose`.
-- `lib/credentials/` is the localStorage store (`store.ts` per-key prefix `mahimai_playground:cred:<name>`), the optional provider ping (`validate.ts`), and the React hook (`useCredentials.ts`).
+- `lib/credentials/` is the localStorage store (`store.ts` per-key prefix `mahimai_playground:cred:<name>`, exports `LIVEKIT_KEYS`), the missing-keys helper (`validate.ts`), and the React hook (`useCredentials.ts`).
 - `lib/generative-ui/` is the protocol schema, registry, and dispatcher.
 - `lib/utils.ts` is app-wide utilities.
 
@@ -94,7 +94,7 @@ Local (`.env.local`, optional for the marketing surfaces):
 - `NEXT_PUBLIC_SITE_URL` for OG link previews to render the right absolute URLs.
 - `NEXT_PUBLIC_COOKBOOK_BASE_URL` overrides the GitHub Raw base for the catalog fetch (e.g. for forks of awesome-voice-apps). Defaults to `mahimairaja/awesome-voice-apps#main`.
 
-The token route does NOT read any env var. Visitor credentials come from the request body.
+There is no token route. The visitor's three LiveKit values are read from `localStorage` and signed in the browser via `jose`. Provider keys never enter the playground.
 
 ## Runtime catalog fetch
 
