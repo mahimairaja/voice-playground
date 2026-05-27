@@ -43,7 +43,7 @@ export function PlaygroundHeader() {
       <Link
         href="/"
         aria-label="mahimai playground home"
-        className="font-mono text-[13.5px] tracking-tight text-[color:var(--color-text)] hover:text-white"
+        className="font-mono text-[13.5px] tracking-tight text-[color:var(--color-text)] hover:text-[color:var(--color-accent)]"
       >
         <span>VoiceGround</span>
         {/*<span className="mx-[2px] text-[color:var(--color-text-fade)]"> / </span>*/}
