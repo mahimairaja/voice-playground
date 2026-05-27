@@ -58,7 +58,10 @@ function bakeManifests() {
         const message = err instanceof Error ? err.message : String(err);
         throw new Error(`invalid JSON in ${manifestPath}: ${message}`);
       }
-      baked.push({ slug: entry.name, ...parsed });
+      // Folder name is authoritative for slug — the URL must match the directory
+      // on disk. Spread parsed first so any 'slug' field it declares cannot
+      // override entry.name.
+      baked.push({ ...parsed, slug: entry.name });
     }
   }
 
@@ -86,14 +89,14 @@ try {
   bakeManifests();
 } catch (err) {
   warnAndContinue(err);
-  // Always emit an empty baked file so the loader's static import never fails
-  // even when the clone or bake step did not complete.
+  // Always overwrite the baked file on failure so a stale catalog from a
+  // previous successful build (possibly restored from Vercel's build cache)
+  // cannot mask the failure. The loader will fall back to the reference seed,
+  // which is the honest signal that the bake did not complete.
   try {
     fs.mkdirSync(path.dirname(BAKED_PATH), { recursive: true });
-    if (!fs.existsSync(BAKED_PATH)) {
-      fs.writeFileSync(BAKED_PATH, '[]\n');
-      log(`wrote empty fallback to ${path.relative(process.cwd(), BAKED_PATH)}`);
-    }
+    fs.writeFileSync(BAKED_PATH, '[]\n');
+    log(`wrote empty fallback to ${path.relative(process.cwd(), BAKED_PATH)}`);
   } catch {
     /* ignore - loader will fall back to reference seed if import fails */
   }
