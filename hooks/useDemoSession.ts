@@ -66,6 +66,7 @@ export function useDemoSession({ slug }: UseDemoSessionOptions): UseDemoSessionR
     setRejectedState(null);
     setState('connecting');
 
+    let pendingRoom: Room | null = null;
     try {
       const missing = missingCredentials(LIVEKIT_KEYS);
       if (missing.length > 0) {
@@ -81,6 +82,7 @@ export function useDemoSession({ slug }: UseDemoSessionOptions): UseDemoSessionR
       });
 
       const r = new Room();
+      pendingRoom = r;
 
       r.on(RoomEvent.Disconnected, () => {
         if (roomRef.current === r) {
@@ -97,6 +99,16 @@ export function useDemoSession({ slug }: UseDemoSessionOptions): UseDemoSessionR
       setRoom(r);
       setState('live');
     } catch (err) {
+      // If a Room was constructed but never reached roomRef (connect or
+      // setMicrophoneEnabled threw partway through), dispose it explicitly.
+      // teardown() reads roomRef.current and would otherwise leak this one.
+      if (pendingRoom && roomRef.current !== pendingRoom) {
+        try {
+          await pendingRoom.disconnect();
+        } catch {
+          /* ignore disconnect failures during cleanup */
+        }
+      }
       await teardown('error');
       const e = err instanceof Error ? err : new Error('Unknown error connecting to session.');
       setError(e);

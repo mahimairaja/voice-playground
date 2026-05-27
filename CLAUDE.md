@@ -9,7 +9,7 @@ A standalone voice playground. Public site at `playground.mahimai.ca`. A Next.js
 If a piece of work does not advance one of these, it does not belong in this repo:
 
 1. Render the cookbook (the marketing landing, demo index, per-demo page) with the brand intact.
-2. Connect a visitor to a demo (credentials drawer, token route, voice surface, transcript).
+2. Connect a visitor to a demo (credentials drawer, in-browser JWT signing, voice surface, transcript).
 3. Render the agent's generative UI (canvas plus dispatcher plus per-demo component bundles).
 
 ## Default mode: brainstorm before code
