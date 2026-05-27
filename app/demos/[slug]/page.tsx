@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { DemoRuntime } from '@/components/playground/DemoRuntime';
-import { getAllDemos, getDemoBySlug, isUsingReferenceSeed } from '@/lib/demos';
+import { getAllDemos, getDemoBySlug } from '@/lib/demos';
 import { parseDemoSurface } from '@/lib/demos/surface';
 
 export const dynamicParams = false;
@@ -32,11 +32,5 @@ export default async function DemoPage({ params, searchParams }: DemoPageProps) 
   const demo = getDemoBySlug(slug);
   if (!demo) notFound();
 
-  return (
-    <DemoRuntime
-      demo={demo}
-      initialSurface={parseDemoSurface(surfaceParam)}
-      isSeed={isUsingReferenceSeed()}
-    />
-  );
+  return <DemoRuntime demo={demo} initialSurface={parseDemoSurface(surfaceParam)} />;
 }

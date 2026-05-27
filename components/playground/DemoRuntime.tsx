@@ -1,22 +1,29 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { CredentialsButton } from '@/components/credentials/CredentialsButton';
 import { DemoBundleLoader } from '@/components/demos/DemoBundleLoader';
-import { CredentialsDrawer } from '@/components/playground/CredentialsDrawer';
 import { VoiceSurface } from '@/components/playground/VoiceSurface';
-import { type DemoManifest } from '@/lib/demos/schema';
+import { type LoadedDemoManifest } from '@/lib/demos';
 import { DEFAULT_DEMO_SURFACE, type DemoSurface } from '@/lib/demos/surface';
 
 const LIVEKIT_CREDENTIALS = ['livekit_url', 'livekit_api_key', 'livekit_api_secret'] as const;
-const REFERENCE_DRAWER_CREDENTIALS = ['openai', 'deepgram', 'cartesia', 'livekit_url'] as const;
 
 interface DemoRuntimeProps {
-  demo: DemoManifest;
+  demo: LoadedDemoManifest;
   initialSurface?: DemoSurface | null;
-  isSeed?: boolean;
 }
 
-export function DemoRuntime({ demo, initialSurface, isSeed = false }: DemoRuntimeProps) {
+/**
+ * Per-demo runtime. Mounts (in order):
+ *   1. The demo bundle loader (registers per-demo generative UI components).
+ *   2. A page header strip: demo title + category crumb + credentials button.
+ *   3. The voice surface (two-pane runtime; F1.2 redesigns the inside).
+ *
+ * 'requiredCredentials' is read from the manifest's 'required_credentials',
+ * unioned with the LiveKit triple the playground always needs to mint a token.
+ */
+export function DemoRuntime({ demo, initialSurface }: DemoRuntimeProps) {
   const [surface, setSurface] = useState<DemoSurface>(
     initialSurface ?? demo.default_surface ?? DEFAULT_DEMO_SURFACE
   );
@@ -28,27 +35,29 @@ export function DemoRuntime({ demo, initialSurface, isSeed = false }: DemoRuntim
   const requiredCredentials = Array.from(
     new Set([...demo.required_credentials, ...LIVEKIT_CREDENTIALS])
   );
-  const drawerCredentials = Array.from(
-    new Set(isSeed ? [...REFERENCE_DRAWER_CREDENTIALS] : requiredCredentials)
-  );
 
   return (
-    <>
+    <div className="flex flex-col">
       <DemoBundleLoader slug={demo.slug} />
+
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[color:var(--color-border-dim)] px-6 py-5">
+        <div>
+          <div className="font-mono text-[10.5px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
+            · DEMOS · {demo.category}
+          </div>
+          <h1 className="mt-1 text-[22px] font-semibold tracking-tight text-[color:var(--color-text)]">
+            {demo.title}
+          </h1>
+        </div>
+        <CredentialsButton requiredKeys={requiredCredentials} demoTitle={demo.title} />
+      </div>
+
       <VoiceSurface
         demo={demo}
         requiredCredentials={requiredCredentials}
         surface={surface}
         onSurfaceChange={setSurface}
       />
-      <CredentialsDrawer
-        requiredCredentials={drawerCredentials}
-        trigger={
-          <button type="button" className="sr-only">
-            open vault
-          </button>
-        }
-      />
-    </>
+    </div>
   );
 }

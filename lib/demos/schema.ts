@@ -21,12 +21,12 @@ export type Slug = z.infer<typeof SlugSchema>;
  * A malformed manifest fails the build fast.
  */
 export const DemoManifestSchema = z.object({
-  slug: SlugSchema,
+  slug: SlugSchema.optional(),
   title: z.string().min(1),
   category: z.string().min(1),
   description: z.string().min(1),
   who_for: z.string().min(1),
-  recording_url: z.url().optional(),
+  recording_url: z.union([z.url(), z.null()]).optional(),
   card_stat: z.string().min(1).optional(),
   default_surface: DemoSurfaceSchema.default(DEFAULT_DEMO_SURFACE),
   required_credentials: z.array(z.string().min(1)).default([]),

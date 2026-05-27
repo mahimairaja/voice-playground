@@ -14,10 +14,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-      - name: Use Node.js 22
+      - name: Use Node.js 20
         uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 20
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -28,6 +28,9 @@ jobs:
 
       - name: Prettier
         run: pnpm format:check
+
+      - name: Vitest
+        run: pnpm test
 
       - name: Ensure build succeeds
         run: pnpm build
