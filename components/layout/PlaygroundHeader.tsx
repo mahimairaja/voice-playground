@@ -43,11 +43,13 @@ export function PlaygroundHeader() {
       <Link
         href="/"
         aria-label="mahimai playground home"
-        className="font-mono text-[13.5px] tracking-tight text-[color:var(--color-text)] hover:text-[color:var(--color-accent)]"
+        className="group font-mono text-[13.5px] tracking-tight text-[color:var(--color-text)] hover:text-[color:var(--color-accent)]"
       >
-        <span>VoiceGround</span>
-        {/*<span className="mx-[2px] text-[color:var(--color-text-fade)]"> / </span>*/}
-        {/*<span className="text-[color:var(--color-text-mute)]">playground</span>*/}
+        <span>mahimai</span>
+        <span className="mx-[2px] text-[color:var(--color-text-fade)]"> / </span>
+        <span className="text-[color:var(--color-text-mute)] group-hover:text-[color:var(--color-text-dim)]">
+          playground
+        </span>
       </Link>
 
       <nav aria-label="Primary" className="ml-auto flex items-center gap-6">

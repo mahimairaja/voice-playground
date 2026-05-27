@@ -28,20 +28,20 @@ export function AgentCanvasEmpty({ demo }: AgentCanvasEmptyProps) {
       </p>
 
       <p className="mt-3 text-[13px] text-[color:var(--color-text-dim)]">
-        <span className="text-[color:var(--color-accent)]">→ Talk</span> to begin. The agent will
-        respond and mount UI here as it works.
+        <span className="text-[color:var(--color-accent)]">→ Talk.</span> The agent will draw here
+        as it speaks.
       </p>
 
       {demo.ui_components.length > 0 ? (
         <div className="mt-3">
-          <p className="font-mono text-[10px] tracking-[0.06em] text-[color:var(--color-text-fade)] uppercase">
-            {'// EXPECTED COMPONENTS'}
+          <p className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
+            {'// AGENT MAY DRAW'}
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             {demo.ui_components.map((name) => (
               <span
                 key={name}
-                className="inline-flex items-center rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-3 py-1 font-mono text-[10.5px] tracking-[0.04em] text-[color:var(--color-text-mute)]"
+                className="inline-flex items-center rounded-[var(--radius-pill)] border border-[color:var(--color-border-dim)] px-2.5 py-[3px] font-mono text-[10px] tracking-[0.04em] text-[color:var(--color-text-fade)]"
               >
                 {name}
               </span>

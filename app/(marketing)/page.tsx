@@ -42,8 +42,8 @@ export default async function HomePage() {
           </h1>
           <p className="mt-5 max-w-[48ch] text-[15px] leading-[1.6] text-[color:var(--color-text-dim)]">
             A browser surface for voice agents from the awesome-voice-apps cookbook. Bring your own
-            provider keys, run the agent locally with{' '}
-            <code className="font-mono text-[13px] text-[color:var(--color-accent)]">
+            LiveKit credentials, run the agent locally with{' '}
+            <code className="rounded-[var(--radius-input)] bg-[color:var(--color-surface-2)] px-[6px] py-[2px] font-mono text-[12.5px] text-[color:var(--color-text)]">
               uv run python agent.py dev
             </code>
             , talk to it here. Nothing leaves the browser.
@@ -76,7 +76,16 @@ export default async function HomePage() {
               <CatalogError cause={catalogError.cause} compact />
             ) : featuredShipped.length === 0 && featuredPlanned.length === 0 ? (
               <p className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-4 text-[13px] text-[color:var(--color-text-mute)]">
-                No demos available right now. The cookbook will ship its first soon.
+                No demos shipped yet. Track them in the{' '}
+                <a
+                  href={COOKBOOK_BASE_URL}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-[color:var(--color-accent)] hover:underline"
+                >
+                  awesome-voice-apps cookbook ↗
+                </a>
+                .
               </p>
             ) : (
               <>
@@ -100,12 +109,8 @@ export default async function HomePage() {
           {'// HOW IT WORKS'}
         </p>
         <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <Step number="01" title="Paste keys" body="LiveKit + your STT, LLM, TTS providers." />
-          <Step
-            number="02"
-            title="Pick a demo"
-            body="From the awesome-voice-apps cookbook. Each demo is a folder."
-          />
+          <Step number="01" title="Paste keys" body="LiveKit URL, API key, and secret." />
+          <Step number="02" title="Pick a demo" body="From the awesome-voice-apps cookbook." />
           <Step
             number="03"
             title="Talk to the agent"
@@ -123,8 +128,8 @@ export default async function HomePage() {
         </span>
         <p className="mt-2 max-w-[60ch]">
           The playground holds no LiveKit account on your behalf. The visitor brings their own
-          LiveKit URL, API key, and provider keys; the token is minted in the browser. The cookbook
-          stays open source —{' '}
+          LiveKit URL, API key, and secret; the token is minted in the browser. Provider keys
+          (OpenAI, Deepgram, etc.) stay in the agent&apos;s .env. The cookbook stays open source:{' '}
           <a
             href={COOKBOOK_BASE_URL}
             target="_blank"
@@ -192,8 +197,8 @@ function PlannedCard({ demo }: { demo: PlannedDemo }) {
 function Step({ number, title, body }: { number: string; title: string; body: string }) {
   return (
     <div className="rounded-[var(--radius-panel)] border border-[color:var(--color-border-dim)] p-4">
-      <span className="font-mono text-[10px] tracking-[0.06em] text-[color:var(--color-accent)] uppercase">
-        {number} ·
+      <span className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-accent)] uppercase">
+        {number}
       </span>
       <h3 className="mt-1 text-[14px] font-semibold tracking-tight text-[color:var(--color-text)]">
         {title}

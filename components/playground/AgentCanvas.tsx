@@ -44,36 +44,32 @@ export function AgentCanvas({ demo, session }: AgentCanvasProps) {
       aria-label="Agent surface"
       className="flex flex-1 flex-col rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-4"
     >
-      <div className="flex items-center justify-between">
-        <span className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
-          {'// AGENT SURFACE'}
-        </span>
-        {mounted ? (
-          <span className="font-mono text-[10px] tracking-[0.06em] text-[color:var(--color-accent)] uppercase">
-            {instances.length} mounted
-          </span>
-        ) : null}
-      </div>
-
       {showEmpty ? (
         <AgentCanvasEmpty demo={demo} />
       ) : (
-        <div className="mt-3 flex flex-col gap-3">
-          {instances.map((instance) => {
-            const Resolved = resolve(demo.slug, instance.component);
-            if (!Resolved) {
-              return (
-                <div
-                  key={instance.id}
-                  className="rounded-[var(--radius-input)] border border-dashed border-[color:var(--color-border)] p-3 font-mono text-[11px] text-[color:var(--color-text-fade)]"
-                >
-                  unregistered component: {instance.component}
-                </div>
-              );
-            }
-            return <Resolved key={instance.id} {...instance.props} />;
-          })}
-        </div>
+        <>
+          <div className="flex items-center justify-end">
+            <span className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-accent)] uppercase">
+              {instances.length} mounted
+            </span>
+          </div>
+          <div className="mt-3 flex flex-col gap-3">
+            {instances.map((instance) => {
+              const Resolved = resolve(demo.slug, instance.component);
+              if (!Resolved) {
+                return (
+                  <div
+                    key={instance.id}
+                    className="rounded-[var(--radius-input)] border border-dashed border-[color:var(--color-border)] p-3 font-mono text-[11px] text-[color:var(--color-text-fade)]"
+                  >
+                    unregistered component: {instance.component}
+                  </div>
+                );
+              }
+              return <Resolved key={instance.id} {...instance.props} />;
+            })}
+          </div>
+        </>
       )}
     </section>
   );

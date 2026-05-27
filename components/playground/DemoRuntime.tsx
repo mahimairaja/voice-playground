@@ -49,7 +49,7 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[color:var(--color-border-dim)] px-6 py-5">
           <div>
             <div className="font-mono text-[10.5px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
-              · DEMOS · {demo.category}
+              DEMOS · {demo.category}
             </div>
             <h1 className="mt-1 text-[22px] font-semibold tracking-tight text-[color:var(--color-text)]">
               {demo.title}
@@ -61,7 +61,7 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 px-6 py-6 md:flex-row md:items-stretch">
+        <div className="flex flex-col gap-4 px-6 py-6 md:min-h-[60vh] md:flex-row md:items-stretch">
           <VoicePanel session={session} isReady={isReady} />
           <AgentCanvas demo={demo} session={session} />
         </div>
