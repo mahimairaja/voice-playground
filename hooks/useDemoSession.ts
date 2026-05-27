@@ -5,14 +5,13 @@ import { Room, RoomEvent } from 'livekit-client';
 import { type CredentialMap, getCredentials } from '@/lib/credentials/store';
 import type { RejectionDetail } from '@/lib/credentials/types';
 import { missingCredentials } from '@/lib/credentials/validate';
+import { MintTokenError, mintToken } from '@/lib/livekit/mintToken';
 
 export type SessionState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 
 export interface UseDemoSessionOptions {
   slug: string;
   requiredCredentials: readonly string[];
-  /** Override the token endpoint. Default: '/api/token'. */
-  tokenUrl?: string;
 }
 
 export interface UseDemoSessionReturn {
@@ -34,59 +33,24 @@ class MissingCredentialsError extends Error {
   }
 }
 
-class TokenRequestError extends Error {
-  constructor(
-    public readonly status: number,
-    message: string
-  ) {
-    super(message);
-    this.name = 'TokenRequestError';
+/**
+ * Returns the non-LiveKit credentials as a string map, suitable for
+ * 'localParticipant.setAttributes'. The agent worker (F1.3) reads these to
+ * configure its STT/LLM/TTS clients without needing its own .env.
+ */
+function extractAgentAttributes(creds: CredentialMap): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(creds)) {
+    if (key.startsWith('livekit_')) continue;
+    if (!value || value.length === 0) continue;
+    out[key] = value;
   }
-}
-
-interface TokenResponse {
-  wsUrl: string;
-  token: string;
-  roomName: string;
-  participantIdentity: string;
-  participantName: string;
-  expiresAt: number;
-}
-
-async function mintToken(
-  tokenUrl: string,
-  slug: string,
-  livekit: Pick<CredentialMap, 'livekit_url' | 'livekit_api_key' | 'livekit_api_secret'>
-): Promise<TokenResponse> {
-  const res = await fetch(tokenUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      livekit_url: livekit.livekit_url,
-      livekit_api_key: livekit.livekit_api_key,
-      livekit_api_secret: livekit.livekit_api_secret,
-      demo_slug: slug,
-    }),
-  });
-
-  if (!res.ok) {
-    let message = `Token endpoint returned HTTP ${res.status}.`;
-    try {
-      const body = (await res.json()) as { error?: string };
-      if (body && typeof body.error === 'string') message = body.error;
-    } catch {
-      /* ignore body parse failure */
-    }
-    throw new TokenRequestError(res.status, message);
-  }
-
-  return (await res.json()) as TokenResponse;
+  return out;
 }
 
 export function useDemoSession({
   slug,
   requiredCredentials,
-  tokenUrl = '/api/token',
 }: UseDemoSessionOptions): UseDemoSessionReturn {
   const [state, setState] = useState<SessionState>('idle');
   const [error, setError] = useState<Error | null>(null);
@@ -131,10 +95,11 @@ export function useDemoSession({
       }
 
       const creds = getCredentials(allRequired);
-      const tokenResponse = await mintToken(tokenUrl, slug, {
+      const tokenResponse = await mintToken({
         livekit_url: creds.livekit_url,
         livekit_api_key: creds.livekit_api_key,
         livekit_api_secret: creds.livekit_api_secret,
+        slug,
       });
 
       const r = new Room();
@@ -148,6 +113,16 @@ export function useDemoSession({
       });
 
       await r.connect(tokenResponse.wsUrl, tokenResponse.token);
+
+      const agentAttributes = extractAgentAttributes(creds);
+      if (Object.keys(agentAttributes).length > 0) {
+        try {
+          await r.localParticipant.setAttributes(agentAttributes);
+        } catch {
+          /* attribute publish is advisory: the agent template falls back to .env */
+        }
+      }
+
       await r.localParticipant.setMicrophoneEnabled(true);
 
       roomRef.current = r;
@@ -160,7 +135,7 @@ export function useDemoSession({
     } finally {
       inFlightRef.current = false;
     }
-  }, [slug, requiredCredentials, tokenUrl, state, teardown]);
+  }, [slug, requiredCredentials, state, teardown]);
 
   const disconnect = useCallback(async () => {
     if (state !== 'live' && state !== 'connecting') return;
@@ -182,4 +157,4 @@ export function useDemoSession({
   return { state, error, room, rejected, connect, disconnect, setRejected };
 }
 
-export { MissingCredentialsError, TokenRequestError };
+export { MissingCredentialsError, MintTokenError };

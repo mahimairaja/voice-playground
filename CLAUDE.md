@@ -4,7 +4,7 @@ Operating instructions for any Claude session working in this repo. Auto loaded 
 
 ## What this repo is
 
-A standalone voice playground. Public site at `playground.mahimai.ca`. A Next.js 15 frontend that lets visitors talk to the voice agents catalogued in the sister repo `awesome-voice-apps` (sibling on disk: `../awesome-voice-apps`). Visitors bring their own provider keys, paste them in the credentials drawer, and the playground mints a short-lived LiveKit token in their browser.
+A standalone voice playground. Public site at `playground.mahimai.ca`. A Next.js 15 frontend that lets visitors talk to the voice agents catalogued in the sister repo `awesome-voice-apps`. The catalog is fetched at runtime from `raw.githubusercontent.com/mahimairaja/awesome-voice-apps/main/catalog.json` with a 5-minute Next.js cache. Visitors bring their own provider keys, paste them in the per-demo credentials sheet, and the playground mints a short-lived LiveKit token in their browser via `jose` (no server-side route).
 
 If a piece of work does not advance one of these, it does not belong in this repo:
 
@@ -46,7 +46,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 - **No backticks in shell prompts you suggest the operator paste.**
 - **No em dashes anywhere.** Use colons, periods, semicolons, or parentheses.
 - **No `Co-Authored-By: Claude` trailers, no `Generated with Claude Code` footer, no robot emoji, no AI attribution.** Commits read as if Mahimai authored them directly.
-- The API route `app/api/token/route.ts` is the only server-side code. It mints LiveKit AccessTokens from visitor-pasted credentials and never logs or persists them. F1.2 deletes this route and moves token minting to the client.
+- No server-side code. F1.2 removed `app/api/token/route.ts`; the LiveKit JWT is signed in the browser via `jose` from the visitor's pasted credentials. No keys leave the browser, no server roundtrip.
 
 ## File conventions
 
@@ -54,16 +54,17 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 - `app/demos/page.tsx` is the demo index with a URL-driven category filter.
 - `app/demos/[slug]/page.tsx` is the per-demo page. Uses `generateStaticParams` from `getAllDemos()` and `dynamicParams = false`, so unknown slugs 404 at the route layer.
 - `app/maintenance/page.tsx` is the dark-themed maintenance landing (App Router route, replaces the deleted `public/maintenance.html`).
-- `app/api/token/route.ts` is the only API route. Removed in F1.2 (client-side token mint).
 - `app/error.tsx` (client) and `app/not-found.tsx` (server) are dark-themed.
 - `app/layout.tsx` mounts `<PlaygroundHeader>` and `<PlaygroundFooter>`, forces the `dark` class on `<html>`, loads Geist + Geist Mono, and configures `generateMetadata`.
 - `components/layout/` is the global chrome: `PlaygroundHeader`, `PlaygroundFooter`.
 - `components/credentials/` is the per-demo keys UI: `CredentialsSheet`, `CredentialsButton`. The sheet listens for `CRED_OPEN_DRAWER_EVENT` so any other surface can ask it to open.
-- `components/playground/` is the demo runtime: `DemoRuntime`, `VoiceSurface`, `Transcript`. Coordinates the visitor session.
+- `components/playground/` is the demo runtime: `DemoRuntime`, `VoicePanel`, `AgentCanvas`, `AgentCanvasEmpty`, `SessionTimer`, `Transcript`, `CookbookSourceLink`, `CatalogError`. Two-pane layout (voice left, agent canvas right).
 - `components/generative/Canvas.tsx` reads from the dispatcher store and renders per-demo components via the registry.
 - `components/agents-ui/` is the upstream LiveKit `@agents-ui/*` registry. Edit in place if you must, but `pnpm shadcn:install` will overwrite. Prefer Tailwind class overrides on the consuming side.
 - `lib/design/tokens.ts` is the design-token source of truth.
-- `lib/demos/` is the build-time manifest loader. `server-only` guarded. Exports `LoadedDemoManifest` (slug always present).
+- `lib/cookbook/` is the runtime catalog fetcher: `schema.ts` (zod mirror of `catalog.schema.json`), `manifest.ts` (`fetchCatalog`, `CatalogFetchError`, 5-minute `next: { revalidate }`), `url.ts` (URL constants, `demoSourceUrl`).
+- `lib/demos/` is a thin adapter over the cookbook fetcher: `index.ts` (`getAllShipped`, `getAllPlanned`, `getAllDemos`, `getShippedBySlug`, `getDemoCategories`), `planned.ts` (hand-curated upcoming demos).
+- `lib/livekit/mintToken.ts` mints the LiveKit JWT in the browser via `jose`.
 - `lib/credentials/` is the localStorage store (`store.ts` per-key prefix `mahimai_playground:cred:<name>`), the optional provider ping (`validate.ts`), and the React hook (`useCredentials.ts`).
 - `lib/generative-ui/` is the protocol schema, registry, and dispatcher.
 - `lib/utils.ts` is app-wide utilities.
@@ -74,7 +75,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 | --------------------- | ------------------------------------------------------------------------------------- |
 | `pnpm install`        | Install deps. Node 20 pin emits a warning on Node 22 dev machines, harmless.          |
 | `pnpm dev`            | Next dev with Turbopack on http://localhost:3000.                                     |
-| `pnpm build`          | Production build. Runs `scripts/sync-demos.mjs` first through the `prebuild` hook.    |
+| `pnpm build`          | Production build. Catalog fetches from GitHub Raw at request time, not at build time. |
 | `pnpm lint`           | ESLint plus Next core-web-vitals plus prettier.                                       |
 | `pnpm format`         | Prettier write. Use `pnpm exec prettier --write <file>` to format a single file.      |
 | `pnpm shadcn:install` | Re-pull every `@agents-ui/*` component from the registry. Prompts before overwriting. |
@@ -91,14 +92,13 @@ Production:
 Local (`.env.local`, optional for the marketing surfaces):
 
 - `NEXT_PUBLIC_SITE_URL` for OG link previews to render the right absolute URLs.
-- `AVA_REPO` and `AVA_REF` override the sibling repo / ref that `scripts/sync-demos.mjs` clones. Defaults match `mahimairaja/awesome-voice-apps` at `main`.
-- `AVA_SYNC_STRICT=1` makes clone failures fail the build. By default, failed sync falls back to the reference seed catalogue.
+- `NEXT_PUBLIC_COOKBOOK_BASE_URL` overrides the GitHub Raw base for the catalog fetch (e.g. for forks of awesome-voice-apps). Defaults to `mahimairaja/awesome-voice-apps#main`.
 
 The token route does NOT read any env var. Visitor credentials come from the request body.
 
-## Build-time demo sync
+## Runtime catalog fetch
 
-`pnpm build` runs `scripts/sync-demos.mjs` first. Locally it reuses `../awesome-voice-apps` when present and clones it when missing. On Vercel it removes stale cached siblings before cloning. If the clone fails and `AVA_SYNC_STRICT` is not `1`, the build continues and the seeded reference catalogue renders.
+Demo manifests come from `lib/cookbook/manifest.fetchCatalog()`, a server-only fetcher that hits `raw.githubusercontent.com/mahimairaja/awesome-voice-apps/main/catalog.json` with `next: { revalidate: 300, tags: ['cookbook'] }`. Vercel's edge caches the response for 5 minutes; cookbook updates appear within that window. Fetch failures throw `CatalogFetchError(cause: 'network' | 'http' | 'parse')`; route boundaries render `<CatalogError>` with the cookbook GitHub link. No build-time sibling clone, no `_generated.json`, no reference seed fallback — missing data is an honest signal.
 
 ## Generative UI protocol
 
