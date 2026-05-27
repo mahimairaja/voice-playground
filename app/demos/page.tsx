@@ -21,7 +21,7 @@ import {
 export const metadata: Metadata = {
   title: 'Demos · voice playground',
   description:
-    'Voice agent demos from the awesome-voice-apps cookbook. Pick one, paste your provider keys, talk to it.',
+    'Voice agent demos from the awesome-voice-apps cookbook. Pick one, paste your LiveKit credentials, talk to it.',
 };
 
 const ALL_FILTER = '__all__';
@@ -63,15 +63,15 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-mono text-[10.5px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
-            · DEMOS · {shipped.length} SHIPPED · {planned.length} PLANNED
+            DEMOS · {shipped.length} SHIPPED · {planned.length} PLANNED
             {activeCategory ? ` · ${activeCategory}` : ''}
           </p>
           <h1 className="mt-2 text-[28px] font-semibold tracking-tight text-[color:var(--color-text)]">
             Demos
           </h1>
           <p className="mt-2 max-w-[60ch] text-[14px] text-[color:var(--color-text-dim)]">
-            Voice agents you can talk to in the browser. Bring your own provider keys, pick a card,
-            run the agent locally, start the call.
+            Voice agents you can talk to in the browser. Paste your LiveKit credentials, pick a
+            card, run the agent locally, start the call.
           </p>
         </div>
         {categories.length > 0 ? (

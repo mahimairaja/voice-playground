@@ -28,8 +28,8 @@ export function AgentCanvasEmpty({ demo }: AgentCanvasEmptyProps) {
       </p>
 
       <p className="mt-3 text-[13px] text-[color:var(--color-text-dim)]">
-        <span className="text-[color:var(--color-accent)]">→ Talk</span> to begin. The agent will
-        respond and mount UI here as it works.
+        <span className="text-[color:var(--color-accent)]">→ Talk.</span> The agent will draw here
+        as it speaks.
       </p>
 
       {demo.ui_components.length > 0 ? (
