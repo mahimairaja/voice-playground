@@ -27,6 +27,7 @@
 .DS_Store
 *.pem
 .superpowers
+docs/superpowers
 /screenshots
 
 # debug
