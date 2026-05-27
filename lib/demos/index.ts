@@ -88,7 +88,12 @@ function loadAllManifests(): LoadedDemoManifest[] {
 }
 
 function asLoaded(m: DemoManifest): LoadedDemoManifest {
-  return { ...m, slug: m.slug ?? '' };
+  if (!m.slug || m.slug.length === 0) {
+    throw new Error(
+      "DemoManifest is missing 'slug'. Either declare it in the manifest or load via 'loadAllManifests' so the folder name is injected."
+    );
+  }
+  return { ...m, slug: m.slug };
 }
 
 const REAL_DEMOS: readonly LoadedDemoManifest[] = loadAllManifests();
