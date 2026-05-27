@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import type { CredentialMap } from '@/lib/credentials/store';
 import { CRED_OPEN_DRAWER_EVENT } from '@/lib/credentials/store';
@@ -33,6 +33,20 @@ export function CredentialsSheet({
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
   const [confirmingClear, setConfirmingClear] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const confirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const cancelConfirmTimer = () => {
+    if (confirmTimerRef.current !== null) {
+      clearTimeout(confirmTimerRef.current);
+      confirmTimerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      cancelConfirmTimer();
+    };
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -71,9 +85,14 @@ export function CredentialsSheet({
   const handleClearClick = () => {
     if (!confirmingClear) {
       setConfirmingClear(true);
-      setTimeout(() => setConfirmingClear(false), 2000);
+      cancelConfirmTimer();
+      confirmTimerRef.current = setTimeout(() => {
+        setConfirmingClear(false);
+        confirmTimerRef.current = null;
+      }, 2000);
       return;
     }
+    cancelConfirmTimer();
     clearAll();
     setDraft(Object.fromEntries(requiredKeys.map((k) => [k, ''])));
     setConfirmingClear(false);
@@ -82,7 +101,7 @@ export function CredentialsSheet({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/60" />
+        <Dialog.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-[color:color-mix(in_srgb,var(--color-bg)_75%,transparent)]" />
         <Dialog.Content className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right fixed inset-y-0 right-0 z-50 flex w-full max-w-[640px] flex-col gap-4 border-l border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-6 shadow-2xl md:w-[56vw]">
           <header className="flex items-start justify-between gap-4 border-b border-[color:var(--color-border-dim)] pb-4">
             <div>
@@ -169,7 +188,7 @@ export function CredentialsSheet({
                 type="button"
                 onClick={handleSave}
                 disabled={!dirty || unavailable}
-                className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13px] font-semibold text-black hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[color:var(--color-surface-2)] disabled:text-[color:var(--color-text-fade)]"
+                className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13px] font-semibold text-[color:var(--color-bg)] hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[color:var(--color-surface-2)] disabled:text-[color:var(--color-text-fade)]"
               >
                 Save &amp; close
               </button>
