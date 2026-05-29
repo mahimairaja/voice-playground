@@ -12,16 +12,10 @@ export function DemoBundleLoader({ slug }: DemoBundleLoaderProps) {
 
     const load = async () => {
       try {
-        switch (slug) {
-          case 'drive-thru-coffee':
-            await import('@/components/demos/drive-thru-coffee');
-            break;
-          case 'quick-trivia':
-            await import('@/components/demos/quick-trivia');
-            break;
-          default:
-            break;
-        }
+        // Every demo renders through the global vocabulary. A genuinely
+        // bespoke demo could still add a per-slug bundle here and register it
+        // via registerForDemo, but that is the rare exception, not the rule.
+        await import('@/components/demos/_vocabulary');
       } catch (err) {
         if (!cancelled) {
           console.warn(`[demo-bundle] failed to load bundle for '${slug}':`, err);

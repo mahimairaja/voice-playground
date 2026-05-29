@@ -12,3 +12,9 @@ export type { KeyValueItem, KeyValuePanelProps } from './KeyValuePanel';
 
 export { ListPanel } from './ListPanel';
 export type { ListItem, ListPanelProps } from './ListPanel';
+
+export { StatPanel } from './StatPanel';
+export type { StatPanelProps } from './StatPanel';
+
+export { TablePanel } from './TablePanel';
+export type { TablePanelProps } from './TablePanel';
