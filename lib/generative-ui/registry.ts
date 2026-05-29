@@ -24,6 +24,30 @@ export type ComponentMap = Record<string, GenerativeComponent>;
 const REGISTRY = new Map<string, ComponentMap>();
 
 /**
+ * The global component vocabulary. Components registered here are available to
+ * EVERY demo, so a new cookbook demo renders without a per-slug bundle. This is
+ * the default path; 'registerForDemo' remains a rarely-needed escape hatch for
+ * a genuinely bespoke component. See the generative-UI vocabulary spec.
+ */
+const GLOBAL_REGISTRY: ComponentMap = {};
+
+/**
+ * Registers (or merges) components into the global vocabulary. Called once at
+ * import time by 'components/demos/_vocabulary'. Merges rather than replaces so
+ * multiple registration calls compose.
+ */
+export function registerGlobal(map: ComponentMap): void {
+  Object.assign(GLOBAL_REGISTRY, map);
+}
+
+/**
+ * Clears the global vocabulary. Tests only.
+ */
+export function unregisterGlobal(): void {
+  for (const name of Object.keys(GLOBAL_REGISTRY)) delete GLOBAL_REGISTRY[name];
+}
+
+/**
  * Registers (or replaces) the component map for a demo slug. Pass a fresh
  * 'map' object; the registry holds a reference, so external mutations leak.
  *
@@ -50,7 +74,7 @@ export function unregisterDemo(slug: string): void {
  */
 export function resolve(slug: string, componentName: string): GenerativeComponent | undefined {
   const map = REGISTRY.get(slug);
-  return map ? map[componentName] : undefined;
+  return map?.[componentName] ?? GLOBAL_REGISTRY[componentName];
 }
 
 /**
@@ -60,7 +84,7 @@ export function resolve(slug: string, componentName: string): GenerativeComponen
  */
 export function hasRegistration(slug: string): boolean {
   const map = REGISTRY.get(slug);
-  return !!map && Object.keys(map).length > 0;
+  return (!!map && Object.keys(map).length > 0) || Object.keys(GLOBAL_REGISTRY).length > 0;
 }
 
 /**
@@ -69,7 +93,11 @@ export function hasRegistration(slug: string): boolean {
  */
 export function listComponents(slug: string): readonly string[] {
   const map = REGISTRY.get(slug);
-  return map ? Object.keys(map) : [];
+  const names = new Set<string>([
+    ...Object.keys(GLOBAL_REGISTRY),
+    ...(map ? Object.keys(map) : []),
+  ]);
+  return Array.from(names);
 }
 
 /**

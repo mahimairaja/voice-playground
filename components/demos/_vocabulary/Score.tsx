@@ -1,34 +1,21 @@
-import type { ComponentType } from 'react';
-import { type GenerativeComponent, registerForDemo } from '@/lib/generative-ui/registry';
-
 /**
- * Per-demo generative-UI bundle for the `quick-trivia` demo.
+ * Score: a trivia-style scorecard. Semantic component in the vocabulary; it
+ * earns its place because its progress (questions answered) is distinct from
+ * its headline number (answers correct), which the generic Stat cannot express
+ * in one shape.
  *
- * The agent (awesome-voice-apps/demos/quick-trivia/agent.py) publishes a single
- * `Score` component on the `ui` data channel after each answer:
- *
- *   publish_ui_event(room, "Score", action, id="score",
- *                    props={"correct": int, "total": int, "outOf": int})
- *
+ * Props match what the quick-trivia agent publishes:
  *   correct = answers right so far
  *   total   = questions answered so far
- *   outOf   = total questions in the quiz (10)
- *
- * Styled with the F1 dark + cyan tokens from styles/globals.css. No wireframe
- * primitives.
+ *   outOf   = total questions in the quiz
  */
-
-function asGenerative<P>(Component: ComponentType<P>): GenerativeComponent {
-  return Component as unknown as GenerativeComponent;
-}
-
-interface ScoreProps {
+export interface ScoreProps {
   correct?: number;
   total?: number;
   outOf?: number;
 }
 
-function Score({ correct = 0, total = 0, outOf = 0 }: ScoreProps) {
+export function Score({ correct = 0, total = 0, outOf = 0 }: ScoreProps) {
   const score = Math.max(0, correct);
   const answered = Math.max(0, total);
   const questions = Math.max(answered, outOf, 1);
@@ -61,7 +48,3 @@ function Score({ correct = 0, total = 0, outOf = 0 }: ScoreProps) {
     </section>
   );
 }
-
-registerForDemo('quick-trivia', {
-  Score: asGenerative(Score),
-});
