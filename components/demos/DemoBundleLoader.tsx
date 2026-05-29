@@ -16,6 +16,9 @@ export function DemoBundleLoader({ slug }: DemoBundleLoaderProps) {
           case 'drive-thru-coffee':
             await import('@/components/demos/drive-thru-coffee');
             break;
+          case 'quick-trivia':
+            await import('@/components/demos/quick-trivia');
+            break;
           default:
             break;
         }
