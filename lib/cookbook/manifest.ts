@@ -1,5 +1,5 @@
 import 'server-only';
-import { type CatalogEntry, CatalogPayloadSchema, type CatalogValue } from './schema';
+import { type CatalogEntry, CatalogValueSchema, SlugSchema } from './schema';
 import { CATALOG_URL } from './url';
 
 /**
@@ -27,10 +27,36 @@ export class CatalogFetchError extends Error {
   }
 }
 
-function reshape(payload: Record<string, CatalogValue>): CatalogEntry[] {
-  return Object.entries(payload)
-    .map(([slug, value]) => ({ slug, ...value }))
-    .sort((a, b) => a.slug.localeCompare(b.slug));
+/**
+ * Validates the payload one entry at a time so a single malformed demo drops
+ * only its own card instead of taking the whole catalog offline. A bad slug
+ * key or a value that fails the schema is skipped with one console.warn; the
+ * conformant demos survive. Only a payload that is not a JSON object keyed by
+ * slug is fatal, since there is then nothing to salvage.
+ */
+function parseEntries(raw: unknown): CatalogEntry[] {
+  if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
+    throw new CatalogFetchError('parse', 'catalog.json was not a JSON object keyed by slug');
+  }
+
+  const entries: CatalogEntry[] = [];
+  for (const [slug, value] of Object.entries(raw as Record<string, unknown>)) {
+    const slugCheck = SlugSchema.safeParse(slug);
+    const valueCheck = CatalogValueSchema.safeParse(value);
+    if (!slugCheck.success || !valueCheck.success) {
+      const issues = [
+        ...(slugCheck.success ? [] : slugCheck.error.issues),
+        ...(valueCheck.success ? [] : valueCheck.error.issues),
+      ]
+        .map((i) => `${i.path.join('.') || '<root>'}: ${i.message}`)
+        .join('; ');
+      console.warn(`[cookbook] skipping malformed catalog entry "${slug}": ${issues}`);
+      continue;
+    }
+    entries.push({ slug, ...valueCheck.data });
+  }
+
+  return entries.sort((a, b) => a.slug.localeCompare(b.slug));
 }
 
 /**
@@ -60,15 +86,7 @@ export async function fetchCatalog(): Promise<CatalogEntry[]> {
     throw new CatalogFetchError('parse', `catalog.json was not valid JSON: ${reason}`);
   }
 
-  const parsed = CatalogPayloadSchema.safeParse(raw);
-  if (!parsed.success) {
-    const issues = parsed.error.issues
-      .map((i) => `${i.path.join('.') || '<root>'}: ${i.message}`)
-      .join('; ');
-    throw new CatalogFetchError('parse', `catalog.json failed schema validation: ${issues}`);
-  }
-
-  return reshape(parsed.data);
+  return parseEntries(raw);
 }
 
 /**
