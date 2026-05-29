@@ -17,9 +17,14 @@ export interface ListPanelProps {
 
 export function ListPanel({ title, items, className }: ListPanelProps) {
   return (
-    <section className={cn('box', className)} style={{ padding: 14 }}>
+    <section
+      className={cn(
+        'rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] p-3.5',
+        className
+      )}
+    >
       {title && (
-        <p className="tiny-mono" style={{ marginBottom: 8 }}>
+        <p className="mb-2 font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
           {title}
         </p>
       )}
@@ -32,42 +37,21 @@ export function ListPanel({ title, items, className }: ListPanelProps) {
                 <img
                   src={item.image_url}
                   alt=""
-                  className="block flex-none rounded-[4px]"
-                  style={{
-                    border: '1px solid var(--line-soft)',
-                    height: 44,
-                    objectFit: 'cover',
-                    width: 44,
-                  }}
+                  className="block h-11 w-11 flex-none rounded-[4px] border border-[color:var(--color-border)] object-cover"
                 />
               )}
               <div className="flex-1">
-                <p
-                  style={{
-                    fontFamily: 'var(--hand-title)',
-                    fontSize: 16,
-                    fontWeight: 700,
-                    lineHeight: 1.1,
-                  }}
-                >
+                <p className="text-[14px] leading-tight font-semibold text-[color:var(--color-text)]">
                   {item.title}
                 </p>
                 {item.subtitle && (
-                  <p className="p-hand sm" style={{ color: 'var(--ink-2)', marginTop: 2 }}>
+                  <p className="mt-0.5 text-[12px] text-[color:var(--color-text-mute)]">
                     {item.subtitle}
                   </p>
                 )}
               </div>
               {item.right && (
-                <span
-                  className="flex-none"
-                  style={{
-                    color: 'var(--ink)',
-                    fontFamily: 'var(--mono)',
-                    fontSize: 12,
-                    fontWeight: 500,
-                  }}
-                >
+                <span className="flex-none font-mono text-[12px] font-medium text-[color:var(--color-text)]">
                   {item.right}
                 </span>
               )}
@@ -77,17 +61,12 @@ export function ListPanel({ title, items, className }: ListPanelProps) {
           return (
             <li
               key={`${item.title}-${i}`}
-              style={{
-                borderTop: i > 0 ? '1px dashed var(--line-soft)' : 'none',
-                paddingTop: i > 0 ? 8 : 0,
-              }}
+              className={cn(
+                i > 0 && 'border-t border-dashed border-[color:var(--color-border-dim)] pt-2'
+              )}
             >
               {item.href ? (
-                <Link
-                  href={item.href}
-                  className="block transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2"
-                  style={{ outlineColor: 'var(--accent-hex)' }}
-                >
+                <Link href={item.href} className="block transition-opacity hover:opacity-80">
                   {inner}
                 </Link>
               ) : (
