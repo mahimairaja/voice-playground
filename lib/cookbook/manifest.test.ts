@@ -94,13 +94,60 @@ describe('lib/cookbook/manifest', () => {
     }
   });
 
-  it('throws CatalogFetchError("parse") when an entry fails schema', async () => {
+  it('skips a malformed entry and keeps the conformant ones', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     mockFetchOnce({
       ok: true,
       status: 200,
       json: async () => ({
-        bad: { ...validPayload['drive-thru-coffee'], category: 'Not A Real Category' },
+        ...validPayload,
+        'bad-category': {
+          ...validPayload['drive-thru-coffee'],
+          category: 'Not A Real Category',
+        },
       }),
+    });
+    const { fetchCatalog } = await import('./manifest');
+    const entries = await fetchCatalog();
+    expect(entries).toHaveLength(1);
+    expect(entries[0].slug).toBe('drive-thru-coffee');
+    expect(warn).toHaveBeenCalledOnce();
+    expect(warn.mock.calls[0][0]).toContain('bad-category');
+  });
+
+  it('skips an entry whose slug key is malformed', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    mockFetchOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        ...validPayload,
+        Bad_Slug: validPayload['drive-thru-coffee'],
+      }),
+    });
+    const { fetchCatalog } = await import('./manifest');
+    const entries = await fetchCatalog();
+    expect(entries.map((e) => e.slug)).toEqual(['drive-thru-coffee']);
+  });
+
+  it('returns an empty list when every entry is malformed', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    mockFetchOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        broken: { title: 'missing required fields' },
+      }),
+    });
+    const { fetchCatalog } = await import('./manifest');
+    expect(await fetchCatalog()).toEqual([]);
+  });
+
+  it('throws CatalogFetchError("parse") when the payload is not an object', async () => {
+    mockFetchOnce({
+      ok: true,
+      status: 200,
+      json: async () => ['not', 'a', 'catalog'],
     });
     const { fetchCatalog, CatalogFetchError } = await import('./manifest');
     try {
