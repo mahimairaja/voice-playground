@@ -1,14 +1,16 @@
 'use client';
 
 import { Fragment } from 'react';
+import Link from 'next/link';
 import { RoomContext } from '@livekit/components-react';
 import { CredentialsButton } from '@/components/credentials/CredentialsButton';
 import { DemoBundleLoader } from '@/components/demos/DemoBundleLoader';
+import { Eyebrow, Grain, ScopeFrame } from '@/components/phosphor';
 import { AgentCanvas } from '@/components/playground/AgentCanvas';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
 import { VoicePanel } from '@/components/playground/VoicePanel';
 import { useDemoSession } from '@/hooks/useDemoSession';
-import { LIVEKIT_KEYS } from '@/lib/credentials/store';
+import { CRED_OPEN_DRAWER_EVENT, LIVEKIT_KEYS } from '@/lib/credentials/store';
 import { useCredentials } from '@/lib/credentials/useCredentials';
 import type { ShippedDemo } from '@/lib/demos';
 import { useUiDispatcher } from '@/lib/generative-ui/dispatcher';
@@ -17,14 +19,18 @@ interface DemoRuntimeProps {
   demo: ShippedDemo;
 }
 
+function openVault() {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new Event(CRED_OPEN_DRAWER_EVENT));
+}
+
 /**
  * Per-demo runtime. Owns the session state machine and the two-pane layout.
- * Header strip sits above the two-pane:
  *
- *   [category crumb · title · who_for]   [source ↗] [SET KEYS · N]
- *
- * Layout C: voice panel on the left (~320 px) + agent canvas on the right
- * (fluid). Stacks vertically on mobile.
+ *   [← channel rack]
+ *   [category · surface]  title  description / who_for       [source ↗] [vault]
+ *   [ missing-keys banner when keys absent ]
+ *   [ SCOPE + TRANSCRIPT (1.5fr) | CANVAS + CREDENTIALS + worker note (1fr) ]
  *
  * The whole runtime is wrapped in 'RoomContext.Provider' when a session is
  * active so child components (transcript, audio visualizer, mounted bundles)
@@ -43,29 +49,96 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
 
   return (
     <Wrapper {...wrapperProps}>
-      <div className="flex flex-col">
+      <Grain>
         <DemoBundleLoader slug={demo.slug} />
 
-        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[color:var(--color-border-dim)] px-6 py-5">
-          <div>
-            <div className="font-mono text-[10.5px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
-              DEMOS · {demo.category}
-            </div>
-            <h1 className="mt-1 text-[22px] font-semibold tracking-tight text-[color:var(--color-text)]">
-              {demo.title}
-            </h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <CookbookSourceLink slug={demo.slug} variant="chip" />
-            <CredentialsButton demoTitle={demo.title} />
-          </div>
-        </div>
+        <div className="mx-auto w-full max-w-[1180px] px-6 pt-8 pb-16">
+          <Link
+            href="/demos"
+            className="font-mono text-[11px] tracking-[0.06em] text-[color:var(--color-text-mute)] transition-colors hover:text-[color:var(--color-accent)]"
+          >
+            ← channel rack
+          </Link>
 
-        <div className="flex flex-col gap-4 px-6 py-6 md:min-h-[60vh] md:flex-row md:items-stretch">
-          <VoicePanel session={session} isReady={isReady} />
-          <AgentCanvas demo={demo} session={session} />
+          <div className="mt-3.5 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <Eyebrow>
+                {demo.category} · surface: {demo.slug}
+              </Eyebrow>
+              <h1 className="mt-2 text-[32px] font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
+                {demo.title}
+              </h1>
+              <p className="mt-1.5 max-w-[54ch] text-[14px] leading-[1.5] text-[color:var(--color-text-dim)]">
+                {demo.description}{' '}
+                <span className="text-[color:var(--color-text-mute)]">{demo.who_for}</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <CookbookSourceLink slug={demo.slug} variant="chip" />
+              <CredentialsButton demoTitle={demo.title} />
+            </div>
+          </div>
+
+          {!isReady ? (
+            <div className="mt-5 flex flex-wrap items-center gap-3.5 rounded-[var(--radius-panel)] border border-[color:color-mix(in_srgb,var(--color-warning)_40%,transparent)] bg-[color:color-mix(in_srgb,var(--color-warning)_6%,transparent)] px-4 py-3.5">
+              <span
+                className="h-2 w-2 rounded-full bg-[color:var(--color-warning)]"
+                style={{ boxShadow: '0 0 8px var(--color-warning)' }}
+                aria-hidden="true"
+              />
+              <span className="font-mono text-[12px] tracking-[0.03em] text-[color:var(--color-warning)]">
+                NO LIVEKIT CREDENTIALS
+              </span>
+              <span className="text-[13.5px] text-[color:var(--color-text-dim)]">
+                Paste your LiveKit URL, key and secret to connect the scope to a live room.
+              </span>
+              <button
+                type="button"
+                onClick={openVault}
+                className="ml-auto cursor-pointer font-mono text-[12px] whitespace-nowrap text-[color:var(--color-accent)] hover:underline"
+              >
+                open vault →
+              </button>
+            </div>
+          ) : null}
+
+          <div className="mt-6 grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.5fr_1fr]">
+            <VoicePanel session={session} isReady={isReady} slug={demo.slug} />
+
+            <div className="flex flex-col gap-4">
+              <AgentCanvas demo={demo} session={session} />
+
+              <ScopeFrame title="REQUIRED CREDENTIALS" bodyClassName="p-[15px]">
+                <div className="flex flex-wrap gap-2">
+                  {LIVEKIT_KEYS.map((key) => (
+                    <span
+                      key={key}
+                      className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2.5 py-[5px] font-mono text-[10.5px] tracking-[0.06em] text-[color:var(--color-text-dim)] uppercase"
+                    >
+                      {key}
+                    </span>
+                  ))}
+                  <span
+                    className="mt-1 w-full font-mono text-[10.5px]"
+                    style={{ color: isReady ? 'var(--color-live)' : 'var(--color-warning)' }}
+                  >
+                    LiveKit: {isReady ? '✓ keys present' : '✗ paste in vault'}
+                  </span>
+                </div>
+              </ScopeFrame>
+
+              <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-3.5 font-mono text-[11px] leading-[1.6] text-[color:var(--color-text-fade)]">
+                Run the worker locally:
+                <br />
+                <span className="text-[color:var(--color-accent)]">uv run python agent.py dev</span>
+                <br />
+                then connect: the agent joins room{' '}
+                <span className="text-[color:var(--color-text-dim)]">{demo.slug}</span>.
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </Grain>
     </Wrapper>
   );
 }

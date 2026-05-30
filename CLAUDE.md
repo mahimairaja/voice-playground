@@ -18,29 +18,29 @@ When the operator opens a fresh session and asks for help, default to **brainsto
 
 ## Tech stack
 
-| Layer           | Choice                                                                                                                                                  |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Framework       | Next.js 15 App Router, React 19, TypeScript                                                                                                             |
-| Package manager | pnpm (never npm or yarn)                                                                                                                                |
-| Styling         | Tailwind v4 with the F1 dark + cyan tokens. shadcn registry at `components/ui/`. `@agents-ui/*` lives in `components/agents-ui/`.                       |
-| Design tokens   | `lib/design/tokens.ts` is the source of truth (palette, radius, spacing). `styles/globals.css` mirrors values into a Tailwind v4 `@theme inline` block. |
-| Fonts           | Geist + Geist Mono, loaded once in `app/layout.tsx` via `next/font/google`. No other web fonts.                                                         |
-| Validation      | zod (catalog schema, UI-event envelope, credentials types)                                                                                              |
-| State           | zustand (the generative-UI store only). React state everywhere else.                                                                                    |
-| Theming         | Dark only. `<html class="dark">` is forced; there is no light theme and no system-preference switch.                                                    |
-| Voice runtime   | livekit-client plus `@livekit/components-react`. Visitor-supplied LiveKit URL/key/secret.                                                               |
-| Hosting         | Vercel Hobby tier, Node 20 pin via `package.json#engines.node` and `vercel.json`.                                                                       |
-| Tests           | Vitest (jsdom) for pure modules only. No RTL, no Playwright in CI.                                                                                      |
+| Layer           | Choice                                                                                                                                                                                                    |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework       | Next.js 15 App Router, React 19, TypeScript                                                                                                                                                               |
+| Package manager | pnpm (never npm or yarn)                                                                                                                                                                                  |
+| Styling         | Tailwind v4 with the PHOSPHOR warm-amber oscilloscope tokens. shadcn registry at `components/ui/`. `@agents-ui/*` lives in `components/agents-ui/`. Shared PHOSPHOR primitives in `components/phosphor/`. |
+| Design tokens   | `lib/design/tokens.ts` is the source of truth (palette, radius, spacing). `styles/globals.css` mirrors values into a Tailwind v4 `@theme inline` block.                                                   |
+| Fonts           | Space Grotesk (display/sans) + JetBrains Mono (instrument readouts), loaded once in `app/layout.tsx` via `next/font/google`. No other web fonts.                                                          |
+| Validation      | zod (catalog schema, UI-event envelope, credentials types)                                                                                                                                                |
+| State           | zustand (the generative-UI store only). React state everywhere else.                                                                                                                                      |
+| Theming         | Dark only. `<html class="dark">` is forced; there is no light theme and no system-preference switch.                                                                                                      |
+| Voice runtime   | livekit-client plus `@livekit/components-react`. Visitor-supplied LiveKit URL/key/secret.                                                                                                                 |
+| Hosting         | Vercel Hobby tier, Node 20 pin via `package.json#engines.node` and `vercel.json`.                                                                                                                         |
+| Tests           | Vitest (jsdom) for pure modules only. No RTL, no Playwright in CI.                                                                                                                                        |
 
 The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`, NOT in this repo. The playground only ships the visitor-side client.
 
 ## Hard constraints
 
-- **`lib/design/tokens.ts` is the design source of truth.** Every color, radius, spacing stop comes from there and is mirrored into `styles/globals.css`'s `@theme inline` block. The documented palette is: surfaces (`--color-bg`, `--color-surface`, `--color-surface-2`), borders (`--color-border`, `--color-border-strong`, `--color-border-dim`), text scale (`--color-text`, `--color-text-dim`, `--color-text-mute`, `--color-text-fade`), accent (`--color-accent`, `--color-accent-soft`), and status (`--color-warning`, `--color-danger`). Any new token needs an explicit reason in the PR.
-- **Single accent: cyan `#2DD4BF`.** Used only for primary CTAs, live-state indicators, the active-route underline, and per-surface highlights.
+- **`lib/design/tokens.ts` is the design source of truth.** Every color, radius, spacing stop comes from there and is mirrored into `styles/globals.css`'s `@theme inline` block. The documented PHOSPHOR palette is: surfaces (`--color-bg`, `--color-surface`, `--color-surface-2`, `--color-surface-3`, `--color-scope`), borders (`--color-border`, `--color-border-strong`, `--color-border-dim`), text scale (`--color-text`, `--color-text-dim`, `--color-text-mute`, `--color-text-fade`), accent (`--color-accent`, `--color-accent-dim`, `--color-accent-soft`), and status (`--color-live`, `--color-warning`, `--color-danger`). Any new token needs an explicit reason in the PR.
+- **Single accent: amber `#ffb02e`.** Used only for primary CTAs, live-state highlights, the active-route underline, the scope trace, and per-surface highlights. The connected/live state uses green `--color-live` (`#74e0a6`).
 - **Dark only.** No light theme, no `body.clean` toggle, no system-preference switch. `<html class="dark">` is forced in `app/layout.tsx`.
-- **Type: Geist + Geist Mono only.** Loaded once in `app/layout.tsx` via `next/font/google`. Do not introduce Caveat, Kalam, JetBrains Mono, or any other web font.
-- **No wireframe primitives.** `styles/brand.css`, `.brand`/`.box`/`.tab`/`.chip`/`.stamp`/`.h-hand`/`.p-hand` classes, paper-grid backgrounds, pushpins, scotch tape, stamps, and hand-drawn arrows are gone. Do not reintroduce them.
+- **Type: Space Grotesk + JetBrains Mono only.** Loaded once in `app/layout.tsx` via `next/font/google`. JetBrains Mono is used as instrument readouts (eyebrows, values, status). Do not introduce Geist, Caveat, Kalam, or any other web font.
+- **PHOSPHOR texture, not wireframe junk.** The identity is an oscilloscope: film grain + CRT scanlines (`.ph-grain` / `.ph-scan` in `globals.css`), the `OscWave` scope trace, and `ScopeFrame` instrument panels (all in `components/phosphor/`). Build new surfaces from those. Do NOT reintroduce the old wireframe primitives (`.brand`/`.box`/`.h-hand`/`.p-hand`, paper-grid, pushpins, scotch tape, hand-drawn arrows).
 - **`references/*.html` is historical only.** The wireframe HTML files are kept for archival reference. Do not consume them at runtime, do not reformat them with Prettier (they are in `.prettierignore`).
 - **No demo-specific React components in this repo.** `components/demos/<slug>/*` is reserved for the per-demo bundles that ship in F1.3. The current iteration only provides the registry, dispatcher, and Canvas; bundles register themselves.
 - **No backticks in shell prompts you suggest the operator paste.**
@@ -55,7 +55,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 - `app/demos/[slug]/page.tsx` is the per-demo page. Uses `generateStaticParams` from `getAllDemos()` and `dynamicParams = false`, so unknown slugs 404 at the route layer.
 - `app/maintenance/page.tsx` is the dark-themed maintenance landing (App Router route, replaces the deleted `public/maintenance.html`).
 - `app/error.tsx` (client) and `app/not-found.tsx` (server) are dark-themed.
-- `app/layout.tsx` mounts `<PlaygroundHeader>` and `<PlaygroundFooter>`, forces the `dark` class on `<html>`, loads Geist + Geist Mono, and configures `generateMetadata`.
+- `app/layout.tsx` mounts `<PlaygroundHeader>` and `<PlaygroundFooter>`, forces the `dark` class on `<html>`, loads Space Grotesk + JetBrains Mono, and configures `generateMetadata`.
 - `components/layout/` is the global chrome: `PlaygroundHeader`, `PlaygroundFooter`.
 - `components/credentials/` is the LiveKit-keys UI: `CredentialsSheet` (always renders the three `LIVEKIT_KEYS`), `CredentialsButton`. The sheet listens for `CRED_OPEN_DRAWER_EVENT` so any other surface can ask it to open.
 - `components/playground/` is the demo runtime: `DemoRuntime`, `VoicePanel`, `AgentCanvas`, `AgentCanvasEmpty`, `SessionTimer`, `Transcript`, `CookbookSourceLink`, `CatalogError`. Two-pane layout (voice left, agent canvas right).
@@ -163,5 +163,5 @@ The brand wordmark in chrome is `mahimai` lowercase. Page-level prose uses `voic
 
 1. Read `.agents/design.md` and `.agents/TODO.md` to confirm the current milestone scope.
 2. If the request is in scope, propose the smallest commit and confirm before coding. If not, surface the mismatch and ask whether to log a follow-up or extend scope.
-3. Honour the visual system: `lib/design/tokens.ts` is the source of truth, mirrored into `styles/globals.css`. Single cyan accent, Geist + Geist Mono only, no wireframe primitives.
+3. Honour the visual system: `lib/design/tokens.ts` is the source of truth, mirrored into `styles/globals.css`. Single amber accent, Space Grotesk + JetBrains Mono only, PHOSPHOR scope/grain motif (no old wireframe primitives).
 4. Build via `pnpm build` before declaring done.

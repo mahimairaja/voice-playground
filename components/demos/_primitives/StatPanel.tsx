@@ -28,11 +28,13 @@ export function StatPanel({ label, value, of, caption, className }: StatPanelPro
         </p>
       )}
       <div className={cn('flex items-baseline gap-2', label && 'mt-2')}>
-        <span className="font-mono text-[28px] leading-none font-semibold text-[color:var(--color-accent)]">
+        <span className="font-mono text-[30px] leading-none font-semibold text-[color:var(--color-accent)] tabular-nums">
           {value}
         </span>
         {typeof of === 'number' && of > 0 && (
-          <span className="font-mono text-[14px] text-[color:var(--color-text-mute)]">/ {of}</span>
+          <span className="font-mono text-[14px] text-[color:var(--color-text-mute)] tabular-nums">
+            / {of}
+          </span>
         )}
       </div>
       {pct !== null && (

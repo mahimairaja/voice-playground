@@ -58,15 +58,16 @@ export function Transcript({ defaultOpen = false, className }: TranscriptProps) 
 
   return (
     <section aria-label="Live transcript" className={cn('w-full', className)}>
-      <div className="flex items-center justify-between gap-3">
-        <span className="tiny-mono">
-          · TRANSCRIPT{' '}
-          {merged.length > 0 ? `· ${merged.length} line${merged.length === 1 ? '' : 's'}` : ''}
+      <div className="flex items-center justify-between gap-3 px-1">
+        <span className="font-mono text-[10.5px] tracking-[0.1em] text-[color:var(--color-text-mute)] uppercase">
+          {merged.length > 0
+            ? `${merged.length} line${merged.length === 1 ? '' : 's'}`
+            : 'no lines yet'}
         </span>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="tiny-mono flex cursor-pointer items-center gap-1 transition-opacity hover:opacity-70"
+          className="flex cursor-pointer items-center gap-1 font-mono text-[10.5px] tracking-[0.1em] text-[color:var(--color-text-fade)] uppercase transition-colors hover:text-[color:var(--color-text-dim)]"
           aria-expanded={open}
           aria-controls="transcript-body"
         >
@@ -81,15 +82,16 @@ export function Transcript({ defaultOpen = false, className }: TranscriptProps) 
           )}
         </button>
       </div>
-      <div className="line soft mt-1 mb-3"></div>
       <div
         id="transcript-body"
         hidden={!open}
         style={{ display: open ? undefined : 'none' }}
-        className="max-h-72 overflow-y-auto"
+        className="mt-3 max-h-[230px] overflow-y-auto"
       >
         {merged.length === 0 ? (
-          <p className="p-hand sm">waiting for the first message.</p>
+          <p className="px-1 py-6 text-center font-mono text-[12px] text-[color:var(--color-text-fade)]">
+            transcript will stream here
+          </p>
         ) : (
           <AgentChatTranscript agentState={agentState} messages={merged} />
         )}

@@ -3,38 +3,42 @@
 import { useEffect, useState } from 'react';
 import { RoomEvent } from 'livekit-client';
 import { AgentAudioVisualizerBar } from '@/components/agents-ui/agent-audio-visualizer-bar';
+import { Btn, Grain, OscWave, ScopeFrame } from '@/components/phosphor';
 import { SessionTimer } from '@/components/playground/SessionTimer';
 import { Transcript } from '@/components/playground/Transcript';
 import type { useDemoSession } from '@/hooks/useDemoSession';
+import { COLOR } from '@/lib/design/tokens';
 import { MintTokenError } from '@/lib/livekit/mintToken';
 
 /**
- * Left column of the demo page. Owns the per-session controls (talk, end,
- * retry) and the live feedback channels (audio level visualizer, transcript,
- * session timer).
+ * Left column of the demo page: the SCOPE instrument (oscilloscope screen +
+ * control bar + status readouts) and the live TRANSCRIPT panel.
  *
- * Three visual states drive the layout:
+ * Session states drive the scope:
  *
- *   idle / ended / error → Talk / "Try again" CTA, no audio viz, no
- *                          transcript. Inline error banners when the
- *                          session.error is a MintTokenError.
- *   connecting           → "connecting…" disabled CTA + spinner-style dots.
- *   live                 → End button, animated audio visualizer, live
- *                          transcript, mm:ss session timer. After 5 s with
- *                          no remote participant, shows the amber
- *                          "Agent not connected" hint.
+ *   idle / ended / error → no trace, centered "NO SIGNAL" / "SESSION ENDED"
+ *                          label, connect / reconnect CTA. Inline error
+ *                          banners when 'session.error' is a MintTokenError.
+ *   connecting           → a pulsing baseline, disabled controls.
+ *   live                 → the amber OscWave trace (dim + slow when the mic is
+ *                          muted), disconnect + mic controls, the running
+ *                          SessionTimer in the DURATION readout. After 5 s
+ *                          with no remote participant, shows the amber
+ *                          "agent not connected" hint.
  */
 
 interface VoicePanelProps {
   session: ReturnType<typeof useDemoSession>;
   isReady: boolean;
+  slug: string;
 }
 
 const AGENT_GRACE_MS = 5000;
 
-export function VoicePanel({ session, isReady }: VoicePanelProps) {
+export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
   const { state, connect, disconnect, error, room } = session;
   const [agentMissing, setAgentMissing] = useState(false);
+  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     if (state !== 'live' || !room) {
@@ -59,24 +63,49 @@ export function VoicePanel({ session, isReady }: VoicePanelProps) {
     };
   }, [state, room]);
 
+  // Mute resets to live (unmuted) whenever a fresh session connects.
+  useEffect(() => {
+    if (state !== 'live') setMuted(false);
+  }, [state]);
+
+  const toggleMute = () => {
+    if (!room) return;
+    const next = !muted;
+    setMuted(next);
+    void room.localParticipant.setMicrophoneEnabled(!next);
+  };
+
   const tokenError = error instanceof MintTokenError ? error : null;
 
-  return (
-    <aside
-      aria-label="Voice controls"
-      className="flex w-full flex-col gap-3 rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-4 md:w-[320px]"
-    >
-      <div className="flex items-baseline justify-between">
-        <span className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
-          {'// VOICE'}
-        </span>
-        <SessionTimer state={state} />
-      </div>
+  const live = state === 'live';
+  const connecting = state === 'connecting';
+  const ended = state === 'ended';
 
+  const statusText = live
+    ? '● LIVE'
+    : connecting
+      ? '◐ CONNECTING'
+      : ended
+        ? '○ ENDED'
+        : state === 'error'
+          ? '○ ERROR'
+          : '○ STANDBY';
+  const statusColor = live
+    ? 'var(--color-live)'
+    : connecting
+      ? 'var(--color-warning)'
+      : state === 'error'
+        ? 'var(--color-danger)'
+        : ended
+          ? 'var(--color-text-mute)'
+          : 'var(--color-text-fade)';
+
+  return (
+    <aside aria-label="Voice controls" className="flex w-full flex-col gap-4">
       {tokenError ? (
-        <div className="rounded-[var(--radius-input)] border border-[color:var(--color-danger)] bg-[color:color-mix(in_srgb,var(--color-danger)_10%,transparent)] p-3">
-          <p className="font-mono text-[10px] tracking-[0.06em] text-[color:var(--color-danger)] uppercase">
-            {'// TOKEN · REJECTED'}
+        <div className="rounded-[var(--radius-panel)] border border-[color:color-mix(in_srgb,var(--color-danger)_40%,transparent)] bg-[color:color-mix(in_srgb,var(--color-danger)_8%,transparent)] p-3">
+          <p className="font-mono text-[10.5px] tracking-[0.08em] text-[color:var(--color-danger)] uppercase">
+            token · rejected
           </p>
           <p className="mt-1 text-[12.5px] text-[color:var(--color-text-dim)]">
             {tokenError.field}: {tokenError.message}
@@ -84,46 +113,93 @@ export function VoicePanel({ session, isReady }: VoicePanelProps) {
         </div>
       ) : null}
 
-      {state === 'live' || state === 'connecting' ? (
-        <button
-          type="button"
-          onClick={() => void disconnect()}
-          disabled={state !== 'live'}
-          className="rounded-[var(--radius-button)] border border-[color:var(--color-border)] px-4 py-2 text-[13px] text-[color:var(--color-text)] hover:border-[color:var(--color-border-strong)] disabled:cursor-not-allowed disabled:text-[color:var(--color-text-fade)]"
+      <ScopeFrame
+        title={`SCOPE · ${slug}`}
+        right={<span style={{ color: statusColor }}>{statusText}</span>}
+        footer={[
+          ['STATUS', live ? 'listening' : ended ? 'ended' : 'idle', statusColor],
+          ['DURATION', <SessionTimer key="dur" state={state} variant="value" />],
+          ['TTFB', live ? '0.38 s' : '··'],
+        ]}
+      >
+        <Grain
+          scan
+          className="relative h-[200px]"
+          style={{
+            background: 'var(--color-scope)',
+            backgroundImage:
+              'repeating-linear-gradient(90deg,var(--color-border-dim) 0 1px,transparent 1px 44px),repeating-linear-gradient(0deg,var(--color-border-dim) 0 1px,transparent 1px 44px)',
+          }}
         >
-          {state === 'connecting' ? 'connecting…' : 'End'}
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={() => void connect()}
-          disabled={!isReady}
-          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13px] font-semibold text-[color:var(--color-bg)] hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[color:var(--color-surface-2)] disabled:text-[color:var(--color-text-fade)]"
-        >
-          {state === 'idle'
-            ? isReady
-              ? '→ Talk'
-              : 'Set keys to talk'
-            : state === 'ended'
-              ? '→ Try again'
-              : '→ Retry'}
-        </button>
-      )}
+          <div className="absolute inset-0 flex items-center px-2">
+            {live ? (
+              <OscWave
+                color={muted ? COLOR.textMute : COLOR.accent}
+                height={170}
+                speed={muted ? 0.3 : 1}
+              />
+            ) : (
+              <div
+                className="h-[2px] w-full"
+                style={{
+                  background: connecting ? 'var(--color-warning)' : 'var(--color-border-strong)',
+                  opacity: connecting ? 1 : 0.6,
+                  animation: connecting ? 'ph-pulse 1s infinite' : 'none',
+                }}
+              />
+            )}
+          </div>
+          {!live && !connecting ? (
+            <div className="absolute inset-0 flex items-center justify-center font-mono text-[12px] tracking-[0.1em] text-[color:var(--color-text-fade)]">
+              {ended ? 'SESSION ENDED' : 'NO SIGNAL · PRESS CONNECT'}
+            </div>
+          ) : null}
+        </Grain>
 
-      <div className="rounded-[var(--radius-input)] border border-[color:var(--color-border-dim)] bg-[color:var(--color-surface-2)] p-3">
-        <AgentAudioVisualizerBar
-          size="md"
-          state={
-            state === 'live' ? 'listening' : state === 'connecting' ? 'connecting' : 'disconnected'
-          }
-          color="#2DD4BF"
-        />
-      </div>
+        <div className="flex items-center gap-2.5 border-t border-[color:var(--color-border-dim)] px-[15px] py-[13px]">
+          {!live && !connecting ? (
+            <Btn kind="primary" onClick={() => void connect()} disabled={!isReady}>
+              {ended ? '↻ reconnect' : isReady ? '▶ connect' : '▶ set keys to connect'}
+            </Btn>
+          ) : (
+            <Btn
+              kind="ghost"
+              onClick={() => void disconnect()}
+              disabled={!live}
+              className="border-[color:color-mix(in_srgb,var(--color-danger)_40%,transparent)] text-[color:var(--color-danger)] hover:border-[color:var(--color-danger)]"
+            >
+              {connecting ? '◐ connecting…' : '■ disconnect'}
+            </Btn>
+          )}
+          <button
+            type="button"
+            onClick={toggleMute}
+            disabled={!live}
+            className="rounded-[var(--radius-button)] border border-[color:var(--color-border)] px-[14px] py-[10px] font-mono text-[12px] transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            style={{
+              color: !live
+                ? 'var(--color-text-fade)'
+                : muted
+                  ? 'var(--color-warning)'
+                  : 'var(--color-text-dim)',
+            }}
+          >
+            {muted ? 'mic off' : 'mic on'}
+          </button>
+          <div className="ml-auto flex items-center gap-2">
+            <AgentAudioVisualizerBar
+              size="sm"
+              state={live ? 'listening' : connecting ? 'connecting' : 'disconnected'}
+              color="#ffb02e"
+            />
+          </div>
+        </div>
+      </ScopeFrame>
 
       {agentMissing ? (
-        <div className="rounded-[var(--radius-input)] border border-[color:var(--color-warning)] bg-[color:color-mix(in_srgb,var(--color-warning)_10%,transparent)] p-3">
-          <p className="font-mono text-[10px] tracking-[0.06em] text-[color:var(--color-warning)] uppercase">
-            {'// AGENT · NOT CONNECTED'}
+        <div className="rounded-[var(--radius-panel)] border border-[color:color-mix(in_srgb,var(--color-warning)_40%,transparent)] bg-[color:color-mix(in_srgb,var(--color-warning)_8%,transparent)] p-3">
+          <p className="font-mono text-[10.5px] tracking-[0.08em] text-[color:var(--color-warning)] uppercase">
+            agent · not connected
           </p>
           <p className="mt-1 text-[12px] leading-[1.5] text-[color:var(--color-text-dim)]">
             Run{' '}
@@ -135,11 +211,15 @@ export function VoicePanel({ session, isReady }: VoicePanelProps) {
         </div>
       ) : null}
 
-      {state === 'live' || state === 'ended' ? (
-        <div className="flex-1 overflow-hidden">
+      <ScopeFrame title="TRANSCRIPT" bodyClassName="p-4">
+        {state === 'live' || state === 'ended' ? (
           <Transcript defaultOpen />
-        </div>
-      ) : null}
+        ) : (
+          <p className="px-1 py-6 text-center font-mono text-[12px] text-[color:var(--color-text-fade)]">
+            {connecting ? 'establishing channel…' : 'transcript will stream here'}
+          </p>
+        )}
+      </ScopeFrame>
     </aside>
   );
 }

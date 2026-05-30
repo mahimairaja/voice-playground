@@ -29,7 +29,7 @@ function buttonClass(primary?: boolean): string {
   return cn(
     BASE,
     primary
-      ? 'bg-[color:var(--color-accent)] font-semibold text-[color:var(--color-bg)] hover:opacity-90'
+      ? 'bg-[color:var(--color-accent)] font-semibold text-[#1a1200] hover:opacity-90'
       : 'border border-[color:var(--color-border)] text-[color:var(--color-text-dim)] hover:border-[color:var(--color-border-strong)] hover:text-[color:var(--color-text)]'
   );
 }

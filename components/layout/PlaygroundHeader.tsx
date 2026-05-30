@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 /**
- * Global header. Sticky 56px, dark surface, top + bottom hairlines.
+ * Global header. Sticky 60px, translucent backdrop-blur, bottom hairline.
  *
- *   left:  mahimai / playground   (mono breadcrumb; click routes to '/')
- *   right: demos · about · cookbook ↗   (Geist 13.5px; active item underlined cyan)
+ *   left:  ● voice·playground   (amber signal dot + mono wordmark; routes to '/')
+ *   right: demos · about · cookbook ↗   (mono 12px; active item underlined amber)
  *
  * No keys indicator. F1.1 decision: keys UI lives entirely on the demo page,
  * not in global chrome.
@@ -38,28 +38,32 @@ export function PlaygroundHeader() {
   return (
     <header
       role="banner"
-      className="sticky top-0 z-40 flex h-14 items-center gap-6 border-y border-[color:var(--color-border-dim)] bg-[color:var(--color-bg)] px-6"
+      className="sticky top-0 z-40 flex h-[60px] items-center justify-between border-b border-[color:var(--color-border-dim)] px-6 backdrop-blur-[10px] sm:px-8"
+      style={{ background: 'rgba(13,10,6,0.82)' }}
     >
       <Link
         href="/"
-        aria-label="mahimai playground home"
-        className="group font-mono text-[13.5px] tracking-tight text-[color:var(--color-text)] hover:text-[color:var(--color-accent)]"
+        aria-label="voice playground home"
+        className="group flex items-center gap-[11px] font-mono text-[13.5px] tracking-[0.06em] text-[color:var(--color-text)]"
       >
-        <span>mahimai</span>
-        <span className="mx-[2px] text-[color:var(--color-text-fade)]"> / </span>
-        <span className="text-[color:var(--color-text-mute)] group-hover:text-[color:var(--color-text-dim)]">
-          playground
+        <span
+          aria-hidden="true"
+          className="h-[11px] w-[11px] shrink-0 rounded-full bg-[color:var(--color-accent)]"
+          style={{ boxShadow: '0 0 12px var(--color-accent)' }}
+        />
+        <span>
+          voice<span className="text-[color:var(--color-accent)]">·</span>playground
         </span>
       </Link>
 
-      <nav aria-label="Primary" className="ml-auto flex items-center gap-6">
+      <nav aria-label="Primary" className="flex items-center gap-[26px] font-mono text-[12px]">
         {NAV.map((item) => {
           const isActive = !item.external && (item.match?.(pathname) ?? pathname === item.href);
           const className =
-            'relative text-[13.5px] py-1 transition-colors ' +
+            'relative pb-[3px] transition-colors ' +
             (isActive
               ? 'text-[color:var(--color-text)]'
-              : 'text-[color:var(--color-text-mute)] hover:text-[color:var(--color-text-dim)]');
+              : 'text-[color:var(--color-text-mute)] hover:text-[color:var(--color-text)]');
 
           if (item.external) {
             return (
@@ -82,7 +86,8 @@ export function PlaygroundHeader() {
               {isActive ? (
                 <span
                   aria-hidden="true"
-                  className="absolute inset-x-0 -bottom-[15px] h-[1.5px] bg-[color:var(--color-accent)]"
+                  className="absolute inset-x-0 -bottom-px h-[1.5px] bg-[color:var(--color-accent)]"
+                  style={{ boxShadow: '0 0 8px var(--color-accent)' }}
                 />
               ) : null}
             </Link>

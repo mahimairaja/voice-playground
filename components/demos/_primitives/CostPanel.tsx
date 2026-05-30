@@ -21,17 +21,10 @@ export function CostPanel({ total_usd, lines, className }: CostPanelProps) {
   return (
     <section
       className={cn(
-        'rounded-[var(--radius-panel)] border border-[color:var(--color-accent)] bg-[color:var(--color-accent-soft)] p-4',
+        'rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] p-3.5',
         className
       )}
     >
-      <p className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
-        total · this call
-      </p>
-      <p className="mt-1 font-mono text-[40px] leading-none font-semibold text-[color:var(--color-accent)]">
-        {formatTotal(total_usd)}
-      </p>
-      <div className="my-3 h-px bg-[color:var(--color-border)]" />
       <ul className="flex flex-col gap-1.5">
         {lines.map((line, i) => (
           <li key={`${line.label}-${i}`} className="flex items-baseline justify-between gap-3">
@@ -43,12 +36,19 @@ export function CostPanel({ total_usd, lines, className }: CostPanelProps) {
                 </span>
               )}
             </span>
-            <span className="font-mono text-[13px] font-medium text-[color:var(--color-text)]">
+            <span className="font-mono text-[13px] font-medium text-[color:var(--color-text-dim)]">
               {line.value}
             </span>
           </li>
         ))}
       </ul>
+      <div
+        className="mt-2.5 flex items-center justify-between rounded-[8px] bg-[color:var(--color-accent)] px-3.5 py-3"
+        style={{ color: '#1a1200' }}
+      >
+        <span className="font-mono text-[11px] tracking-[0.1em] uppercase">total · this call</span>
+        <span className="text-[22px] font-bold tabular-nums">{formatTotal(total_usd)}</span>
+      </div>
     </section>
   );
 }

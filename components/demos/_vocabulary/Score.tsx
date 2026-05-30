@@ -29,7 +29,7 @@ export function Score({ correct = 0, total = 0, outOf = 0 }: ScoreProps) {
       </p>
 
       <div className="mt-2 flex items-baseline gap-2">
-        <span className="font-mono text-[28px] leading-none font-semibold text-[color:var(--color-accent)]">
+        <span className="font-mono text-[30px] leading-none font-semibold text-[color:var(--color-accent)] tabular-nums">
           {score}
         </span>
         <span className="font-mono text-[12px] text-[color:var(--color-text-mute)]">correct</span>
