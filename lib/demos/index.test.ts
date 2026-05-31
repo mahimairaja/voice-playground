@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const SHIPPED_PAYLOAD = {
   'drive-thru-coffee': {
     title: 'Drive-thru coffee',
-    category: 'Drive-thru & Ordering',
+    category: 'restaurant',
     description: 'Takes a coffee order, modifies items mid-flow, totals the cart.',
     who_for: 'Cafes that want voice ordering without ripping out their POS.',
     recording_url: null,
@@ -50,7 +50,7 @@ describe('lib/demos/index', () => {
         {
           slug: 'dental-front-desk',
           title: 'Dental front desk',
-          category: 'Receptionist & Booking',
+          category: 'healthcare',
           target_date: '2026-09',
           github_link: 'https://example.invalid/issue/1',
           why: 'Books appointments against a calendar.',
@@ -71,7 +71,7 @@ describe('lib/demos/index', () => {
         {
           slug: 'returns-and-refunds',
           title: 'Returns and refunds',
-          category: 'Customer Support',
+          category: 'retail',
           target_date: '2026-10',
           github_link: 'https://example.invalid/issue/2',
           why: 'Walks through a return.',
@@ -80,6 +80,6 @@ describe('lib/demos/index', () => {
     }));
     const { getDemoCategories } = await import('./index');
     const cats = await getDemoCategories();
-    expect(cats).toEqual(['Customer Support', 'Drive-thru & Ordering']);
+    expect(cats).toEqual(['restaurant', 'retail']);
   });
 });

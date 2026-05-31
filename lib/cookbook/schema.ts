@@ -9,16 +9,25 @@ import { z } from 'zod';
  */
 
 export const CategorySchema = z.enum([
-  'Receptionist & Booking',
-  'Drive-thru & Ordering',
-  'Customer Support',
-  'Companion & Coaching',
-  'Education',
-  'Data Extraction',
-  'Tool Calling',
-  'Multilingual',
-  'Multi-Agent',
-  'Telephony & SIP',
+  'healthcare',
+  'legal',
+  'finance',
+  'realestate',
+  'hospitality',
+  'restaurant',
+  'automotive',
+  'education',
+  'retail',
+  'recruiting',
+  'construction',
+  'travel',
+  'fitness',
+  'beauty',
+  'logistics',
+  'insurance',
+  'nonprofit',
+  'gov',
+  'media',
 ]);
 
 export type Category = z.infer<typeof CategorySchema>;

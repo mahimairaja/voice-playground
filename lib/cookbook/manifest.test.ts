@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const validPayload = {
   'drive-thru-coffee': {
     title: 'Drive-thru coffee',
-    category: 'Drive-thru & Ordering',
+    category: 'restaurant',
     description: 'Takes a coffee order, modifies items mid-flow, totals the cart.',
     who_for: 'Cafes that want voice ordering without ripping out their POS.',
     recording_url: null,
