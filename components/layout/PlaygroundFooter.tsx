@@ -1,14 +1,14 @@
 import pkg from '../../package.json';
 
 /**
- * Global footer. Single thin row, separated by a top hairline.
+ * Global footer. Single row over a top hairline, mono fade text.
  *
- *   left:   MIT · BYO PROVIDERS
- *   center: cookbook GitHub link
- *   right:  vX.Y.Z (read from package.json at build time)
+ *   left:   voice·playground: a browser oscilloscope for voice agents
+ *   right:  awesome-voice-apps ↗ · source ↗ · vX.Y.Z · ● SIGNAL
  */
 
 const COOKBOOK_URL = 'https://github.com/mahimairaja/awesome-voice-apps';
+const SOURCE_URL = 'https://github.com/mahimairaja/voice-playground';
 
 export function PlaygroundFooter() {
   const version = `v${pkg.version}`;
@@ -16,18 +16,29 @@ export function PlaygroundFooter() {
   return (
     <footer
       role="contentinfo"
-      className="flex h-11 items-center gap-6 border-t border-[color:var(--color-border-dim)] px-6 font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase"
+      className="flex flex-wrap items-center justify-between gap-4 border-t border-[color:var(--color-border-dim)] px-6 py-7 font-mono text-[11px] text-[color:var(--color-text-fade)] sm:px-8"
     >
-      <span>MIT · BYO PROVIDERS</span>
-      <a
-        href={COOKBOOK_URL}
-        target="_blank"
-        rel="noreferrer noopener"
-        className="mx-auto hover:text-[color:var(--color-text-mute)]"
-      >
-        awesome-voice-apps ↗
-      </a>
-      <span>{version}</span>
+      <span>voice·playground: a browser oscilloscope for voice agents</span>
+      <div className="flex items-center gap-5">
+        <a
+          href={COOKBOOK_URL}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="text-[color:var(--color-text-mute)] transition-colors hover:text-[color:var(--color-text)]"
+        >
+          awesome-voice-apps ↗
+        </a>
+        <a
+          href={SOURCE_URL}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="text-[color:var(--color-text-mute)] transition-colors hover:text-[color:var(--color-text)]"
+        >
+          source ↗
+        </a>
+        <span>{version}</span>
+        <span className="text-[color:var(--color-accent)]">● SIGNAL</span>
+      </div>
     </footer>
   );
 }

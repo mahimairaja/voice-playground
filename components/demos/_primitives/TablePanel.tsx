@@ -40,7 +40,7 @@ export function TablePanel({ title, columns, rows, className }: TablePanelProps)
                 <td
                   key={c}
                   className={cn(
-                    'py-1.5 font-mono text-[12px] text-[color:var(--color-text-dim)]',
+                    'py-1.5 font-mono text-[12px] text-[color:var(--color-text-dim)] tabular-nums',
                     r < rows.length - 1 && 'border-b border-[color:var(--color-border-dim)]'
                   )}
                 >

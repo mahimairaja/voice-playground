@@ -5,12 +5,17 @@ import type { SessionState } from '@/hooks/useDemoSession';
 
 /**
  * mm:ss timer that starts when the session enters 'live' and freezes when
- * it transitions to 'ended' or 'error'. Rendered as a small mono crumb
- * underneath the audio visualizer.
+ * it transitions to 'ended' or 'error'.
+ *
+ * Two render modes:
+ *   - default: a small mono crumb with an ON-AIR / ENDED / ERROR suffix.
+ *   - variant="value": just the mm:ss readout, for the SCOPE footer's
+ *     DURATION cell. Renders a dotted placeholder before the session starts.
  */
 
 interface SessionTimerProps {
   state: SessionState;
+  variant?: 'crumb' | 'value';
 }
 
 function format(seconds: number): string {
@@ -21,7 +26,7 @@ function format(seconds: number): string {
   return `${m}:${s}`;
 }
 
-export function SessionTimer({ state }: SessionTimerProps) {
+export function SessionTimer({ state, variant = 'crumb' }: SessionTimerProps) {
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [elapsed, setElapsed] = useState(0);
 
@@ -46,12 +51,17 @@ export function SessionTimer({ state }: SessionTimerProps) {
     return () => clearInterval(id);
   }, [state, startedAt]);
 
+  if (variant === 'value') {
+    if (state === 'idle' || state === 'connecting') return <>··</>;
+    return <>{format(elapsed)}</>;
+  }
+
   if (state === 'idle' || state === 'connecting') return null;
 
   const suffix = state === 'live' ? 'ON-AIR' : state === 'ended' ? 'ENDED' : 'ERROR';
 
   return (
-    <span className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
+    <span className="font-mono text-[10.5px] tracking-[0.1em] text-[color:var(--color-text-fade)] uppercase">
       · {format(elapsed)} {suffix}
     </span>
   );

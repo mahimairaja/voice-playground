@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { ScopeFrame } from '@/components/phosphor';
 import { AgentCanvasEmpty } from '@/components/playground/AgentCanvasEmpty';
 import type { useDemoSession } from '@/hooks/useDemoSession';
 import type { ShippedDemo } from '@/lib/demos';
@@ -8,7 +9,8 @@ import { useUiStore } from '@/lib/generative-ui/dispatcher';
 import { resolve } from '@/lib/generative-ui/registry';
 
 /**
- * Right column of the demo page. Three branches on session state:
+ * Right column of the demo page: the generative-UI canvas, framed as a
+ * "CANVAS · <slug>" instrument panel. Three branches on session state:
  *
  *   idle / connecting → '<AgentCanvasEmpty>' with the demo's description
  *                       and the 'ui_components' chip row from the manifest.
@@ -40,20 +42,23 @@ export function AgentCanvas({ demo, session }: AgentCanvasProps) {
   const showEmpty = session.state === 'idle' || session.state === 'connecting' || !mounted;
 
   return (
-    <section
-      aria-label="Agent surface"
-      className="flex flex-1 flex-col rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-4"
-    >
-      {showEmpty ? (
-        <AgentCanvasEmpty demo={demo} />
-      ) : (
-        <>
-          <div className="flex items-center justify-end">
-            <span className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-accent)] uppercase">
-              {instances.length} mounted
-            </span>
-          </div>
-          <div className="mt-3 flex flex-col gap-3">
+    <section aria-label="Agent surface" className="flex flex-1 flex-col">
+      <ScopeFrame
+        title={`CANVAS · ${demo.slug}`}
+        right={
+          mounted ? (
+            <span className="text-[color:var(--color-live)]">● {instances.length} mounted</span>
+          ) : (
+            <span>waiting</span>
+          )
+        }
+        className="flex h-full flex-col"
+        bodyClassName="flex-1"
+      >
+        {showEmpty ? (
+          <AgentCanvasEmpty demo={demo} />
+        ) : (
+          <div className="flex flex-col gap-3 p-4">
             {instances.map((instance) => {
               const Resolved = resolve(demo.slug, instance.component);
               if (!Resolved) {
@@ -69,8 +74,8 @@ export function AgentCanvas({ demo, session }: AgentCanvasProps) {
               return <Resolved key={instance.id} {...instance.props} />;
             })}
           </div>
-        </>
-      )}
+        )}
+      </ScopeFrame>
     </section>
   );
 }

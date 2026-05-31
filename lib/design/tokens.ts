@@ -1,37 +1,42 @@
 /**
- * F1 design tokens. Single source of truth for the dark + cyan visual system.
+ * PHOSPHOR design tokens. Single source of truth for the warm CRT-amber
+ * oscilloscope visual system (replaces the former dark + cyan F1 tokens).
  *
  * Consumers:
  * - 'styles/globals.css' mirrors these values into a Tailwind v4 '@theme inline'
  *   block so utilities like 'bg-bg', 'text-text', 'border-border-dim' compile.
  * - TypeScript can import the named constants here for computed-color logic
- *   (animations, chart axes, etc.) without touching CSS.
+ *   (the OscWave canvas trace, status colors, etc.) without touching CSS.
  *
- * Keep this list intentionally tight: 4 neutrals plus 1 accent plus 2 status.
- * Anything beyond the documented palette needs an explicit reason.
+ * Identity: warm ink, amber accent, JetBrains Mono used as instrument readouts,
+ * Space Grotesk display. Film grain + scanlines carry the scope motif.
  */
 
 export const COLOR = {
-  bg: '#050507',
-  surface: '#0b0b0d',
-  surface2: '#0c0c10',
-  border: '#232327',
-  borderStrong: '#2a2a2f',
-  borderDim: '#1c1c20',
-  text: '#ededed',
-  textDim: '#b5b5b9',
-  textMute: '#8a8a90',
-  textFade: '#6a6a70',
-  accent: '#2DD4BF',
-  accentSoft: 'color-mix(in srgb, #2DD4BF 18%, transparent)',
-  warning: '#f59e0b',
-  danger: '#ef4444',
+  bg: '#0d0a06',
+  surface: '#15100a',
+  surface2: '#1b1408',
+  surface3: '#221a0e', // raised panel
+  scope: '#0a0803', // the dark oscilloscope screen
+  border: '#2c2213',
+  borderStrong: '#3a2d18',
+  borderDim: '#1e1810',
+  text: '#f4ead6',
+  textDim: '#bcab8e',
+  textMute: '#8c7d63',
+  textFade: '#5f5340',
+  accent: '#ffb02e',
+  accentDim: '#c9881f',
+  accentSoft: 'color-mix(in srgb, #ffb02e 18%, transparent)',
+  live: '#74e0a6', // live / connected green
+  warning: '#f4a72c',
+  danger: '#ff5b4d',
 } as const;
 
 export const RADIUS = {
-  input: '6px',
-  button: '8px',
-  panel: '10px',
+  input: '7px',
+  button: '7px',
+  panel: '12px',
   card: '12px',
   pill: '999px',
 } as const;
@@ -48,6 +53,6 @@ export const SPACE = {
 } as const;
 
 export const FONT_FAMILY = {
-  sans: 'var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif',
-  mono: 'var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace',
+  sans: 'var(--font-space-grotesk), system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif',
+  mono: 'var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace',
 } as const;

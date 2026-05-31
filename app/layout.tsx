@@ -1,15 +1,19 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import { headers } from 'next/headers';
 import { PlaygroundFooter } from '@/components/layout/PlaygroundFooter';
 import { PlaygroundHeader } from '@/components/layout/PlaygroundHeader';
 import { getAppConfig, getStyles } from '@/lib/utils';
 import '@/styles/globals.css';
 
-const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans', display: 'swap' });
-const geistMono = Geist_Mono({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-geist-mono',
+  variable: '--font-space-grotesk',
+  display: 'swap',
+});
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
   display: 'swap',
 });
 
@@ -55,7 +59,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   const styles = getStyles(appConfig);
 
   return (
-    <html lang="en" className={`dark ${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`dark ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
       <head>{styles && <style>{styles}</style>}</head>
       <body className="bg-[color:var(--color-bg)] text-[color:var(--color-text)] antialiased">
         <PlaygroundHeader />

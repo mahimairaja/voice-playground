@@ -20,12 +20,17 @@ export function CatalogError({ cause, message, compact = false }: CatalogErrorPr
   return (
     <div
       className={
-        'rounded-[var(--radius-panel)] border border-[color:var(--color-warning)] text-[color:var(--color-text-dim)] ' +
+        'rounded-[var(--radius-panel)] border border-[color:color-mix(in_srgb,var(--color-warning)_40%,transparent)] bg-[color:color-mix(in_srgb,var(--color-warning)_6%,transparent)] text-[color:var(--color-text-dim)] ' +
         (compact ? 'p-4 text-[13px]' : 'p-6 text-[14px]')
       }
     >
-      <span className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-warning)] uppercase">
-        {'// CATALOG · UNREACHABLE'}
+      <span className="inline-flex items-center gap-2 font-mono text-[10.5px] tracking-[0.1em] text-[color:var(--color-warning)] uppercase">
+        <span
+          className="inline-block h-2 w-2 rounded-full bg-[color:var(--color-warning)]"
+          style={{ boxShadow: '0 0 8px var(--color-warning)' }}
+          aria-hidden="true"
+        />
+        CATALOG · UNREACHABLE
       </span>
       <p className="mt-2">{lead}</p>
       <p className="mt-3">
@@ -33,12 +38,12 @@ export function CatalogError({ cause, message, compact = false }: CatalogErrorPr
           href={COOKBOOK_BASE_URL}
           target="_blank"
           rel="noreferrer noopener"
-          className="text-[color:var(--color-accent)] hover:underline"
+          className="font-mono text-[color:var(--color-accent)] hover:underline"
         >
           → View the cookbook on GitHub
         </a>
       </p>
-      <p className="mt-3 font-mono text-[10.5px] tracking-[0.06em] text-[color:var(--color-text-fade)] uppercase">
+      <p className="mt-3 font-mono text-[10.5px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
         cause: {cause}
       </p>
     </div>

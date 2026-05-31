@@ -34,10 +34,10 @@ export function KeyValuePanel({ title, items, className }: KeyValuePanelProps) {
             <div key={`${item.label}-${i}`} className="flex items-baseline justify-between gap-3">
               <dt
                 className={cn(
-                  'text-[13px]',
+                  'font-mono text-[10px] tracking-[0.08em] uppercase',
                   item.accent
                     ? 'text-[color:var(--color-accent)]'
-                    : 'text-[color:var(--color-text-dim)]',
+                    : 'text-[color:var(--color-text-fade)]',
                   isLast && 'font-semibold'
                 )}
               >
@@ -45,8 +45,8 @@ export function KeyValuePanel({ title, items, className }: KeyValuePanelProps) {
               </dt>
               <dd
                 className={cn(
-                  'font-mono',
-                  isLast ? 'text-[14px] font-semibold' : 'text-[12px] font-medium',
+                  'font-mono tabular-nums',
+                  isLast ? 'text-[15px] font-semibold' : 'text-[13px] font-medium',
                   item.accent
                     ? 'text-[color:var(--color-accent)]'
                     : 'text-[color:var(--color-text)]'

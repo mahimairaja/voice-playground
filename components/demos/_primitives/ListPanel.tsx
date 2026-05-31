@@ -51,7 +51,7 @@ export function ListPanel({ title, items, className }: ListPanelProps) {
                 )}
               </div>
               {item.right && (
-                <span className="flex-none font-mono text-[12px] font-medium text-[color:var(--color-text)]">
+                <span className="flex-none font-mono text-[12px] font-medium text-[color:var(--color-text-dim)] tabular-nums">
                   {item.right}
                 </span>
               )}
@@ -61,9 +61,7 @@ export function ListPanel({ title, items, className }: ListPanelProps) {
           return (
             <li
               key={`${item.title}-${i}`}
-              className={cn(
-                i > 0 && 'border-t border-dashed border-[color:var(--color-border-dim)] pt-2'
-              )}
+              className={cn(i > 0 && 'border-t border-[color:var(--color-border-dim)] pt-2')}
             >
               {item.href ? (
                 <Link href={item.href} className="block transition-opacity hover:opacity-80">
