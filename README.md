@@ -1,119 +1,41 @@
+<div align="center">
+
 # voice playground
 
-A light-only Next.js 15 frontend for trying the voice agents catalogued in [`awesome-voice-apps`](https://github.com/mahimairaja/awesome-voice-apps). Visitors bring provider keys, paste them into the credentials vault, and the playground mints a short-lived LiveKit token in the browser.
+Talk to a voice agent in your browser. Not a brochure.
+The frontend for the agents in [awesome-voice-apps](https://github.com/mahimairaja/awesome-voice-apps), live at [playground.mahimai.ca](https://playground.mahimai.ca).
 
-This is a standalone playground, not a hosted product. Keys are stored only in browser localStorage and are never logged or persisted server-side.
+[live](https://playground.mahimai.ca) · [cookbook](https://github.com/mahimairaja/awesome-voice-apps) · [license](LICENSE)
 
-## What ships
+</div>
 
-- Light-only wireframe surfaces: lab notebook landing, corkboard demos, field manual about, credentials vault, clipboard walkie, vitals monitor, and whiteboard.
-- Manifest-driven demos loaded from the sibling `../awesome-voice-apps` repo at build time.
-- A BYO-keys credentials drawer and missing-keys banner.
-- A LiveKit voice surface with transcript, room metadata surface switching, and light-mode visualizers.
-- A generative UI dispatcher so agents can mount, update, and unmount registered React components on the canvas.
+Bring your own LiveKit project, paste the three values into the credentials vault, and the playground mints a short-lived token in the browser and joins the room. Nothing leaves the browser: no server, no stored keys, no transcript persistence. Provider keys (OpenAI, Deepgram, Cartesia) stay in the agent's own `.env` on your machine.
 
-The Python agent worker lives in `../awesome-voice-apps`. This repo only ships the visitor-side client.
-
-## Local development
+## Develop
 
 ```bash
 pnpm install
-pnpm dev
+pnpm dev            # http://localhost:3000
 ```
 
-Open `http://localhost:3000`.
-
-The marketing surfaces render without provider keys. A live voice call needs:
-
-1. A manifest at `../awesome-voice-apps/demos/<slug>/playground.json`.
-2. Provider keys and a LiveKit URL, API key, and API secret pasted into the vault drawer.
-3. The matching Python agent worker running and joining the same LiveKit room.
-
-`app/api/token/route.ts` is the only API route. It reads the pasted LiveKit credentials from the request body, signs a one-hour AccessToken, and discards the secrets.
-
-## Demo manifests
-
-`playground.json` supports these fields:
-
-```json
-{
-  "slug": "drive-thru-coffee",
-  "title": "Drive-thru coffee",
-  "category": "restaurant",
-  "description": "Take an order by voice.",
-  "who_for": "Teams comparing real-time voice stacks.",
-  "recording_url": "https://example.com/demo.mp3",
-  "card_stat": "11s avg",
-  "default_surface": "clipboard_walkie",
-  "required_credentials": ["openai", "deepgram", "cartesia"],
-  "ui_components": ["Order", "Total", "Checkout", "Cost"]
-}
-```
-
-`card_stat` and `default_surface` are optional. `default_surface` can be `clipboard_walkie`, `vitals_monitor`, or `whiteboard`; missing manifests default to `clipboard_walkie`.
-
-LiveKit room metadata can override the visible demo surface while connected:
-
-```json
-{ "surface": "whiteboard" }
-```
-
-## Generative UI
-
-Agents publish JSON envelopes on the LiveKit data channel under topic `ui`:
-
-```json
-{
-  "type": "ui_event",
-  "component": "Cart",
-  "action": "mount",
-  "id": "primary-cart",
-  "props": { "items": [] }
-}
-```
-
-Actions:
-
-- `mount`: add or replace an instance by `id`.
-- `update`: shallow merge `props` into an existing instance.
-- `unmount`: remove an instance by `id`.
-
-Final cost summaries keep the existing convention: `component: "Cost"` and `id: "final_cost"`.
-
-CTA components dispatch browser events on `mahimai:cta` with the CTA payload in `event.detail`.
-
-## Architecture
-
-```text
-app/
-  (marketing)/        landing and about
-  demos/page.tsx      corkboard index with category filter
-  demos/[slug]/       manifest-driven demo route
-  api/token/route.ts  BYO LiveKit token mint
-components/
-  brand/              TopBar and Footer chrome
-  playground/         vault, banner, demo runtime, voice surface, transcript
-  generative/         Canvas for agent-mounted UI
-  demos/              static demo bundle imports and reusable primitives
-lib/
-  demos/              manifest schema, loader, surface metadata parser
-  credentials/        localStorage credential store and validation
-  generative-ui/      protocol, dispatcher, registry
-styles/
-  brand.css           wireframe primitive port, do not edit
-  globals.css         Tailwind tokens and light-only app overrides
-```
-
-## Commands
+The landing and about pages render with no keys. A live call also needs the matching Python agent running locally (from the cookbook) and your three LiveKit values pasted into the vault.
 
 ```bash
-pnpm tsc --noEmit
 pnpm lint
+pnpm test           # vitest, pure modules only
 pnpm build
 ```
 
-`pnpm build` runs `scripts/sync-demos.mjs` first. Locally it reuses `../awesome-voice-apps` when present; on Vercel it clones a fresh copy using `AVA_REPO` and `AVA_REF`. If GitHub cannot be read, the build continues with the reference seed catalogue unless `AVA_SYNC_STRICT=1`.
+## How it works
+
+- **No backend.** The LiveKit token is signed in the browser with [`jose`](https://github.com/panva/jose) from the visitor's pasted key and secret. No token route, no server-side state.
+- **Catalog at runtime.** The demo list is fetched from the cookbook's [`catalog.json`](https://github.com/mahimairaja/awesome-voice-apps/blob/main/catalog.json) on GitHub Raw with a five-minute cache, so a new demo appears without a redeploy.
+- **Generative UI.** An agent draws on screen by publishing JSON envelopes on the LiveKit data channel under topic `ui`. The playground renders them from a fixed component vocabulary, so a new demo needs no change here. The vocabulary lives in the cookbook's [`docs/playground-components.md`](https://github.com/mahimairaja/awesome-voice-apps/blob/main/docs/playground-components.md).
+
+Stack: Next.js 15 (App Router), React 19, TypeScript, Tailwind v4, zustand for the generative-UI store, zod for the catalog and event schemas. Dark only. Deployed on Vercel.
+
+The agent worker (Python, LiveKit Agents) lives in the cookbook, not here. This repo is the visitor-side client.
 
 ## License
 
-MIT. See `LICENSE`.
+[MIT](LICENSE). Built by [Mahimai Raja](https://mahimai.dev) at [Mahimai AI](https://mahimai.ca).
