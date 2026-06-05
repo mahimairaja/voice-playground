@@ -17,13 +17,43 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
+const FALLBACK_SITE_URL = 'http://localhost:3000';
+
+/**
+ * Resolve NEXT_PUBLIC_SITE_URL into a metadataBase URL without ever throwing.
+ * A bare domain (no scheme) is coerced to https so a value like
+ * 'playground.mahimai.ca' still works; a genuinely unparseable value falls
+ * back to localhost with a warning. A malformed env var must never crash
+ * generateMetadata, since that errors metadata on every route and surfaces the
+ * global error boundary site-wide.
+ */
+function resolveMetadataBase(): URL {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (raw) {
+    // Coerce a scheme-less bare domain to https; keep an existing scheme so a
+    // non-http(s) one (ftp://, ws://, or a scheme typo) is rejected below
+    // rather than silently mangled into a bogus origin.
+    const candidate = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : `https://${raw}`;
+    try {
+      const url = new URL(candidate);
+      if (url.protocol === 'http:' || url.protocol === 'https:') return url;
+    } catch {
+      // fall through to the warning and fallback below
+    }
+    console.warn(
+      `[playground] NEXT_PUBLIC_SITE_URL is not a valid http(s) URL: ${JSON.stringify(raw)}. ` +
+        `Falling back to ${FALLBACK_SITE_URL}.`
+    );
+  }
+  return new URL(FALLBACK_SITE_URL);
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const hdrs = await headers();
   const appConfig = await getAppConfig(hdrs);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
   return {
-    metadataBase: new URL(siteUrl),
+    metadataBase: resolveMetadataBase(),
     title: appConfig.pageTitle,
     description: appConfig.pageDescription,
     icons: {
