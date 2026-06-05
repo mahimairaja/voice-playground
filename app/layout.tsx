@@ -29,18 +29,23 @@ const FALLBACK_SITE_URL = 'http://localhost:3000';
  */
 function resolveMetadataBase(): URL {
   const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (!raw) return new URL(FALLBACK_SITE_URL);
-
-  const candidate = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
-  try {
-    return new URL(candidate);
-  } catch {
+  if (raw) {
+    // Coerce a scheme-less bare domain to https; keep an existing scheme so a
+    // non-http(s) one (ftp://, ws://, or a scheme typo) is rejected below
+    // rather than silently mangled into a bogus origin.
+    const candidate = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : `https://${raw}`;
+    try {
+      const url = new URL(candidate);
+      if (url.protocol === 'http:' || url.protocol === 'https:') return url;
+    } catch {
+      // fall through to the warning and fallback below
+    }
     console.warn(
-      `[playground] NEXT_PUBLIC_SITE_URL is not a valid URL: ${JSON.stringify(raw)}. ` +
+      `[playground] NEXT_PUBLIC_SITE_URL is not a valid http(s) URL: ${JSON.stringify(raw)}. ` +
         `Falling back to ${FALLBACK_SITE_URL}.`
     );
-    return new URL(FALLBACK_SITE_URL);
   }
+  return new URL(FALLBACK_SITE_URL);
 }
 
 export async function generateMetadata(): Promise<Metadata> {
