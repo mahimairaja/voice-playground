@@ -1,6 +1,9 @@
 export { ButtonRowPanel, CTA_EVENT } from './ButtonRowPanel';
 export type { ButtonRowButton, ButtonRowPanelProps, CtaEventDetail } from './ButtonRowPanel';
 
+export { CaptionsPanel } from './CaptionsPanel';
+export type { CaptionItem, CaptionsPanelProps } from './CaptionsPanel';
+
 export { CardPanel } from './CardPanel';
 export type { CardPanelProps } from './CardPanel';
 
