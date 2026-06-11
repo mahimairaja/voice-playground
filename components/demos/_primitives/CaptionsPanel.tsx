@@ -43,7 +43,11 @@ export function CaptionsPanel({ title = 'live captions', items, className }: Cap
           Captions appear here as the conversation flows.
         </p>
       ) : (
-        <ol ref={scrollRef} className="flex max-h-72 flex-col gap-2 overflow-y-auto">
+        <ol
+          ref={scrollRef}
+          aria-live="polite"
+          className="flex max-h-72 flex-col gap-2 overflow-y-auto"
+        >
           {visible.map((item, i) => {
             const newest = i === visible.length - 1;
             return (
