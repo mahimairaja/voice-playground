@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import {
   ButtonRowPanel,
+  CaptionsPanel,
   CardPanel,
   CostPanel,
   KeyValuePanel,
@@ -45,6 +46,7 @@ registerGlobal({
   Card: g(CardPanel),
   Buttons: g(ButtonRowPanel),
   Table: g(TablePanel),
+  Captions: g(CaptionsPanel),
 
   // Semantic aliases: domain names mapped onto the primitives.
   Order: titled(ListPanel, 'your order'),
