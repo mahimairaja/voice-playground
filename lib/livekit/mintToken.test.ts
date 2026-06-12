@@ -32,6 +32,20 @@ describe('lib/livekit/mintToken', () => {
     expect(decoded.video?.canPublishData).toBe(true);
   });
 
+  it('adds the roomConfig dispatch claim when agentName is set', async () => {
+    const { token } = await mintToken({ ...validArgs, agentName: 'drive-thru-coffee' });
+    const decoded = decodeJwt(token) as {
+      roomConfig?: { agents?: { agentName?: string }[] };
+    };
+    expect(decoded.roomConfig?.agents).toEqual([{ agentName: 'drive-thru-coffee' }]);
+  });
+
+  it('omits the roomConfig claim without agentName', async () => {
+    const { token } = await mintToken(validArgs);
+    const decoded = decodeJwt(token) as Record<string, unknown>;
+    expect(decoded.roomConfig).toBeUndefined();
+  });
+
   it('respects custom identity and room overrides', async () => {
     const { token, identity, roomName } = await mintToken({
       ...validArgs,

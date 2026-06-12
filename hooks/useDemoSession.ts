@@ -79,6 +79,9 @@ export function useDemoSession({ slug }: UseDemoSessionOptions): UseDemoSessionR
         livekit_api_key: creds.livekit_api_key,
         livekit_api_secret: creds.livekit_api_secret,
         slug,
+        // Cookbook agents register with agent_name equal to the slug; the
+        // token must request the named agent or it is never dispatched.
+        agentName: slug,
       });
 
       const r = new Room();
