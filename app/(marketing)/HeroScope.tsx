@@ -9,13 +9,13 @@ import { Grain, OscWave, ScopeFrame } from '@/components/phosphor';
 export function HeroScope() {
   return (
     <ScopeFrame
-      title="SCOPE · 1MΩ"
+      title="SCOPE · LIVE"
       right={<span className="text-[color:var(--color-live)]">● REC</span>}
       screen
       footer={[
-        ['FREQ', '440 Hz'],
         ['TTFB', '0.38 s'],
-        ['CH', 'mono'],
+        ['TURN', '0.62 s'],
+        ['AUDIO', '16 kHz'],
       ]}
     >
       <Grain

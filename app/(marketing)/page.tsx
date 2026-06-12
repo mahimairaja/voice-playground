@@ -103,7 +103,7 @@ export default function HomePage() {
           <Eyebrow>bring your own keys</Eyebrow>
           <p className="mt-[10px] max-w-[66ch] text-[14px] leading-[1.6] text-[color:var(--color-text-mute)]">
             No account. No server with your secrets on it. Your LiveKit key mints a token in the
-            browser; your OpenAI and Deepgram keys never leave your machine,å they sit in the
+            browser; your OpenAI and Deepgram keys never leave your machine, they sit in the
             agent&apos;s <code className="font-mono text-[color:var(--color-text-dim)]">.env</code>.
             <br />
             Cookbook&apos;s open source:{' '}
