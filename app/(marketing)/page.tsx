@@ -26,17 +26,13 @@ export default function HomePage() {
           <div>
             <Eyebrow>voice agents · live demos</Eyebrow>
             <h1 className="mt-4 text-[52px] leading-[1.04] font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
-              Talk to a voice agent.
+              Stop reading about voice agents.
               <br />
-              <span className="text-[color:var(--color-accent-deep)]">Not a brochure.</span>
+              <span className="text-[color:var(--color-accent-deep)]">Talk to one.</span>
             </h1>
             <p className="mt-[22px] max-w-[48ch] text-[17px] leading-[1.65] text-[color:var(--color-text-dim)]">
-              Real voice agents from the awesome-voice-apps cookbook. Bring your own LiveKit
-              credentials, run the agent locally with{' '}
-              <code className="rounded-[var(--radius-input)] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] px-[7px] py-[2px] font-mono text-[14px] text-[color:var(--color-accent-dim)]">
-                uv run python agent.py dev
-              </code>
-              , talk to it here. Nothing leaves the browser.
+              Open-source voice agents you run locally and talk to right here. Your keys, your
+              machine, nothing stored.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Btn kind="primary" href="/demos">
@@ -82,12 +78,20 @@ export default function HomePage() {
         >
           <Eyebrow>how it works</Eyebrow>
           <div className="mt-[18px] grid grid-cols-1 gap-4 md:grid-cols-3">
-            <Step number="01" title="Paste keys" body="LiveKit URL, API key, and secret." />
-            <Step number="02" title="Pick a demo" body="From the awesome-voice-apps cookbook." />
+            <Step
+              number="01"
+              title="Run the agent"
+              body="Clone the cookbook, cd into a demo, run it."
+            />
+            <Step
+              number="02"
+              title=" Paste your keys"
+              body="LiveKit URL, key, and secret. They stay in your browser."
+            />
             <Step
               number="03"
               title="Talk to the agent"
-              body="Run it locally, then talk to it in your browser."
+              body="Pick the demo here and start the call."
             />
           </div>
         </section>
@@ -98,11 +102,11 @@ export default function HomePage() {
         >
           <Eyebrow>bring your own keys</Eyebrow>
           <p className="mt-[10px] max-w-[66ch] text-[14px] leading-[1.6] text-[color:var(--color-text-mute)]">
-            The playground holds no LiveKit account on your behalf. The visitor brings their own
-            LiveKit URL, API key, and secret; the token is minted in the browser. Provider keys
-            (OpenAI, Deepgram, etc.) stay in the agent&apos;s{' '}
-            <code className="font-mono text-[color:var(--color-text-dim)]">.env</code>. The cookbook
-            stays open source:{' '}
+            No account. No server with your secrets on it. Your LiveKit key mints a token in the
+            browser; your OpenAI and Deepgram keys never leave your machine,å they sit in the
+            agent&apos;s <code className="font-mono text-[color:var(--color-text-dim)]">.env</code>.
+            <br />
+            Cookbook&apos;s open source:{' '}
             <a
               href={COOKBOOK_BASE_URL}
               target="_blank"

@@ -15,12 +15,12 @@ export const metadata: Metadata = {
     'A browser surface for talking to voice agents from the awesome-voice-apps cookbook. Bring your own provider keys, run the agent locally, talk to it in your browser.',
 };
 
-const TECH_CHIPS = ['NEXT 15', 'REACT 19', 'LIVEKIT', 'TAILWIND v4', 'TS', 'ZOD'];
+const TECH_CHIPS = ['NEXT 15', 'REACT 19', 'LIVEKIT', 'TAILWIND v4', 'TYPESCRIPT', 'ZOD'];
 
 const WHAT_THIS_ISNT: [string, string][] = [
   ['Not a hosted voice service.', 'You bring your own LiveKit and provider accounts.'],
   ['Not a UI editor.', 'Agent code lives in your editor, not here.'],
-  ['Not a transcript archive.', 'Sessions are ephemeral; close the tab and they are gone.'],
+  ['Not a transcript archive.', 'Close the tab and the session is gone.'],
 ];
 
 const FAQ: [string, string][] = [
@@ -34,11 +34,11 @@ const FAQ: [string, string][] = [
   ],
   [
     'Why does the agent not answer?',
-    'The agent runs on your machine, not ours. Make sure agent.py is running (uv run python agent.py dev) with the same LiveKit project as your keys.',
+    'The agent runs on your machine, not ours. Check that agent.py is running (uv run python agent.py dev) and pointed at the same LiveKit project as your keys.',
   ],
   [
     'Is this recording me?',
-    'No. Sessions are ephemeral. Close the tab and the conversation is gone; we keep no transcripts and run no analytics on session content.',
+    'No. Sessions are ephemeral. Close the tab and the conversation is gone; we keep no transcripts and run no analytics.',
   ],
   [
     'What does it cost?',
@@ -59,27 +59,26 @@ export default function AboutPage() {
             </h1>
 
             <p className="mt-5 text-[16px] leading-[1.65] text-[color:var(--color-text-dim)]">
-              Voice playground is a browser surface for talking to voice agents from the
-              awesome-voice-apps cookbook.
+              Voice playground lets you talk to the voice agents in the awesome-voice-apps cookbook,
+              right from your browser.
             </p>
 
             <p className="mt-4 text-[16px] leading-[1.65] text-[color:var(--color-text-dim)]">
-              Clone the cookbook, run a demo agent locally with{' '}
+              Clone the cookbook, run a demo with{' '}
               <code className="font-mono text-[14px] text-[color:var(--color-accent-dim)]">
                 uv run python agent.py dev
               </code>
-              , paste your provider keys on the demo page, and talk to it. The agent runs on your
-              machine; the playground runs in your browser.
+              , , paste your keys on the demo page, and start talking. The agent runs on your
+              machine. The playground runs in your browser. That&apos;s the whole split.
             </p>
 
             <p className="mt-4 text-[16px] leading-[1.65] text-[color:var(--color-text-dim)]">
-              Nothing leaves the browser. No server-side credentials, no transcript persistence, no
-              telemetry on session content. The LiveKit access token mints client-side from your own
-              API key and secret.
+              Nothing leaves the browser - no server-side credentials, no saved transcripts, no
+              telemetry. Your LiveKit token mints client-side from your own key and secret.
             </p>
 
             <p className="mt-4 text-[16px] leading-[1.65] text-[color:var(--color-text-dim)]">
-              All demos live in{' '}
+              Every demo lives in{' '}
               <a
                 href={COOKBOOK_URL}
                 target="_blank"
