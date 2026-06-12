@@ -29,6 +29,9 @@ export function OscWave({
     if (!cv) return;
     const ctx = cv.getContext('2d');
     if (!ctx) return;
+    // Pure decoration: honour prefers-reduced-motion by painting one static
+    // trace frame instead of running the rAF loop.
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let raf = 0;
     let t = 0;
     let dead = false;
@@ -72,7 +75,7 @@ export function OscWave({
       }
       ctx.stroke();
       t += 0.016;
-      raf = requestAnimationFrame(draw);
+      if (!reduced) raf = requestAnimationFrame(draw);
     };
     draw();
 

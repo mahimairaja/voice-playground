@@ -32,7 +32,7 @@ pnpm build
 - **Catalog at runtime.** The demo list is fetched from the cookbook's [`catalog.json`](https://github.com/mahimairaja/awesome-voice-apps/blob/main/catalog.json) on GitHub Raw with a five-minute cache, so a new demo appears without a redeploy.
 - **Generative UI.** An agent draws on screen by publishing JSON envelopes on the LiveKit data channel under topic `ui`. The playground renders them from a fixed component vocabulary, so a new demo needs no change here. The vocabulary lives in the cookbook's [`docs/playground-components.md`](https://github.com/mahimairaja/awesome-voice-apps/blob/main/docs/playground-components.md).
 
-Stack: Next.js 15 (App Router), React 19, TypeScript, Tailwind v4, zustand for the generative-UI store, zod for the catalog and event schemas. Dark only. Deployed on Vercel.
+Stack: Next.js 15 (App Router), React 19, TypeScript, Tailwind v4, zustand for the generative-UI store, zod for the catalog and event schemas. Light warm-paper theme; the oscilloscope screens stay dark, like real hardware on a desk. Deployed on Vercel.
 
 The agent worker (Python, LiveKit Agents) lives in the cookbook, not here. This repo is the visitor-side client.
 

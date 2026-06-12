@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 export default function MaintenancePage() {
   return (
     <main className="mx-auto flex max-w-[520px] flex-col gap-4 px-6 py-24">
-      <span className="font-mono text-[10.5px] tracking-[0.08em] text-[color:var(--color-warning)] uppercase">
-        {'// MAINTENANCE · 503'}
+      <span className="font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-warning)] uppercase">
+        MAINTENANCE · 503
       </span>
       <h1 className="text-[28px] font-semibold tracking-tight text-[color:var(--color-text)]">
         Back in a minute.
@@ -28,7 +28,7 @@ export default function MaintenancePage() {
           href={COOKBOOK_URL}
           target="_blank"
           rel="noreferrer noopener"
-          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13px] font-semibold text-[color:var(--color-bg)] hover:opacity-90"
+          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13.5px] font-semibold text-[color:var(--color-text)] hover:brightness-105"
         >
           → View the cookbook
         </a>

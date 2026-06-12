@@ -20,14 +20,14 @@ const BASE =
 
 const KINDS: Record<Kind, string> = {
   primary:
-    'bg-[color:var(--color-accent)] text-[#1a1200] shadow-[0_0_22px_rgba(255,176,46,0.2)] hover:brightness-110',
+    'bg-[color:var(--color-accent)] text-[color:var(--color-text)] shadow-[0_1px_2px_rgba(34,28,18,0.12)] hover:brightness-105',
   ghost:
-    'border-[color:var(--color-border)] bg-transparent text-[color:var(--color-text)] hover:border-[color:var(--color-border-strong)]',
+    'border-[color:var(--color-border-strong)] bg-transparent text-[color:var(--color-text)] hover:border-[color:var(--color-accent)]',
   muted:
     'border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] font-medium text-[color:var(--color-text-dim)] hover:text-[color:var(--color-text)]',
 };
 
-/** PHOSPHOR button. Renders a Link (href), external anchor (href + external), or button. */
+/** Daylight brand button. Renders a Link (href), external anchor (href + external), or button. */
 export function Btn({
   children,
   kind = 'primary',

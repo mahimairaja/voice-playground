@@ -16,7 +16,7 @@ export function PlaygroundFooter() {
   return (
     <footer
       role="contentinfo"
-      className="flex flex-wrap items-center justify-between gap-4 border-t border-[color:var(--color-border-dim)] px-6 py-7 font-mono text-[11px] text-[color:var(--color-text-fade)] sm:px-8"
+      className="flex flex-wrap items-center justify-between gap-4 border-t border-[color:var(--color-border)] px-6 py-7 font-mono text-[12px] text-[color:var(--color-text-mute)] sm:px-8"
     >
       <span>voice·playground: a browser oscilloscope for voice agents</span>
       <div className="flex items-center gap-5">
@@ -37,7 +37,7 @@ export function PlaygroundFooter() {
           source ↗
         </a>
         <span>{version}</span>
-        <span className="text-[color:var(--color-accent)]">● SIGNAL</span>
+        <span className="text-[color:var(--color-live)]">● SIGNAL</span>
       </div>
     </footer>
   );

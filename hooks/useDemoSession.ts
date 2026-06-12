@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Room, RoomEvent } from 'livekit-client';
+import { toast } from 'sonner';
 import { LIVEKIT_KEYS, getCredentials } from '@/lib/credentials/store';
 import type { RejectionDetail } from '@/lib/credentials/types';
 import { missingCredentials } from '@/lib/credentials/validate';
@@ -115,6 +116,9 @@ export function useDemoSession({ slug }: UseDemoSessionOptions): UseDemoSessionR
       await teardown('error');
       const e = err instanceof Error ? err : new Error('Unknown error connecting to session.');
       setError(e);
+      // Transient surface for the failure; the inline banner stays as the
+      // persistent explanation.
+      toast.error(`Could not connect: ${e.message}`);
     } finally {
       inFlightRef.current = false;
     }

@@ -11,6 +11,7 @@ export function HeroScope() {
     <ScopeFrame
       title="SCOPE · 1MΩ"
       right={<span className="text-[color:var(--color-live)]">● REC</span>}
+      screen
       footer={[
         ['FREQ', '440 Hz'],
         ['TTFB', '0.38 s'],
@@ -24,7 +25,7 @@ export function HeroScope() {
           height: 184,
           background: 'var(--color-scope)',
           backgroundImage:
-            'repeating-linear-gradient(90deg,var(--color-border-dim) 0 1px,transparent 1px 40px),repeating-linear-gradient(0deg,var(--color-border-dim) 0 1px,transparent 1px 40px)',
+            'repeating-linear-gradient(90deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 40px),repeating-linear-gradient(0deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 40px)',
         }}
       >
         <div className="absolute inset-0 flex items-center px-[6px]">

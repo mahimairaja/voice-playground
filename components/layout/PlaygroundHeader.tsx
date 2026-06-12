@@ -38,32 +38,31 @@ export function PlaygroundHeader() {
   return (
     <header
       role="banner"
-      className="sticky top-0 z-40 flex h-[60px] items-center justify-between border-b border-[color:var(--color-border-dim)] px-6 backdrop-blur-[10px] sm:px-8"
-      style={{ background: 'rgba(13,10,6,0.82)' }}
+      className="sticky top-0 z-40 flex h-[60px] items-center justify-between border-b border-[color:var(--color-border)] px-6 backdrop-blur-[10px] sm:px-8"
+      style={{ background: 'rgba(250,248,243,0.85)' }}
     >
       <Link
         href="/"
         aria-label="voice playground home"
-        className="group flex items-center gap-[11px] font-mono text-[13.5px] tracking-[0.06em] text-[color:var(--color-text)]"
+        className="group flex items-center gap-[11px] font-mono text-[14px] tracking-[0.06em] text-[color:var(--color-text)]"
       >
         <span
           aria-hidden="true"
           className="h-[11px] w-[11px] shrink-0 rounded-full bg-[color:var(--color-accent)]"
-          style={{ boxShadow: '0 0 12px var(--color-accent)' }}
         />
         <span>
-          voice<span className="text-[color:var(--color-accent)]">·</span>playground
+          voice<span className="text-[color:var(--color-accent-deep)]">·</span>playground
         </span>
       </Link>
 
-      <nav aria-label="Primary" className="flex items-center gap-[26px] font-mono text-[12px]">
+      <nav aria-label="Primary" className="flex items-center gap-[26px] font-mono text-[13px]">
         {NAV.map((item) => {
           const isActive = !item.external && (item.match?.(pathname) ?? pathname === item.href);
           const className =
             'relative pb-[3px] transition-colors ' +
             (isActive
               ? 'text-[color:var(--color-text)]'
-              : 'text-[color:var(--color-text-mute)] hover:text-[color:var(--color-text)]');
+              : 'text-[color:var(--color-text-dim)] hover:text-[color:var(--color-text)]');
 
           if (item.external) {
             return (
@@ -75,7 +74,7 @@ export function PlaygroundHeader() {
                 className={className}
               >
                 {item.label}
-                <span className="ml-1 text-[10px] text-[color:var(--color-text-fade)]">↗</span>
+                <span className="ml-1 text-[11px] text-[color:var(--color-text-mute)]">↗</span>
               </a>
             );
           }
@@ -86,8 +85,7 @@ export function PlaygroundHeader() {
               {isActive ? (
                 <span
                   aria-hidden="true"
-                  className="absolute inset-x-0 -bottom-px h-[1.5px] bg-[color:var(--color-accent)]"
-                  style={{ boxShadow: '0 0 8px var(--color-accent)' }}
+                  className="absolute inset-x-0 -bottom-px h-[2px] bg-[color:var(--color-accent-deep)]"
                 />
               ) : null}
             </Link>

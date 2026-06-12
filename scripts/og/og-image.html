@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>og-image source · screenshot at exactly 1200x630</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Screenshot this page at a 1200x630 viewport to produce public/og-image.png. */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: #faf8f3;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 44px 64px 0;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 22px;
+        color: #221c12;
+      }
+      .brand i {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #ffb02e;
+      }
+      .brand b {
+        font-weight: 500;
+      }
+      .brand b s {
+        text-decoration: none;
+        color: #b45309;
+      }
+      .url {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 17px;
+        color: #6b614e;
+      }
+      .main {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 48px;
+        padding: 56px 64px 0;
+        align-items: start;
+        flex: 1;
+      }
+      h1 {
+        font-size: 64px;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        font-weight: 650;
+        color: #221c12;
+      }
+      h1 em {
+        font-style: normal;
+        color: #b45309;
+      }
+      .sub {
+        margin-top: 24px;
+        font-size: 23px;
+        line-height: 1.5;
+        color: #4b443a;
+        max-width: 21ch;
+      }
+      .scope {
+        border: 2px solid #d9d0bd;
+        border-radius: 16px;
+        background: #ffffff;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(34, 28, 18, 0.08);
+      }
+      .scopehead {
+        display: flex;
+        justify-content: space-between;
+        padding: 14px 18px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        color: #6b614e;
+        border-bottom: 1px solid #e7e0d2;
+      }
+      .scopehead .rec {
+        color: #15803d;
+      }
+      .screen {
+        height: 240px;
+        background: #0a0803;
+        position: relative;
+        background-image:
+          repeating-linear-gradient(90deg, rgba(244, 234, 214, 0.06) 0 1px, transparent 1px 44px),
+          repeating-linear-gradient(0deg, rgba(244, 234, 214, 0.06) 0 1px, transparent 1px 44px);
+      }
+      .screen svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .scopefoot {
+        display: flex;
+        border-top: 1px solid #e7e0d2;
+      }
+      .scopefoot div {
+        flex: 1;
+        padding: 12px 18px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        color: #6b614e;
+        border-right: 1px solid #efe9dc;
+      }
+      .scopefoot div:last-child {
+        border-right: 0;
+      }
+      .scopefoot b {
+        display: block;
+        color: #9a6700;
+        font-weight: 500;
+        margin-top: 3px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <span class="brand"><i></i><b>voice<s>·</s>playground</b></span>
+      <span class="url">playground.mahimai.ca</span>
+    </div>
+    <div class="main">
+      <div>
+        <h1>Talk to a voice agent.<br /><em>Not a brochure.</em></h1>
+        <p class="sub">Open-source voice agents, live in your browser.</p>
+      </div>
+      <div class="scope">
+        <div class="scopehead"><span>SCOPE · 1MΩ</span><span class="rec">● REC</span></div>
+        <div class="screen">
+          <svg viewBox="0 0 460 240" preserveAspectRatio="none">
+            <path
+              d="M0,120 C25,116 38,56 62,63 S98,184 122,170 S158,42 182,56 S218,156 242,141 S278,77 302,84 S338,177 362,162 S398,63 422,77 S448,127 460,120"
+              fill="none"
+              stroke="#ffb02e"
+              stroke-width="3.5"
+              opacity="0.95"
+            />
+            <path
+              d="M0,120 C30,125 50,85 75,99 S118,162 142,148 S180,77 205,91 S245,141 270,134 S308,99 332,106 S370,148 394,141 S432,91 460,121"
+              fill="none"
+              stroke="#ffb02e"
+              stroke-width="1.6"
+              opacity="0.4"
+            />
+          </svg>
+        </div>
+        <div class="scopefoot">
+          <div>FREQ<b>440 Hz</b></div>
+          <div>TTFB<b>0.38 s</b></div>
+          <div>CH<b>mono</b></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
