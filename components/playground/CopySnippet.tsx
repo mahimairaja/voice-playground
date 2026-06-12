@@ -19,9 +19,14 @@ export function CopySnippet({ command }: { command: string }) {
         aria-label="Copy command"
         className="shrink-0 cursor-pointer rounded-[5px] p-1.5 text-[color:var(--color-text-mute)] transition-colors hover:bg-[color:var(--color-surface)] hover:text-[color:var(--color-text)]"
         onClick={async () => {
-          await navigator.clipboard.writeText(command);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1600);
+          try {
+            await navigator.clipboard.writeText(command);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1600);
+          } catch {
+            // Clipboard can reject (insecure context, denied permission); the
+            // command stays selectable, so fail quietly without a false tick.
+          }
         }}
       >
         {copied ? (

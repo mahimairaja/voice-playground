@@ -5,7 +5,7 @@
 /*
  * Daylight amber tokens. Light warm-paper page; dark screens are reserved for
  * instrument insets (anything wrapped in .dark). Amber (#ffb02e) is a fill
- * color: CTAs, chips, the scope trace. Ochre (#9a6700) carries links and
+ * color: CTAs, chips, the scope trace. Ochre (#8a5c00) carries links and
  * labels on light surfaces. Source: lib/design/tokens.ts (mirrored values),
  * asserted at WCAG AA by lib/design/tokens.contrast.test.ts. Anything beyond
  * this palette needs an explicit reason in the PR.
@@ -25,7 +25,7 @@
   --ph-text-mute: #6b614e;
   --ph-text-fade: #8a7d68;
   --ph-accent: #ffb02e;
-  --ph-accent-dim: #9a6700;
+  --ph-accent-dim: #8a5c00;
   --ph-accent-deep: #b45309;
   --ph-accent-soft: color-mix(in srgb, #ffb02e 14%, transparent);
   --ph-scope-text: #f4ead6;
@@ -90,6 +90,24 @@
   --border: #2c2213;
   --input: #3a2d18;
   color-scheme: dark;
+
+  /*
+   * Brand tokens also flip inside a screen so bare Tailwind border-* utilities
+   * and any component using --color-text/--color-border render with screen
+   * values instead of the light page values. The @theme inline block maps the
+   * --color-* names to these --ph-* vars, so overriding the --ph-* vars here
+   * re-points every brand utility for the dark subtree.
+   */
+  --ph-surface: #15100a;
+  --ph-surface-2: #1b1408;
+  --ph-surface-3: #221a0e;
+  --ph-border: #2c2213;
+  --ph-border-strong: #3a2d18;
+  --ph-border-dim: #1e1810;
+  --ph-text: var(--ph-scope-text);
+  --ph-text-dim: var(--ph-scope-text-dim);
+  --ph-text-mute: #8c7d63;
+  --ph-text-fade: #5f5340;
 }
 
 @theme inline {

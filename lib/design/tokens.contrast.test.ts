@@ -37,8 +37,11 @@ const BODY_PAIRS: [string, string, string][] = [
   ['textDim on surface', COLOR.textDim, COLOR.surface],
   ['textMute on bg', COLOR.textMute, COLOR.bg],
   ['textMute on surface', COLOR.textMute, COLOR.surface],
+  ['textMute on surface2', COLOR.textMute, COLOR.surface2],
   ['accentDim links on bg', COLOR.accentDim, COLOR.bg],
   ['accentDim links on surface', COLOR.accentDim, COLOR.surface],
+  // surface-2 is the cream code-chip / snippet background; ochre code sits on it.
+  ['accentDim code on surface2', COLOR.accentDim, COLOR.surface2],
   ['accentDeep emphasis on bg', COLOR.accentDeep, COLOR.bg],
   ['ink on amber CTA', COLOR.text, COLOR.accent],
   ['danger on bg', COLOR.danger, COLOR.bg],

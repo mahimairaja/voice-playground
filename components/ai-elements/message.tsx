@@ -328,7 +328,7 @@ export function MessageAttachment({ data, className, onRemove, ...props }: Messa
           {onRemove && (
             <Button
               aria-label="Remove attachment"
-              className="hover:bg-accent size-6 shrink-0 rounded-full p-0 opacity-0 transition-opacity group-hover:opacity-100 [&>svg]:size-3"
+              className="size-6 shrink-0 rounded-full p-0 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-[color:var(--accent)] [&>svg]:size-3"
               onClick={(e) => {
                 e.stopPropagation();
                 onRemove();

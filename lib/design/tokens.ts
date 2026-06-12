@@ -28,7 +28,7 @@ export const COLOR = {
   textMute: '#6b614e',
   textFade: '#8a7d68', // decorative/large only; below AA for small text by design
   accent: '#ffb02e', // fill only: CTAs, chips, scope trace. Never small text on light.
-  accentDim: '#9a6700', // ochre: links, labels, focus rings on paper
+  accentDim: '#8a5c00', // ochre: links, labels, focus rings on paper (AA on every surface incl. surface-2)
   accentDeep: '#b45309', // headline emphasis
   accentSoft: 'color-mix(in srgb, #ffb02e 14%, transparent)',
   scopeText: '#f4ead6', // text on the dark screen
