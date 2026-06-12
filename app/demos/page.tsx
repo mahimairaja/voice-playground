@@ -62,37 +62,33 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
   return (
     <>
       <main className="mx-auto max-w-5xl px-6 py-12">
-        <header className="flex flex-wrap items-end justify-between gap-5">
-          <div>
-            <Eyebrow>
-              DEMOS · {shipped.length} SHIPPED · {planned.length} PLANNED
-              {activeCategory ? ` · ${activeCategory}` : ''}
-            </Eyebrow>
-            <h1 className="mt-2.5 text-[34px] leading-none font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
-              Demos
-            </h1>
-            <p className="mt-2 max-w-[58ch] text-[14.5px] leading-[1.55] text-[color:var(--color-text-dim)]">
-              Voice agents you can talk to in your browser. Run one locally, paste your LiveKit
-              keys, start the call.
-            </p>
-          </div>
-          {categories.length > 1 ? (
-            <nav
-              aria-label="Filter by category"
-              className="inline-flex max-w-[520px] flex-wrap items-center justify-end gap-[3px] rounded-[var(--radius-pill)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-[3px]"
-            >
-              <CategoryChip label="all" href="/demos" active={activeCategory === null} />
-              {categories.map((cat) => (
-                <CategoryChip
-                  key={cat}
-                  label={cat}
-                  href={`/demos?category=${encodeURIComponent(cat)}`}
-                  active={activeCategory === cat}
-                />
-              ))}
-            </nav>
-          ) : null}
+        <header>
+          <Eyebrow>
+            DEMOS · {shipped.length} SHIPPED · {planned.length} PLANNED
+            {activeCategory ? ` · ${activeCategory}` : ''}
+          </Eyebrow>
+          <h1 className="mt-2.5 text-[34px] leading-none font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
+            Demos
+          </h1>
+          <p className="mt-2 max-w-[58ch] text-[14.5px] leading-[1.55] text-[color:var(--color-text-dim)]">
+            Voice agents you can talk to in your browser. Run one locally, paste your LiveKit keys,
+            start the call.
+          </p>
         </header>
+
+        {categories.length > 1 ? (
+          <nav aria-label="Filter by category" className="mt-6 flex flex-wrap items-center gap-1.5">
+            <CategoryChip label="all" href="/demos" active={activeCategory === null} />
+            {categories.map((cat) => (
+              <CategoryChip
+                key={cat}
+                label={cat}
+                href={`/demos?category=${encodeURIComponent(cat)}`}
+                active={activeCategory === cat}
+              />
+            ))}
+          </nav>
+        ) : null}
 
         <section aria-label="Demo list" className="mt-8">
           {catalogError ? (
@@ -145,16 +141,17 @@ interface CategoryChipProps {
 }
 
 function CategoryChip({ label, href, active }: CategoryChipProps) {
-  // Segmented control on URL-driven links: filters stay shareable and
-  // server-rendered (deliberately not Tabs).
+  // Inline filter chips on URL-driven links: filters stay shareable and
+  // server-rendered (deliberately not Tabs). The active chip takes the amber
+  // fill; the rest are quiet lowercase text until hovered.
   const classes = active
     ? 'bg-[color:var(--color-accent)] font-semibold text-[color:var(--color-text)]'
-    : 'text-[color:var(--color-text-dim)] hover:bg-[color:var(--color-surface-2)] hover:text-[color:var(--color-text)]';
+    : 'text-[color:var(--color-text-mute)] hover:bg-[color:var(--color-surface-2)] hover:text-[color:var(--color-text)]';
   return (
     <Link
       href={href}
       aria-current={active ? 'true' : undefined}
-      className={`inline-flex items-center rounded-[var(--radius-pill)] px-3 py-1.5 font-mono text-[11px] tracking-[0.08em] uppercase transition-all ${classes}`}
+      className={`inline-flex items-center rounded-[var(--radius-pill)] px-2.5 py-1.5 font-mono text-[12px] lowercase transition-colors ${classes}`}
     >
       {label}
     </Link>
