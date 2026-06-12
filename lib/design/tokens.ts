@@ -1,6 +1,6 @@
 /**
- * PHOSPHOR design tokens. Single source of truth for the warm CRT-amber
- * oscilloscope visual system (replaces the former dark + cyan F1 tokens).
+ * Daylight amber design tokens. Single source of truth for the light
+ * warm-paper visual system (replaces the dark PHOSPHOR CRT tokens).
  *
  * Consumers:
  * - 'styles/globals.css' mirrors these values into a Tailwind v4 '@theme inline'
@@ -8,29 +8,34 @@
  * - TypeScript can import the named constants here for computed-color logic
  *   (the OscWave canvas trace, status colors, etc.) without touching CSS.
  *
- * Identity: warm ink, amber accent, JetBrains Mono used as instrument readouts,
- * Space Grotesk display. Film grain + scanlines carry the scope motif.
+ * Identity: light readable page, dark oscilloscope screens kept only as inset
+ * instrument panels ('scope'). Amber is a fill color (CTAs, chips, the scope
+ * trace); ochre 'accentDim' carries links and labels on light surfaces.
+ * Every documented fg/bg pair is asserted at WCAG AA by tokens.contrast.test.ts.
  */
 
 export const COLOR = {
-  bg: '#0d0a06',
-  surface: '#15100a',
-  surface2: '#1b1408',
-  surface3: '#221a0e', // raised panel
-  scope: '#0a0803', // the dark oscilloscope screen
-  border: '#2c2213',
-  borderStrong: '#3a2d18',
-  borderDim: '#1e1810',
-  text: '#f4ead6',
-  textDim: '#bcab8e',
-  textMute: '#8c7d63',
-  textFade: '#5f5340',
-  accent: '#ffb02e',
-  accentDim: '#c9881f',
-  accentSoft: 'color-mix(in srgb, #ffb02e 18%, transparent)',
-  live: '#74e0a6', // live / connected green
-  warning: '#f4a72c',
-  danger: '#ff5b4d',
+  bg: '#faf8f3',
+  surface: '#ffffff',
+  surface2: '#f3efe6',
+  surface3: '#ece6d8', // recessed alt well
+  scope: '#0a0803', // the dark oscilloscope screen, unchanged from PHOSPHOR
+  border: '#e7e0d2',
+  borderStrong: '#d9d0bd',
+  borderDim: '#efe9dc',
+  text: '#221c12',
+  textDim: '#4b443a',
+  textMute: '#6b614e',
+  textFade: '#8a7d68', // decorative/large only; below AA for small text by design
+  accent: '#ffb02e', // fill only: CTAs, chips, scope trace. Never small text on light.
+  accentDim: '#9a6700', // ochre: links, labels, focus rings on paper
+  accentDeep: '#b45309', // headline emphasis
+  accentSoft: 'color-mix(in srgb, #ffb02e 14%, transparent)',
+  scopeText: '#f4ead6', // text on the dark screen
+  scopeTextDim: '#bcab8e',
+  live: '#15803d', // connected green, dark enough for light surfaces
+  warning: '#b45309',
+  danger: '#b91c1c',
 } as const;
 
 export const RADIUS = {
