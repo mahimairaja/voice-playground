@@ -33,6 +33,13 @@ export interface MintTokenArgs {
   livekit_api_secret: string;
   /** Demo slug; used only to namespace the auto-generated room. */
   slug: string;
+  /**
+   * Named agent to dispatch into the room. Cookbook agents register with
+   * agent_name equal to the demo slug, and LiveKit only dispatches named
+   * workers when the token's roomConfig asks for them explicitly; without
+   * this claim the worker registers and idles while the visitor sits alone.
+   */
+  agentName?: string;
   /** Optional explicit identity. Defaults to 'visitor_<nanoid6>'. */
   identity?: string;
   /** Optional explicit room name. Defaults to '<slug>_<nanoid6>'. */
@@ -86,7 +93,13 @@ export async function mintToken(args: MintTokenArgs): Promise<MintTokenResult> {
   };
 
   const secret = new TextEncoder().encode(args.livekit_api_secret);
-  const token = await new SignJWT({ video: grant })
+  // Claim shape matches livekit server SDKs: AccessToken.with_room_config
+  // serializes RoomConfiguration as a camelCase `roomConfig` claim.
+  const claims: { video: LiveKitVideoGrant; roomConfig?: object } = { video: grant };
+  if (args.agentName) {
+    claims.roomConfig = { agents: [{ agentName: args.agentName }] };
+  }
+  const token = await new SignJWT(claims)
     .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
     .setIssuer(args.livekit_api_key)
     .setSubject(identity)
