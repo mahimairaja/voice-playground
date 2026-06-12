@@ -218,10 +218,19 @@
     transparent 3px
   );
 }
-.ph-grain > *,
-.ph-scan > * {
-  position: relative;
-  z-index: 2;
+/*
+ * Lift real content above the grain/scan pseudo-element overlays. Kept in a
+ * cascade layer so Tailwind positioning utilities (e.g. `absolute`) still win
+ * on a child that needs to be absolutely placed: the z-index lift is the point
+ * here, not forcing `relative`. Unlayered, this rule outranks every utility and
+ * silently collapses an `absolute inset-0` wrapper to its content width.
+ */
+@layer components {
+  .ph-grain > *,
+  .ph-scan > * {
+    position: relative;
+    z-index: 2;
+  }
 }
 
 @keyframes ph-pulse {

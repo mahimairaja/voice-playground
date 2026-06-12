@@ -28,9 +28,12 @@ export function HeroScope() {
             'repeating-linear-gradient(90deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 40px),repeating-linear-gradient(0deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 40px)',
         }}
       >
-        <div className="absolute inset-0 flex items-center px-[6px]">
-          <OscWave height={154} />
-        </div>
+        {/* OscWave sits directly in Grain: the `.ph-grain > *` rule lifts it
+            above the grain/scan overlays (z-index 2), and width:100% resolves
+            against the full screen. An extra absolute wrapper here would be
+            clobbered by that same rule (position:relative wins, unlayered) and
+            collapse the canvas to its intrinsic width. */}
+        <OscWave height={154} />
       </Grain>
     </ScopeFrame>
   );
