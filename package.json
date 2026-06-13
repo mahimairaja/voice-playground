@@ -42,7 +42,6 @@
     "jose": "^6.0.12",
     "livekit-client": "^2.17.2",
     "lucide-react": "^0.555.0",
-    "marked": "^18.0.5",
     "media-chrome": "^4.17.2",
     "motion": "^12.16.0",
     "nanoid": "^5.1.6",

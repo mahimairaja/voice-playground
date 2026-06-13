@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { Streamdown } from 'streamdown';
 import { Eyebrow } from '@/components/phosphor';
 import type { Writeup as WriteupData } from '@/lib/cookbook/blog';
 
@@ -20,14 +20,13 @@ const PROSE =
 
 /**
  * The build-writeup section below the live demo on /demos/<slug>. Server
- * component: renders the frozen cookbook markdown subset to HTML via marked
- * on the server, so the writeup text is in the initial server HTML and
- * fully crawlable. The frozen markdown subset is documented in the cookbook's
- * AGENTS.md.
+ * component: it renders cookbook markdown through Streamdown, which does not
+ * emit raw HTML, so external-contributor writeups cannot inject script or
+ * event-handler attributes. No extra sanitizer is needed. The frozen markdown
+ * subset is documented in the cookbook's AGENTS.md.
  */
 export function Writeup({ writeup }: WriteupProps) {
   const { frontmatter, body } = writeup;
-  const html = marked(body, { async: false }) as string;
   return (
     <section className="mx-auto w-full max-w-[1180px] px-6 pb-20">
       <div className="border-t border-[color:var(--color-border)] pt-10">
@@ -46,11 +45,9 @@ export function Writeup({ writeup }: WriteupProps) {
         <p className="mt-1.5 font-mono text-[12px] tracking-[0.04em] text-[color:var(--color-text-mute)]">
           by {frontmatter.author}
         </p>
-        <div
-          className={PROSE}
-          // content is authored by Mahimai from the cookbook; no user input reaches here
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+        <div className={PROSE}>
+          <Streamdown>{body}</Streamdown>
+        </div>
       </div>
     </section>
   );
