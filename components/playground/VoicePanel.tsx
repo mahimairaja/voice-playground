@@ -2,14 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { RoomEvent } from 'livekit-client';
-import { AgentAudioVisualizerBar } from '@/components/agents-ui/agent-audio-visualizer-bar';
-import { Btn, Grain, OscWave, ScopeFrame } from '@/components/phosphor';
+import { Btn, Grain, ScopeFrame } from '@/components/phosphor';
+import { AgentWaveTrace } from '@/components/playground/AgentWaveTrace';
 import { MicDeviceSelect } from '@/components/playground/MicDeviceSelect';
 import { SessionTimer } from '@/components/playground/SessionTimer';
 import { Transcript } from '@/components/playground/Transcript';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import type { useDemoSession } from '@/hooks/useDemoSession';
-import { COLOR } from '@/lib/design/tokens';
 import { MintTokenError } from '@/lib/livekit/mintToken';
 
 /**
@@ -150,11 +149,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
           >
             <div className="absolute inset-0 flex items-center px-2">
               {live ? (
-                <OscWave
-                  color={muted ? COLOR.scopeTextDim : COLOR.accent}
-                  height={170}
-                  speed={muted ? 0.3 : 1}
-                />
+                <AgentWaveTrace />
               ) : (
                 <div
                   className="h-[2px] w-full"
@@ -204,14 +199,6 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
               {muted ? 'mic off' : 'mic on'}
             </button>
             {live ? <MicDeviceSelect /> : null}
-            <div className="ml-auto flex items-center gap-2">
-              {/* light controls row: ochre bars (amber fails contrast on paper) */}
-              <AgentAudioVisualizerBar
-                size="sm"
-                state={live ? 'listening' : connecting ? 'connecting' : 'disconnected'}
-                color={COLOR.accentDim}
-              />
-            </div>
           </div>
         </ScopeFrame>
 
