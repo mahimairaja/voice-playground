@@ -13,7 +13,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "shadcn:install": "pnpm dlx shadcn@latest add --yes --overwrite @agents-ui/agent-audio-visualizer-bar @agents-ui/agent-chat-transcript @agents-ui/agent-chat-indicator && pnpm format"
+    "shadcn:install": "pnpm dlx shadcn@latest add --yes --overwrite @agents-ui/agent-audio-visualizer-wave @agents-ui/agent-chat-transcript @agents-ui/agent-chat-indicator && pnpm format"
   },
   "dependencies": {
     "@livekit/components-react": "^2.9.20",
