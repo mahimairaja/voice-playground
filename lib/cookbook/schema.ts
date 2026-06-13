@@ -45,6 +45,8 @@ export const CatalogValueSchema = z.object({
   ui_components: z.array(z.string().min(1)),
   /** Optional one-line stat shown on the card (e.g. 'menu: 12 items'). */
   card_stat: z.string().min(1).optional(),
+  /** True when the demo carries a blog.md build writeup in the cookbook. */
+  blog: z.boolean().optional(),
 });
 
 /**
