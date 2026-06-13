@@ -43,6 +43,24 @@ describe('WriteupFrontmatterSchema', () => {
   it('rejects missing title', () => {
     expect(WriteupFrontmatterSchema.safeParse({ summary: 'S' }).success).toBe(false);
   });
+
+  it('drops a cover with a non-http scheme', () => {
+    const parsed = WriteupFrontmatterSchema.parse({
+      title: 'T',
+      summary: 'S',
+      cover: 'javascript:alert(1)',
+    });
+    expect(parsed.cover).toBeUndefined();
+  });
+
+  it('keeps a valid https cover', () => {
+    const parsed = WriteupFrontmatterSchema.parse({
+      title: 'T',
+      summary: 'S',
+      cover: 'https://example.com/a.png',
+    });
+    expect(parsed.cover).toBe('https://example.com/a.png');
+  });
 });
 
 describe('fetchWriteup', () => {

@@ -1,6 +1,7 @@
-import { Streamdown } from 'streamdown';
-import { Eyebrow } from '@/components/phosphor';
+import ReactMarkdown from 'react-markdown';
+import { Eyebrow } from '@/components/phosphor/Eyebrow';
 import type { Writeup as WriteupData } from '@/lib/cookbook/blog';
+import { WRITEUP_REHYPE_PLUGINS } from '@/lib/cookbook/markdown';
 
 interface WriteupProps {
   writeup: WriteupData;
@@ -20,10 +21,14 @@ const PROSE =
 
 /**
  * The build-writeup section below the live demo on /demos/<slug>. Server
- * component: it renders cookbook markdown through Streamdown, which does not
- * emit raw HTML, so external-contributor writeups cannot inject script or
- * event-handler attributes. No extra sanitizer is needed. The frozen markdown
- * subset is documented in the cookbook's AGENTS.md.
+ * component: it renders the markdown body with react-markdown and no
+ * rehype-raw, so raw HTML in a writeup is never parsed into the tree, and
+ * rehype-sanitize strips anything outside the safe element set. Writeup
+ * bodies come from a public cookbook with external contributors, so this
+ * sanitization is load-bearing, not cosmetic. react-markdown renders
+ * synchronously during SSR, so the body lands in the initial server HTML and
+ * is crawlable. The frozen markdown subset is documented in the cookbook's
+ * AGENTS.md.
  */
 export function Writeup({ writeup }: WriteupProps) {
   const { frontmatter, body } = writeup;
@@ -46,7 +51,7 @@ export function Writeup({ writeup }: WriteupProps) {
           by {frontmatter.author}
         </p>
         <div className={PROSE}>
-          <Streamdown>{body}</Streamdown>
+          <ReactMarkdown rehypePlugins={WRITEUP_REHYPE_PLUGINS}>{body}</ReactMarkdown>
         </div>
       </div>
     </section>

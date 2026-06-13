@@ -8,8 +8,17 @@ const REVALIDATE_SECONDS = 300;
 export const WriteupFrontmatterSchema = z.object({
   title: z.string().min(1),
   summary: z.string().min(1),
-  cover: z.string().min(1).optional(),
-  canonical: z.string().min(1).optional(),
+  // cover is rendered as an <img src>; require an http(s) URL so an external
+  // contributor cannot point it at javascript:, data:, or another scheme
+  // (.url() alone accepts those). A bad value falls back to undefined (the
+  // image is dropped) rather than failing the whole writeup.
+  cover: z
+    .string()
+    .url()
+    .refine((u) => /^https?:\/\//i.test(u), 'cover must be an http(s) URL')
+    .optional()
+    .catch(undefined),
+  canonical: z.string().url().optional().catch(undefined),
   author: z.string().min(1).default('Mahimai'),
 });
 
