@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { DemoRuntime } from '@/components/playground/DemoRuntime';
+import { Writeup } from '@/components/playground/Writeup';
+import { fetchWriteup } from '@/lib/cookbook/blog';
 import { getAllShipped, getShippedBySlug } from '@/lib/demos';
 
 export const dynamicParams = false;
@@ -18,9 +20,10 @@ export async function generateMetadata({ params }: DemoPageProps): Promise<Metad
   const { slug } = await params;
   const demo = await getShippedBySlug(slug);
   if (!demo) return { title: 'Demo not found · voice playground' };
+  const writeup = demo.blog ? await fetchWriteup(slug) : null;
   return {
     title: `${demo.title} · voice playground`,
-    description: demo.description,
+    description: writeup?.frontmatter.summary ?? demo.description,
   };
 }
 
@@ -28,5 +31,11 @@ export default async function DemoPage({ params }: DemoPageProps) {
   const { slug } = await params;
   const demo = await getShippedBySlug(slug);
   if (!demo) notFound();
-  return <DemoRuntime demo={demo} />;
+  const writeup = demo.blog ? await fetchWriteup(slug) : null;
+  return (
+    <>
+      <DemoRuntime demo={demo} />
+      {writeup ? <Writeup writeup={writeup} /> : null}
+    </>
+  );
 }
