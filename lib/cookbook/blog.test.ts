@@ -49,7 +49,10 @@ describe('fetchWriteup', () => {
   afterEach(() => vi.unstubAllGlobals());
 
   it('returns a parsed writeup on 200', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(SAMPLE, { status: 200 })));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(SAMPLE, { status: 200 }))
+    );
     const w = await fetchWriteup('sample');
     expect(w?.frontmatter.title).toBe('Test writeup');
     expect(w?.frontmatter.author).toBe('Mahimai');
@@ -57,12 +60,18 @@ describe('fetchWriteup', () => {
   });
 
   it('returns null on 404', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response('not found', { status: 404 })));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response('not found', { status: 404 }))
+    );
     expect(await fetchWriteup('missing')).toBeNull();
   });
 
   it('returns null when frontmatter is malformed', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response('no frontmatter', { status: 200 })));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response('no frontmatter', { status: 200 }))
+    );
     expect(await fetchWriteup('bad')).toBeNull();
   });
 });

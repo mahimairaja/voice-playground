@@ -58,7 +58,10 @@ export function splitFrontmatter(
     if (value) raw[key] = value;
   }
 
-  const body = lines.slice(closing + 1).join('\n').trim();
+  const body = lines
+    .slice(closing + 1)
+    .join('\n')
+    .trim();
   return { raw, body };
 }
 
