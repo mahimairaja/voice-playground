@@ -18,3 +18,7 @@ export const COOKBOOK_BASE_URL = REPO_BASE;
 export function demoSourceUrl(slug: string): string {
   return `${REPO_BASE}/tree/main/demos/${slug}`;
 }
+
+export function blogRawUrl(slug: string): string {
+  return `${RAW_BASE}/demos/${slug}/blog.md`;
+}
