@@ -85,7 +85,7 @@ export default function HomePage() {
             />
             <Step
               number="02"
-              title=" Paste your keys"
+              title="Paste your keys"
               body="LiveKit URL, key, and secret. They stay in your browser."
             />
             <Step

@@ -227,7 +227,12 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
               {ready ? 'ready to connect' : 'livekit incomplete'}
             </span>
 
-            <Btn kind="muted" onClick={() => setConfirmOpen(true)} className="px-3.5 py-2.5">
+            <Btn
+              kind="muted"
+              onClick={() => setConfirmOpen(true)}
+              disabled={unavailable}
+              className="px-3.5 py-2.5"
+            >
               clear
             </Btn>
             <AlertDialogPrimitive.Root open={confirmOpen} onOpenChange={setConfirmOpen}>

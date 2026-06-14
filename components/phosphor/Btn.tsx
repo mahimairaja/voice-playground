@@ -22,7 +22,7 @@ const KINDS: Record<Kind, string> = {
   primary:
     'bg-[color:var(--color-accent)] text-[color:var(--color-text)] shadow-[0_1px_2px_rgba(34,28,18,0.12)] hover:brightness-105',
   ghost:
-    'border-[color:var(--color-border-strong)] bg-transparent text-[color:var(--color-text)] hover:border-[color:var(--color-accent)]',
+    'border-[color:var(--color-border-strong)] bg-transparent text-[color:var(--color-text)] hover:border-[color:var(--color-accent-dim)]',
   muted:
     'border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] font-medium text-[color:var(--color-text-dim)] hover:text-[color:var(--color-text)]',
 };

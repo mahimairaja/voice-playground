@@ -68,8 +68,8 @@ export default function AboutPage() {
               <code className="font-mono text-[14px] text-[color:var(--color-accent-dim)]">
                 uv run python agent.py dev
               </code>
-              , , paste your keys on the demo page, and start talking. The agent runs on your
-              machine. The playground runs in your browser. That&apos;s the whole split.
+              , paste your keys on the demo page, and start talking. The agent runs on your machine.
+              The playground runs in your browser. That&apos;s the whole split.
             </p>
 
             <p className="mt-4 text-[16px] leading-[1.65] text-[color:var(--color-text-dim)]">

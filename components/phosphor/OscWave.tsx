@@ -45,8 +45,6 @@ export function OscWave({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(cv);
 
     const draw = () => {
       if (dead) return;
@@ -81,6 +79,15 @@ export function OscWave({
       if (!reduced) raf = requestAnimationFrame(draw);
     };
     draw();
+
+    // The ResizeObserver's first callback fires after this initial draw and
+    // clears the canvas (setting canvas.width wipes it). Under reduced motion
+    // there is no rAF loop to repaint, so repaint the static trace on resize.
+    const ro = new ResizeObserver(() => {
+      resize();
+      if (reduced) draw();
+    });
+    ro.observe(cv);
 
     return () => {
       dead = true;
