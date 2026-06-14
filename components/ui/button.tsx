@@ -11,10 +11,13 @@ const buttonVariants = cva(
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
+        /* daylight: hover wash reads the semantic --accent var directly; the
+           bg-accent utility resolves to brand amber and would shout on hover */
         outline:
-          'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
+          'border bg-background shadow-xs hover:bg-[color:var(--accent)] hover:text-[color:var(--accent-foreground)] dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
+        ghost:
+          'hover:bg-[color:var(--accent)] hover:text-[color:var(--accent-foreground)] dark:hover:bg-[color:var(--accent)]/50',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {

@@ -9,12 +9,13 @@ import { Grain, OscWave, ScopeFrame } from '@/components/phosphor';
 export function HeroScope() {
   return (
     <ScopeFrame
-      title="SCOPE · 1MΩ"
+      title="SCOPE · LIVE"
       right={<span className="text-[color:var(--color-live)]">● REC</span>}
+      screen
       footer={[
-        ['FREQ', '440 Hz'],
         ['TTFB', '0.38 s'],
-        ['CH', 'mono'],
+        ['TURN', '0.62 s'],
+        ['AUDIO', '16 kHz'],
       ]}
     >
       <Grain
@@ -24,12 +25,15 @@ export function HeroScope() {
           height: 184,
           background: 'var(--color-scope)',
           backgroundImage:
-            'repeating-linear-gradient(90deg,var(--color-border-dim) 0 1px,transparent 1px 40px),repeating-linear-gradient(0deg,var(--color-border-dim) 0 1px,transparent 1px 40px)',
+            'repeating-linear-gradient(90deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 40px),repeating-linear-gradient(0deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 40px)',
         }}
       >
-        <div className="absolute inset-0 flex items-center px-[6px]">
-          <OscWave height={154} />
-        </div>
+        {/* OscWave sits directly in Grain: the `.ph-grain > *` rule lifts it
+            above the grain/scan overlays (z-index 2), and width:100% resolves
+            against the full screen. An extra absolute wrapper here would be
+            clobbered by that same rule (position:relative wins, unlayered) and
+            collapse the canvas to its intrinsic width. */}
+        <OscWave height={154} />
       </Grain>
     </ScopeFrame>
   );

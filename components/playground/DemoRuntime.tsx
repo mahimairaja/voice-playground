@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { RoomContext } from '@livekit/components-react';
 import { CredentialsButton } from '@/components/credentials/CredentialsButton';
 import { DemoBundleLoader } from '@/components/demos/DemoBundleLoader';
-import { Eyebrow, Grain, ScopeFrame } from '@/components/phosphor';
+import { Eyebrow, ScopeFrame } from '@/components/phosphor';
 import { AgentCanvas } from '@/components/playground/AgentCanvas';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
+import { CopySnippet } from '@/components/playground/CopySnippet';
 import { VoicePanel } from '@/components/playground/VoicePanel';
 import { useDemoSession } from '@/hooks/useDemoSession';
 import { CRED_OPEN_DRAWER_EVENT, LIVEKIT_KEYS } from '@/lib/credentials/store';
@@ -49,15 +50,15 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
 
   return (
     <Wrapper {...wrapperProps}>
-      <Grain>
+      <>
         <DemoBundleLoader slug={demo.slug} />
 
         <div className="mx-auto w-full max-w-[1180px] px-6 pt-8 pb-16">
           <Link
             href="/demos"
-            className="font-mono text-[11px] tracking-[0.06em] text-[color:var(--color-text-mute)] transition-colors hover:text-[color:var(--color-accent)]"
+            className="font-mono text-[12px] tracking-[0.06em] text-[color:var(--color-text-mute)] transition-colors hover:text-[color:var(--color-accent-dim)]"
           >
-            ← channel rack
+            ← all demos
           </Link>
 
           <div className="mt-3.5 flex flex-wrap items-end justify-between gap-4">
@@ -68,7 +69,7 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
               <h1 className="mt-2 text-[32px] font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
                 {demo.title}
               </h1>
-              <p className="mt-1.5 max-w-[54ch] text-[14px] leading-[1.5] text-[color:var(--color-text-dim)]">
+              <p className="mt-1.5 max-w-[54ch] text-[15px] leading-[1.55] text-[color:var(--color-text-dim)]">
                 {demo.description}{' '}
                 <span className="text-[color:var(--color-text-mute)]">{demo.who_for}</span>
               </p>
@@ -83,21 +84,20 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
             <div className="mt-5 flex flex-wrap items-center gap-3.5 rounded-[var(--radius-panel)] border border-[color:color-mix(in_srgb,var(--color-warning)_40%,transparent)] bg-[color:color-mix(in_srgb,var(--color-warning)_6%,transparent)] px-4 py-3.5">
               <span
                 className="h-2 w-2 rounded-full bg-[color:var(--color-warning)]"
-                style={{ boxShadow: '0 0 8px var(--color-warning)' }}
                 aria-hidden="true"
               />
               <span className="font-mono text-[12px] tracking-[0.03em] text-[color:var(--color-warning)]">
                 NO LIVEKIT CREDENTIALS
               </span>
-              <span className="text-[13.5px] text-[color:var(--color-text-dim)]">
+              <span className="text-[14px] text-[color:var(--color-text-dim)]">
                 Paste your LiveKit URL, key and secret to connect the scope to a live room.
               </span>
               <button
                 type="button"
                 onClick={openVault}
-                className="ml-auto cursor-pointer font-mono text-[12px] whitespace-nowrap text-[color:var(--color-accent)] hover:underline"
+                className="ml-auto cursor-pointer font-mono text-[12px] whitespace-nowrap text-[color:var(--color-accent-dim)] hover:underline"
               >
-                open vault →
+                add keys →
               </button>
             </div>
           ) : null}
@@ -113,32 +113,32 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
                   {LIVEKIT_KEYS.map((key) => (
                     <span
                       key={key}
-                      className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2.5 py-[5px] font-mono text-[10.5px] tracking-[0.06em] text-[color:var(--color-text-dim)] uppercase"
+                      className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2.5 py-[5px] font-mono text-[11px] tracking-[0.06em] text-[color:var(--color-text-dim)] uppercase"
                     >
                       {key}
                     </span>
                   ))}
                   <span
-                    className="mt-1 w-full font-mono text-[10.5px]"
+                    className="mt-1 w-full font-mono text-[11px]"
                     style={{ color: isReady ? 'var(--color-live)' : 'var(--color-warning)' }}
                   >
-                    LiveKit: {isReady ? '✓ keys present' : '✗ paste in vault'}
+                    LiveKit: {isReady ? '✓ keys present' : '✗ add your keys'}
                   </span>
                 </div>
               </ScopeFrame>
 
-              <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-3.5 font-mono text-[11px] leading-[1.6] text-[color:var(--color-text-fade)]">
+              <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-3.5 font-mono text-[12px] leading-[1.6] text-[color:var(--color-text-mute)]">
                 Run the worker locally:
-                <br />
-                <span className="text-[color:var(--color-accent)]">uv run python agent.py dev</span>
-                <br />
+                <div className="my-2">
+                  <CopySnippet command="uv run python agent.py dev" />
+                </div>
                 then connect: the agent joins room{' '}
                 <span className="text-[color:var(--color-text-dim)]">{demo.slug}</span>.
               </div>
             </div>
           </div>
         </div>
-      </Grain>
+      </>
     </Wrapper>
   );
 }

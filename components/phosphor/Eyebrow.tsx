@@ -8,17 +8,20 @@ interface EyebrowProps {
   muted?: boolean;
 }
 
-/** Mono instrument label. The PHOSPHOR readout caption. */
+/**
+ * Mono instrument label. Daylight rule: 12px floor and AA mute ink; the
+ * accent variant is ochre (amber is a fill color, not label text on light).
+ */
 export function Eyebrow({ children, className, accent, muted }: EyebrowProps) {
   return (
     <span
       className={cn(
-        'font-mono text-[10.5px] tracking-[0.16em] uppercase',
+        'font-mono text-[12px] tracking-[0.14em] uppercase',
         accent
-          ? 'text-[color:var(--color-accent)]'
+          ? 'text-[color:var(--color-accent-dim)]'
           : muted
-            ? 'text-[color:var(--color-text-mute)]'
-            : 'text-[color:var(--color-text-fade)]',
+            ? 'text-[color:var(--color-text-fade)]'
+            : 'text-[color:var(--color-text-mute)]',
         className
       )}
     >

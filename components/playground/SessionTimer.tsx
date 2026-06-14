@@ -61,7 +61,7 @@ export function SessionTimer({ state, variant = 'crumb' }: SessionTimerProps) {
   const suffix = state === 'live' ? 'ON-AIR' : state === 'ended' ? 'ENDED' : 'ERROR';
 
   return (
-    <span className="font-mono text-[10.5px] tracking-[0.1em] text-[color:var(--color-text-fade)] uppercase">
+    <span className="font-mono text-[11px] tracking-[0.1em] text-[color:var(--color-text-mute)] uppercase">
       · {format(elapsed)} {suffix}
     </span>
   );

@@ -15,12 +15,12 @@ interface AgentCanvasEmptyProps {
 export function AgentCanvasEmpty({ demo }: AgentCanvasEmptyProps) {
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="flex min-h-[120px] flex-col items-center justify-center gap-1 text-center font-mono text-[11.5px] leading-[1.6] text-[color:var(--color-text-fade)]">
+      <div className="flex min-h-[120px] flex-col items-center justify-center gap-1 text-center font-mono text-[12px] leading-[1.6] text-[color:var(--color-text-mute)]">
         <span>agent-mounted UI</span>
         <span>appears here on connect</span>
       </div>
 
-      <p className="max-w-[60ch] text-[13px] leading-[1.55] text-[color:var(--color-text-dim)]">
+      <p className="max-w-[60ch] text-[14px] leading-[1.6] text-[color:var(--color-text-dim)]">
         {demo.description}{' '}
         <span className="text-[color:var(--color-text-mute)]">{demo.who_for}</span>
       </p>
@@ -32,7 +32,7 @@ export function AgentCanvasEmpty({ demo }: AgentCanvasEmptyProps) {
             {demo.ui_components.map((name) => (
               <span
                 key={name}
-                className="inline-flex items-center rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2.5 py-[3px] font-mono text-[10px] tracking-[0.06em] text-[color:var(--color-text-mute)]"
+                className="inline-flex items-center rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2.5 py-[3px] font-mono text-[11px] tracking-[0.06em] text-[color:var(--color-text-mute)]"
               >
                 {name}
               </span>

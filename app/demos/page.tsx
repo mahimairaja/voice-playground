@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Eyebrow, Grain } from '@/components/phosphor';
+import { Eyebrow } from '@/components/phosphor';
 import { CatalogError } from '@/components/playground/CatalogError';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
 import { CatalogFetchError } from '@/lib/cookbook/manifest';
@@ -60,39 +60,35 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
     : planned;
 
   return (
-    <Grain>
+    <>
       <main className="mx-auto max-w-5xl px-6 py-12">
-        <header className="flex flex-wrap items-end justify-between gap-5">
-          <div>
-            <Eyebrow>
-              DEMOS · {shipped.length} SHIPPED · {planned.length} PLANNED
-              {activeCategory ? ` · ${activeCategory}` : ''}
-            </Eyebrow>
-            <h1 className="mt-2.5 text-[34px] leading-none font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
-              Channel rack
-            </h1>
-            <p className="mt-2 max-w-[58ch] text-[14.5px] leading-[1.55] text-[color:var(--color-text-dim)]">
-              Voice agents you can talk to in the browser. Paste your LiveKit credentials, pick a
-              card, run the agent locally, start the call.
-            </p>
-          </div>
-          {categories.length > 1 ? (
-            <nav
-              aria-label="Filter by category"
-              className="flex max-w-[460px] flex-wrap items-center justify-end gap-2"
-            >
-              <CategoryChip label="all" href="/demos" active={activeCategory === null} />
-              {categories.map((cat) => (
-                <CategoryChip
-                  key={cat}
-                  label={cat}
-                  href={`/demos?category=${encodeURIComponent(cat)}`}
-                  active={activeCategory === cat}
-                />
-              ))}
-            </nav>
-          ) : null}
+        <header>
+          <Eyebrow>
+            DEMOS · {shipped.length} SHIPPED · {planned.length} PLANNED
+            {activeCategory ? ` · ${activeCategory}` : ''}
+          </Eyebrow>
+          <h1 className="mt-2.5 text-[34px] leading-none font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
+            Demos
+          </h1>
+          <p className="mt-2 max-w-[58ch] text-[14.5px] leading-[1.55] text-[color:var(--color-text-dim)]">
+            Voice agents you can talk to in your browser. Run one locally, paste your LiveKit keys,
+            start the call.
+          </p>
         </header>
+
+        {categories.length > 1 ? (
+          <nav aria-label="Filter by category" className="mt-6 flex flex-wrap items-center gap-1.5">
+            <CategoryChip label="all" href="/demos" active={activeCategory === null} />
+            {categories.map((cat) => (
+              <CategoryChip
+                key={cat}
+                label={cat}
+                href={`/demos?category=${encodeURIComponent(cat)}`}
+                active={activeCategory === cat}
+              />
+            ))}
+          </nav>
+        ) : null}
 
         <section aria-label="Demo list" className="mt-8">
           {catalogError ? (
@@ -126,7 +122,7 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
             <div className="mt-5">
               <Link
                 href="/demos"
-                className="font-mono text-[10.5px] tracking-[0.06em] text-[color:var(--color-text-mute)] uppercase underline-offset-4 hover:underline"
+                className="font-mono text-[11px] tracking-[0.06em] text-[color:var(--color-text-mute)] uppercase underline-offset-4 hover:underline"
               >
                 · clear filter
               </Link>
@@ -134,7 +130,7 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
           ) : null}
         </section>
       </main>
-    </Grain>
+    </>
   );
 }
 
@@ -145,14 +141,17 @@ interface CategoryChipProps {
 }
 
 function CategoryChip({ label, href, active }: CategoryChipProps) {
+  // Inline filter chips on URL-driven links: filters stay shareable and
+  // server-rendered (deliberately not Tabs). The active chip takes the amber
+  // fill; the rest are quiet lowercase text until hovered.
   const classes = active
-    ? 'bg-[color:var(--color-accent)] text-[#1a1200] border-[color:var(--color-accent)]'
-    : 'border-[color:var(--color-border)] text-[color:var(--color-text-mute)] hover:border-[color:var(--color-border-strong)] hover:text-[color:var(--color-text)]';
+    ? 'bg-[color:var(--color-accent)] font-semibold text-[color:var(--color-text)]'
+    : 'text-[color:var(--color-text-mute)] hover:bg-[color:var(--color-surface-2)] hover:text-[color:var(--color-text)]';
   return (
     <Link
       href={href}
       aria-current={active ? 'true' : undefined}
-      className={`inline-flex items-center rounded-[var(--radius-pill)] border px-3 py-1.5 font-mono text-[10.5px] tracking-[0.08em] uppercase transition-all ${classes}`}
+      className={`inline-flex items-center rounded-[var(--radius-pill)] px-2.5 py-1.5 font-mono text-[12px] lowercase transition-colors ${classes}`}
     >
       {label}
     </Link>
@@ -164,9 +163,11 @@ function ShippedCard({ demo }: { demo: ShippedDemo }) {
     <div className="flex h-full flex-col rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-[18px] transition-colors hover:border-[color:var(--color-accent)]">
       <Link href={`/demos/${demo.slug}`} className="block flex-1">
         <div className="flex items-center justify-between">
-          <Eyebrow className="text-[10px] tracking-[0.08em]">{demo.category}</Eyebrow>
+          <Eyebrow accent className="text-[11px] tracking-[0.08em]">
+            {demo.category}
+          </Eyebrow>
           {demo.card_stat ? (
-            <span className="font-mono text-[10px] text-[color:var(--color-accent)]">
+            <span className="font-mono text-[11px] text-[color:var(--color-text-mute)]">
               {demo.card_stat}
             </span>
           ) : null}
@@ -174,7 +175,7 @@ function ShippedCard({ demo }: { demo: ShippedDemo }) {
         <h3 className="mt-[13px] text-[19px] font-semibold tracking-[-0.01em] text-[color:var(--color-text)]">
           {demo.title}
         </h3>
-        <p className="mt-2 text-[13.5px] leading-[1.55] text-[color:var(--color-text-mute)]">
+        <p className="mt-2 text-[14.5px] leading-[1.6] text-[color:var(--color-text-dim)]">
           {demo.description}
         </p>
       </Link>
@@ -182,7 +183,7 @@ function ShippedCard({ demo }: { demo: ShippedDemo }) {
         <CookbookSourceLink slug={demo.slug} variant="inline" />
         <Link
           href={`/demos/${demo.slug}`}
-          className="font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-accent)] uppercase hover:underline"
+          className="font-mono text-[11px] font-semibold tracking-[0.08em] text-[color:var(--color-accent-dim)] uppercase hover:underline"
         >
           ▶ play
         </Link>
@@ -200,15 +201,15 @@ function PlannedCard({ demo }: { demo: PlannedDemo }) {
       className="flex h-full flex-col rounded-[var(--radius-card)] border border-dashed border-[color:var(--color-border-dim)] bg-[color:var(--color-surface)] p-[18px] opacity-[0.72] transition-opacity hover:opacity-100"
     >
       <div className="flex items-center justify-between">
-        <Eyebrow className="text-[10px] tracking-[0.08em]">{demo.category} · PLANNED</Eyebrow>
+        <Eyebrow className="text-[11px] tracking-[0.08em]">{demo.category} · PLANNED</Eyebrow>
       </div>
       <h3 className="mt-[13px] text-[19px] font-semibold tracking-[-0.01em] text-[color:var(--color-text-dim)]">
         {demo.title}
       </h3>
-      <p className="mt-2 flex-1 text-[13.5px] leading-[1.55] text-[color:var(--color-text-mute)]">
+      <p className="mt-2 flex-1 text-[14.5px] leading-[1.6] text-[color:var(--color-text-mute)]">
         {demo.why}
       </p>
-      <div className="mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px] font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-fade)] uppercase">
+      <div className="mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px] font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)] uppercase">
         <span className="inline-flex items-center gap-1">
           source <span aria-hidden="true">↗</span>
         </span>
@@ -230,7 +231,7 @@ function EmptyState({ activeCategory, totalShipped, totalPlanned }: EmptyStatePr
       <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-7 font-mono text-[13px] text-[color:var(--color-text-mute)]">
         No demos in <span className="text-[color:var(--color-text-dim)]">{activeCategory}</span>{' '}
         yet.{' '}
-        <Link href="/demos" className="text-[color:var(--color-accent)] hover:underline">
+        <Link href="/demos" className="text-[color:var(--color-accent-dim)] hover:underline">
           see all
         </Link>
         .
@@ -245,7 +246,7 @@ function EmptyState({ activeCategory, totalShipped, totalPlanned }: EmptyStatePr
           href="https://github.com/mahimairaja/awesome-voice-apps"
           target="_blank"
           rel="noreferrer noopener"
-          className="text-[color:var(--color-accent)] hover:underline"
+          className="text-[color:var(--color-accent-dim)] hover:underline"
         >
           awesome-voice-apps cookbook ↗
         </a>

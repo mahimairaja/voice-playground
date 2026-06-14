@@ -29,6 +29,9 @@ export function OscWave({
     if (!cv) return;
     const ctx = cv.getContext('2d');
     if (!ctx) return;
+    // Pure decoration: honour prefers-reduced-motion by painting one static
+    // trace frame instead of running the rAF loop.
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let raf = 0;
     let t = 0;
     let dead = false;
@@ -42,8 +45,6 @@ export function OscWave({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(cv);
 
     const draw = () => {
       if (dead) return;
@@ -61,20 +62,32 @@ export function OscWave({
       ctx.beginPath();
       for (let x = 0; x <= w; x += 2) {
         const p = x / w;
-        const env = 0.55 + 0.45 * Math.sin(p * Math.PI * 1.5 + t * 0.6);
+        // Full-cycle, shallow envelope: left and right edges match and it never
+        // collapses to the midline, so the trace reads as evenly alive across
+        // the whole width instead of flatlining in a drifting dead zone.
+        const env = 0.85 + 0.15 * Math.sin(p * Math.PI * 2 + t * 0.6);
         const y =
           Math.sin(p * 22 + t * 2.2 * speed) * 0.5 +
           Math.sin(p * 7 - t * 1.3 * speed) * 0.32 +
           Math.sin(p * 41 + t * 3.1 * speed) * 0.16;
-        const yy = mid + y * env * (h * 0.34);
+        const yy = mid + y * env * (h * 0.46);
         if (x === 0) ctx.moveTo(x, yy);
         else ctx.lineTo(x, yy);
       }
       ctx.stroke();
       t += 0.016;
-      raf = requestAnimationFrame(draw);
+      if (!reduced) raf = requestAnimationFrame(draw);
     };
     draw();
+
+    // The ResizeObserver's first callback fires after this initial draw and
+    // clears the canvas (setting canvas.width wipes it). Under reduced motion
+    // there is no rAF loop to repaint, so repaint the static trace on resize.
+    const ro = new ResizeObserver(() => {
+      resize();
+      if (reduced) draw();
+    });
+    ro.observe(cv);
 
     return () => {
       dead = true;

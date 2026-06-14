@@ -59,7 +59,7 @@ export function Transcript({ defaultOpen = false, className }: TranscriptProps) 
   return (
     <section aria-label="Live transcript" className={cn('w-full', className)}>
       <div className="flex items-center justify-between gap-3 px-1">
-        <span className="font-mono text-[10.5px] tracking-[0.1em] text-[color:var(--color-text-mute)] uppercase">
+        <span className="font-mono text-[11px] tracking-[0.1em] text-[color:var(--color-text-mute)] uppercase">
           {merged.length > 0
             ? `${merged.length} line${merged.length === 1 ? '' : 's'}`
             : 'no lines yet'}
@@ -67,7 +67,7 @@ export function Transcript({ defaultOpen = false, className }: TranscriptProps) 
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="flex cursor-pointer items-center gap-1 font-mono text-[10.5px] tracking-[0.1em] text-[color:var(--color-text-fade)] uppercase transition-colors hover:text-[color:var(--color-text-dim)]"
+          className="flex cursor-pointer items-center gap-1 font-mono text-[11px] tracking-[0.1em] text-[color:var(--color-text-mute)] uppercase transition-colors hover:text-[color:var(--color-text)]"
           aria-expanded={open}
           aria-controls="transcript-body"
         >
@@ -89,7 +89,7 @@ export function Transcript({ defaultOpen = false, className }: TranscriptProps) 
         className="mt-3 max-h-[230px] overflow-y-auto"
       >
         {merged.length === 0 ? (
-          <p className="px-1 py-6 text-center font-mono text-[12px] text-[color:var(--color-text-fade)]">
+          <p className="px-1 py-6 text-center font-mono text-[12px] text-[color:var(--color-text-mute)]">
             transcript will stream here
           </p>
         ) : (

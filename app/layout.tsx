@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import { JetBrains_Mono, Space_Grotesk } from 'next/font/google';
-import { headers } from 'next/headers';
 import { PlaygroundFooter } from '@/components/layout/PlaygroundFooter';
 import { PlaygroundHeader } from '@/components/layout/PlaygroundHeader';
-import { getAppConfig, getStyles } from '@/lib/utils';
+import { Toaster } from '@/components/ui/sonner';
 import '@/styles/globals.css';
+
+const SITE_TITLE = 'voice playground';
+const SITE_DESCRIPTION =
+  'Talk to open-source voice agents from the awesome-voice-apps cookbook, right in your browser.';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -49,13 +52,10 @@ function resolveMetadataBase(): URL {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const hdrs = await headers();
-  const appConfig = await getAppConfig(hdrs);
-
   return {
     metadataBase: resolveMetadataBase(),
-    title: appConfig.pageTitle,
-    description: appConfig.pageDescription,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     icons: {
       icon: [
         { url: '/favicon.ico', sizes: 'any' },
@@ -66,14 +66,14 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       type: 'website',
-      title: appConfig.pageTitle,
-      description: appConfig.pageDescription,
-      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: appConfig.pageTitle }],
+      title: SITE_TITLE,
+      description: SITE_DESCRIPTION,
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: SITE_TITLE }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: appConfig.pageTitle,
-      description: appConfig.pageDescription,
+      title: SITE_TITLE,
+      description: SITE_DESCRIPTION,
       images: ['/og-image.png'],
     },
   };
@@ -83,18 +83,14 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default async function RootLayout({ children }: RootLayoutProps) {
-  const hdrs = await headers();
-  const appConfig = await getAppConfig(hdrs);
-  const styles = getStyles(appConfig);
-
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={`dark ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
-      <head>{styles && <style>{styles}</style>}</head>
+    <html lang="en" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
       <body className="bg-[color:var(--color-bg)] text-[color:var(--color-text)] antialiased">
         <PlaygroundHeader />
         <main className="min-h-[calc(100dvh-56px-44px)]">{children}</main>
         <PlaygroundFooter />
+        <Toaster position="bottom-center" />
       </body>
     </html>
   );

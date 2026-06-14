@@ -44,7 +44,7 @@ export function CostPanel({ total_usd, lines, className }: CostPanelProps) {
       </ul>
       <div
         className="mt-2.5 flex items-center justify-between rounded-[8px] bg-[color:var(--color-accent)] px-3.5 py-3"
-        style={{ color: '#1a1200' }}
+        style={{ color: 'var(--color-text)' }}
       >
         <span className="font-mono text-[11px] tracking-[0.1em] uppercase">total · this call</span>
         <span className="text-[22px] font-bold tabular-nums">{formatTotal(total_usd)}</span>

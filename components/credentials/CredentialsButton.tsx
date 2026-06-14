@@ -30,12 +30,12 @@ export function CredentialsButton({ demoTitle }: CredentialsButtonProps) {
   if (unavailable) {
     label = 'Storage blocked';
     classes =
-      'border border-[color:var(--color-border)] text-[color:var(--color-text-fade)] cursor-not-allowed';
+      'border border-[color:var(--color-border)] text-[color:var(--color-text-mute)] cursor-not-allowed';
   } else if (isReady) {
     label = 'LIVEKIT · READY';
     dotColor = 'var(--color-live)';
     classes =
-      'border border-[color:var(--color-accent)] text-[color:var(--color-accent)] hover:bg-[color:var(--color-accent-soft)]';
+      'border border-[color:var(--color-accent)] text-[color:var(--color-accent-dim)] hover:bg-[color:var(--color-accent-soft)]';
   } else {
     label = `Set keys · ${missing.length} missing`;
     classes =
@@ -48,13 +48,10 @@ export function CredentialsButton({ demoTitle }: CredentialsButtonProps) {
         type="button"
         onClick={() => setOpen(true)}
         disabled={unavailable}
-        className={`inline-flex items-center gap-2 rounded-[var(--radius-pill)] px-4 py-1.5 font-mono text-[10.5px] tracking-[0.08em] uppercase transition-colors ${classes}`}
+        className={`inline-flex items-center gap-2 rounded-[var(--radius-pill)] px-4 py-1.5 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors ${classes}`}
       >
         {dotColor ? (
-          <span
-            className="h-[7px] w-[7px] rounded-full"
-            style={{ background: dotColor, boxShadow: `0 0 8px ${dotColor}` }}
-          />
+          <span className="h-[7px] w-[7px] rounded-full" style={{ background: dotColor }} />
         ) : null}
         {label}
       </button>

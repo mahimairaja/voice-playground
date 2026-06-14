@@ -3,37 +3,111 @@
 @source "../node_modules/streamdown/dist/index.js";
 
 /*
- * PHOSPHOR tokens. Warm CRT-amber on deep warm ink. Single accent (#ffb02e) for
- * CTAs, live-state, active-route underline, scope trace. Green (#74e0a6) for the
- * live/connected state, amber-warn and red-danger for failure states. Source:
- * lib/design/tokens.ts (mirrored values). Anything beyond this palette needs an
- * explicit reason in the PR.
+ * Daylight amber tokens. Light warm-paper page; dark screens are reserved for
+ * instrument insets (anything wrapped in .dark). Amber (#ffb02e) is a fill
+ * color: CTAs, chips, the scope trace. Ochre (#8a5c00) carries links and
+ * labels on light surfaces. Source: lib/design/tokens.ts (mirrored values),
+ * asserted at WCAG AA by lib/design/tokens.contrast.test.ts. Anything beyond
+ * this palette needs an explicit reason in the PR.
  */
 :root {
-  --color-bg: #0d0a06;
-  --color-surface: #15100a;
-  --color-surface-2: #1b1408;
-  --color-surface-3: #221a0e;
-  --color-scope: #0a0803;
-  --color-border: #2c2213;
-  --color-border-strong: #3a2d18;
-  --color-border-dim: #1e1810;
-  --color-text: #f4ead6;
-  --color-text-dim: #bcab8e;
-  --color-text-mute: #8c7d63;
-  --color-text-fade: #5f5340;
-  --color-accent: #ffb02e;
-  --color-accent-dim: #c9881f;
-  --color-accent-soft: color-mix(in srgb, #ffb02e 18%, transparent);
-  --color-live: #74e0a6;
-  --color-warning: #f4a72c;
-  --color-danger: #ff5b4d;
+  /* brand */
+  --ph-bg: #faf8f3;
+  --ph-surface: #ffffff;
+  --ph-surface-2: #f3efe6;
+  --ph-surface-3: #ece6d8;
+  --ph-scope: #0a0803;
+  --ph-border: #e7e0d2;
+  --ph-border-strong: #d9d0bd;
+  --ph-border-dim: #efe9dc;
+  --ph-text: #221c12;
+  --ph-text-dim: #4b443a;
+  --ph-text-mute: #6b614e;
+  --ph-text-fade: #8a7d68;
+  --ph-accent: #ffb02e;
+  --ph-accent-dim: #8a5c00;
+  --ph-accent-deep: #b45309;
+  --ph-accent-soft: color-mix(in srgb, #ffb02e 14%, transparent);
+  --ph-scope-text: #f4ead6;
+  --ph-scope-text-dim: #bcab8e;
+  --ph-live: #15803d;
+  --ph-warning: #b45309;
+  --ph-danger: #b91c1c;
+
+  /*
+   * shadcn semantic set. The vendored registry components (components/ui,
+   * components/ai-elements, components/agents-ui) consume these names; under
+   * Tailwind v4 an undefined theme color silently compiles to nothing, so
+   * this block is what makes the registries render on-brand.
+   * Note: the semantic "accent" is a quiet hover wash, NOT brand amber.
+   */
+  --background: var(--ph-bg);
+  --foreground: var(--ph-text);
+  --card: var(--ph-surface);
+  --card-foreground: var(--ph-text);
+  --popover: #fffdf8;
+  --popover-foreground: var(--ph-text);
+  --primary: var(--ph-accent);
+  --primary-foreground: var(--ph-text);
+  --secondary: var(--ph-surface-2);
+  --secondary-foreground: var(--ph-text);
+  --muted: var(--ph-surface-2);
+  --muted-foreground: var(--ph-text-mute);
+  --accent: #f6efe0;
+  --accent-foreground: var(--ph-text);
+  --destructive: var(--ph-danger);
+  --destructive-foreground: #ffffff;
+  --border: var(--ph-border);
+  --input: var(--ph-border-strong);
+  --ring: var(--ph-accent-dim);
+  --radius: 0.5rem;
 
   --radius-input: 7px;
   --radius-button: 7px;
   --radius-panel: 12px;
   --radius-card: 12px;
   --radius-pill: 999px;
+}
+
+/*
+ * Dark instrument screens. Wrap a scope-screen interior in class="dark" and
+ * every semantic-token consumer inside flips to screen colors. This is the
+ * only place dark values live; there is no page-level dark mode.
+ */
+.dark {
+  --background: var(--ph-scope);
+  --foreground: var(--ph-scope-text);
+  --card: #15100a;
+  --card-foreground: var(--ph-scope-text);
+  --popover: #15100a;
+  --popover-foreground: var(--ph-scope-text);
+  --secondary: #1b1408;
+  --secondary-foreground: var(--ph-scope-text);
+  --muted: #1b1408;
+  --muted-foreground: var(--ph-scope-text-dim);
+  --accent: #2a2010;
+  --accent-foreground: var(--ph-scope-text);
+  --border: #2c2213;
+  --input: #3a2d18;
+  color-scheme: dark;
+
+  /*
+   * Brand tokens also flip inside a screen so bare Tailwind border-* utilities
+   * and any component using --color-text/--color-border render with screen
+   * values instead of the light page values. The @theme inline block maps the
+   * --color-* names to these --ph-* vars, so overriding the --ph-* vars here
+   * re-points every brand utility for the dark subtree.
+   */
+  --ph-surface: #15100a;
+  --ph-surface-2: #1b1408;
+  --ph-surface-3: #221a0e;
+  --ph-border: #2c2213;
+  --ph-border-strong: #3a2d18;
+  --ph-border-dim: #1e1810;
+  --ph-text: var(--ph-scope-text);
+  --ph-text-dim: var(--ph-scope-text-dim);
+  --ph-text-mute: #8c7d63;
+  --ph-text-fade: #5f5340;
 }
 
 @theme inline {
@@ -43,24 +117,49 @@
     var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', monospace;
 
-  --color-bg: var(--color-bg);
-  --color-surface: var(--color-surface);
-  --color-surface-2: var(--color-surface-2);
-  --color-surface-3: var(--color-surface-3);
-  --color-scope: var(--color-scope);
-  --color-border: var(--color-border);
-  --color-border-strong: var(--color-border-strong);
-  --color-border-dim: var(--color-border-dim);
-  --color-text: var(--color-text);
-  --color-text-dim: var(--color-text-dim);
-  --color-text-mute: var(--color-text-mute);
-  --color-text-fade: var(--color-text-fade);
-  --color-accent: var(--color-accent);
-  --color-accent-dim: var(--color-accent-dim);
-  --color-accent-soft: var(--color-accent-soft);
-  --color-live: var(--color-live);
-  --color-warning: var(--color-warning);
-  --color-danger: var(--color-danger);
+  /* brand names used by first-party surfaces */
+  --color-bg: var(--ph-bg);
+  --color-surface: var(--ph-surface);
+  --color-surface-2: var(--ph-surface-2);
+  --color-surface-3: var(--ph-surface-3);
+  --color-scope: var(--ph-scope);
+  --color-border: var(--ph-border);
+  --color-border-strong: var(--ph-border-strong);
+  --color-border-dim: var(--ph-border-dim);
+  --color-text: var(--ph-text);
+  --color-text-dim: var(--ph-text-dim);
+  --color-text-mute: var(--ph-text-mute);
+  --color-text-fade: var(--ph-text-fade);
+  --color-accent: var(--ph-accent);
+  --color-accent-dim: var(--ph-accent-dim);
+  --color-accent-deep: var(--ph-accent-deep);
+  --color-accent-soft: var(--ph-accent-soft);
+  --color-scope-text: var(--ph-scope-text);
+  --color-scope-text-dim: var(--ph-scope-text-dim);
+  --color-live: var(--ph-live);
+  --color-warning: var(--ph-warning);
+  --color-danger: var(--ph-danger);
+
+  /* shadcn semantic names consumed by the vendored registries */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 
   --radius-input: var(--radius-input);
   --radius-button: var(--radius-button);
@@ -71,7 +170,7 @@
 
 @layer base {
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
   body {
     background-color: var(--color-bg);
@@ -84,15 +183,16 @@
     border-color: var(--color-border);
   }
   :focus-visible {
-    outline: 1.5px solid var(--color-accent);
+    outline: 1.5px solid var(--ph-accent-dim);
     outline-offset: 2px;
   }
 }
 
 /*
- * PHOSPHOR texture. ph-grain lays a faint film-grain wash over a surface;
- * ph-scan adds CRT scanlines. Both are decorative overlays that never capture
- * pointer events. Used on page wrappers and the scope screen.
+ * Instrument texture. ph-grain lays a faint film-grain wash; ph-scan adds CRT
+ * scanlines. Decorative overlays that never capture pointer events. Daylight
+ * rule: applied only inside dark screens (.dark interiors), never on page
+ * surfaces or over body text.
  */
 .ph-grain::before {
   content: '';
@@ -118,10 +218,19 @@
     transparent 3px
   );
 }
-.ph-grain > *,
-.ph-scan > * {
-  position: relative;
-  z-index: 2;
+/*
+ * Lift real content above the grain/scan pseudo-element overlays. Kept in a
+ * cascade layer so Tailwind positioning utilities (e.g. `absolute`) still win
+ * on a child that needs to be absolutely placed: the z-index lift is the point
+ * here, not forcing `relative`. Unlayered, this rule outranks every utility and
+ * silently collapses an `absolute inset-0` wrapper to its content width.
+ */
+@layer components {
+  .ph-grain > *,
+  .ph-scan > * {
+    position: relative;
+    z-index: 2;
+  }
 }
 
 @keyframes ph-pulse {
@@ -131,5 +240,17 @@
   }
   50% {
     opacity: 0.35;
+  }
+}
+
+/* Reduced motion: kill decorative animation globally. OscWave additionally
+   paints a single static trace frame instead of running its rAF loop. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

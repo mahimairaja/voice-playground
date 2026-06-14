@@ -65,7 +65,7 @@ export function AgentCanvas({ demo, session }: AgentCanvasProps) {
                 return (
                   <div
                     key={instance.id}
-                    className="rounded-[var(--radius-input)] border border-dashed border-[color:var(--color-border)] p-3 font-mono text-[11px] text-[color:var(--color-text-fade)]"
+                    className="rounded-[var(--radius-input)] border border-dashed border-[color:var(--color-border)] p-3 font-mono text-[12px] text-[color:var(--color-text-mute)]"
                   >
                     unregistered component: {instance.component}
                   </div>
