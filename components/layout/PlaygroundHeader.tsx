@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
  * Global header. Sticky 60px, translucent backdrop-blur, bottom hairline.
  *
  *   left:  ● voice·playground   (amber signal dot + mono wordmark; routes to '/')
- *   right: demos · about · cookbook ↗   (mono 12px; active item underlined amber)
+ *   right: demos · about · contribute · cookbook ↗   (mono 12px; active item underlined amber)
  *
  * No keys indicator. F1.1 decision: keys UI lives entirely on the demo page,
  * not in global chrome.
@@ -29,6 +29,7 @@ const NAV: NavItem[] = [
     match: (p) => p === '/demos' || p.startsWith('/demos/'),
   },
   { href: '/about', label: 'about', match: (p) => p.startsWith('/about') },
+  { href: '/contribute', label: 'contribute', match: (p) => p.startsWith('/contribute') },
   { href: COOKBOOK_URL, label: 'cookbook', external: true },
 ];
 
