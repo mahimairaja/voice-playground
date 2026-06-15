@@ -7,6 +7,10 @@ import { GALLERY, type GalleryEntry } from '@/components/contribute/gallery-mani
 const COMPONENT_REQUEST_URL =
   'https://github.com/mahimairaja/voice-playground/issues/new?template=component-request.yml';
 
+// Show a handful up front; the rest expand on demand so the full catalog does
+// not dominate the page.
+const INITIAL_VISIBLE = 6;
+
 function envelopeFor(entry: GalleryEntry): string {
   return JSON.stringify(
     { type: 'ui_event', component: entry.name, action: 'mount', props: entry.sampleProps },
@@ -125,13 +129,33 @@ function GalleryTile({ entry }: { entry: GalleryEntry }) {
  * registry by gallery-manifest.test.ts).
  */
 export function ComponentGallery() {
+  const [showAll, setShowAll] = useState(false);
+  const visible = showAll ? GALLERY : GALLERY.slice(0, INITIAL_VISIBLE);
+  const remaining = GALLERY.length - INITIAL_VISIBLE;
+
   return (
     <div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {GALLERY.map((entry) => (
+        {visible.map((entry) => (
           <GalleryTile key={entry.name} entry={entry} />
         ))}
       </div>
+
+      {remaining > 0 ? (
+        <button
+          type="button"
+          onClick={() => setShowAll((v) => !v)}
+          aria-expanded={showAll}
+          className="mt-4 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] py-2.5 font-mono text-[12px] tracking-[0.04em] text-[color:var(--color-accent-dim)] transition-colors hover:border-[color:var(--color-accent-dim)]"
+        >
+          <ChevronDown
+            size={14}
+            className={showAll ? 'rotate-180 transition-transform' : 'transition-transform'}
+            aria-hidden="true"
+          />
+          {showAll ? 'show fewer' : `show ${remaining} more components`}
+        </button>
+      ) : null}
 
       <a
         href={COMPONENT_REQUEST_URL}
