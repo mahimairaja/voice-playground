@@ -50,7 +50,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 
 ## File conventions
 
-- `app/(marketing)/` is the marketing route group: `/` (landing) and `/about`. Server-rendered.
+- `app/(marketing)/` is the marketing route group: `/` (landing), `/about`, and `/contribute` (the contributor guide with the live `components/contribute/` component gallery). Server-rendered.
 - `app/demos/page.tsx` is the demo index with a URL-driven category filter.
 - `app/demos/[slug]/page.tsx` is the per-demo page. Uses `generateStaticParams` from `getAllDemos()` and `dynamicParams = false`, so unknown slugs 404 at the route layer.
 - `app/maintenance/page.tsx` is the maintenance landing (App Router route, replaces the deleted `public/maintenance.html`).
