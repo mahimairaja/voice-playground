@@ -132,7 +132,10 @@ export const GALLERY: GalleryEntry[] = [
         { text: 'I would like to book a table.', original: 'Je voudrais reserver une table.' },
       ],
     },
-    propHints: ['items: { text, original? }[]', 'title?: string (default "live captions")'],
+    propHints: [
+      'items: { text, original? }[] (last 20 shown)',
+      'title?: string (default "live captions")',
+    ],
   },
   {
     name: 'Order',
@@ -190,6 +193,10 @@ export const GALLERY: GalleryEntry[] = [
     Component: c(Score),
     description: 'trivia scorecard: correct + answered progress',
     sampleProps: { correct: 4, total: 5, outOf: 8 },
-    propHints: ['correct?: number', 'total?: number', 'outOf?: number'],
+    propHints: [
+      'correct?: number (answers right)',
+      'total?: number (answered so far)',
+      'outOf?: number (total questions)',
+    ],
   },
 ];

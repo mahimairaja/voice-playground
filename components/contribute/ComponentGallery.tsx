@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Check, ChevronDown, Copy } from 'lucide-react';
 import { GALLERY, type GalleryEntry } from '@/components/contribute/gallery-manifest';
 
 const COMPONENT_REQUEST_URL =
@@ -17,10 +17,13 @@ function envelopeFor(entry: GalleryEntry): string {
 
 function GalleryTile({ entry }: { entry: GalleryEntry }) {
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const Comp = entry.Component;
   const renderProps = entry.defaultTitle
     ? { title: entry.defaultTitle, ...entry.sampleProps }
     : entry.sampleProps;
+  const envelope = envelopeFor(entry);
+  const panelId = `contract-${entry.name}`;
 
   return (
     <div className="flex flex-col rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-3.5">
@@ -46,6 +49,7 @@ function GalleryTile({ entry }: { entry: GalleryEntry }) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
+        aria-controls={panelId}
         className="mt-3 flex cursor-pointer items-center gap-1.5 self-start font-mono text-[11px] tracking-[0.04em] text-[color:var(--color-accent-dim)] hover:underline"
       >
         <ChevronDown
@@ -57,10 +61,36 @@ function GalleryTile({ entry }: { entry: GalleryEntry }) {
       </button>
 
       {open ? (
-        <div className="mt-2.5">
-          <pre className="overflow-x-auto rounded-[8px] bg-[color:var(--color-scope)] p-3 font-mono text-[11px] leading-[1.55] text-[color:var(--color-scope-text)]">
-            {envelopeFor(entry)}
-          </pre>
+        <div id={panelId} className="mt-2.5">
+          <div className="relative">
+            <pre className="overflow-x-auto rounded-[8px] bg-[color:var(--color-scope)] p-3 pr-10 font-mono text-[11px] leading-[1.55] text-[color:var(--color-scope-text)]">
+              {envelope}
+            </pre>
+            <button
+              type="button"
+              aria-label={`Copy the ${entry.name} ui_event envelope`}
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(envelope);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1600);
+                } catch {
+                  // Clipboard can reject (insecure context / denied); the block
+                  // stays selectable, so fail quietly without a false tick.
+                }
+              }}
+              className="absolute top-2 right-2 cursor-pointer rounded-[5px] p-1 transition-colors"
+            >
+              {copied ? (
+                <Check size={13} className="text-[color:var(--color-accent)]" />
+              ) : (
+                <Copy
+                  size={13}
+                  className="text-[color:var(--color-scope-text-dim)] hover:text-[color:var(--color-scope-text)]"
+                />
+              )}
+            </button>
+          </div>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {entry.propHints.map((hint) => (
               <span
