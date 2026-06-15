@@ -2,18 +2,22 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
 
 /**
- * Minimal Vitest setup for F1.1. Pure module tests only: jsdom environment so
- * 'lib/credentials/store' can access 'window.localStorage', but no JSX and no
- * setup files. The credentials store and validator are the only units covered
- * in F1.1; F1.3 may revisit with component / RTL coverage when the agent-mount
- * registry needs it.
+ * Vitest setup for pure module and component tests. jsdom environment so
+ * 'lib/credentials/store' can access 'window.localStorage'. JSX is supported
+ * via the oxc block below (automatic React runtime). The include glob covers
+ * both 'lib/**' and 'components/**' test files; no RTL or Playwright in CI.
  */
 export default defineConfig({
   test: {
-    include: ['lib/**/*.test.ts'],
+    include: ['lib/**/*.test.ts', 'components/**/*.test.{ts,tsx}'],
     environment: 'jsdom',
     globals: true,
   },
+  // tsconfig.json sets "jsx": "preserve"; Vite 8's OXC transformer requires an
+  // explicit JSX runtime to compile .tsx files pulled into the test import
+  // graph (e.g. components/demos/_vocabulary/index.tsx). Without this the
+  // rolldown parser sees raw JSX and throws a parse error.
+  oxc: { jsx: { runtime: 'automatic', importSource: 'react' } },
   resolve: {
     alias: {
       '@': resolve(__dirname, './'),
