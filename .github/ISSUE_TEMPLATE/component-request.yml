@@ -1,0 +1,42 @@
+name: Request a generative-UI component
+description: Ask for a new component your agent needs that the gallery does not cover.
+title: 'component: <name>'
+labels: ['component-request']
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Component name
+      description: The ui_event "component" key you want to send (e.g. Timeline).
+      placeholder: Timeline
+    validations:
+      required: true
+  - type: textarea
+    id: renders
+    attributes:
+      label: What should it render?
+      description: One or two sentences on the shape and what the agent uses it for.
+    validations:
+      required: true
+  - type: textarea
+    id: props
+    attributes:
+      label: Example props
+      description: The props your agent would send. JSON is fine.
+      render: json
+    validations:
+      required: true
+  - type: input
+    id: demo
+    attributes:
+      label: Which demo needs it?
+      description: The demo slug (or "new demo") that would use this component.
+      placeholder: appointment-timeline
+    validations:
+      required: false
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to open a PR adding this component.
