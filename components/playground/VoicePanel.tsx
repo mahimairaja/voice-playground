@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RoomEvent } from 'livekit-client';
 import { Btn, Grain, ScopeFrame } from '@/components/phosphor';
 import type { ScopeFooterCell } from '@/components/phosphor';
@@ -10,6 +10,7 @@ import { SessionTimer } from '@/components/playground/SessionTimer';
 import { Transcript } from '@/components/playground/Transcript';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import type { useDemoSession } from '@/hooks/useDemoSession';
+import { RoadNoiseEngine } from '@/lib/audio/road-noise';
 import { COLOR } from '@/lib/design/tokens';
 import { bandColor, useHealth } from '@/lib/generative-ui/health';
 import { MintTokenError } from '@/lib/livekit/mintToken';
@@ -43,6 +44,10 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
   const { state, connect, disconnect, error, room } = session;
   const [agentMissing, setAgentMissing] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [noiseLevel, setNoiseLevel] = useState(0);
+  const [noiseActive, setNoiseActive] = useState(false);
+  const noiseRef = useRef<RoadNoiseEngine | null>(null);
+  const pendingLevelRef = useRef(0);
 
   useEffect(() => {
     if (state !== 'live' || !room) {
@@ -72,11 +77,52 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
     if (state !== 'live') setMuted(false);
   }, [state]);
 
+  // Tear the road-noise engine down when the room goes away.
+  useEffect(() => {
+    if (room) return;
+    const engine = noiseRef.current;
+    if (engine) {
+      noiseRef.current = null;
+      void engine.stop();
+      setNoiseActive(false);
+      setNoiseLevel(0);
+    }
+  }, [room]);
+
+  useEffect(() => {
+    return () => {
+      void noiseRef.current?.stop();
+      noiseRef.current = null;
+    };
+  }, []);
+
   const toggleMute = () => {
     if (!room) return;
     const next = !muted;
     setMuted(next);
-    void room.localParticipant.setMicrophoneEnabled(!next);
+    if (noiseRef.current?.active) {
+      noiseRef.current.setMicMuted(next);
+    } else {
+      void room.localParticipant.setMicrophoneEnabled(!next);
+    }
+  };
+
+  const onNoiseChange = async (value: number) => {
+    setNoiseLevel(value);
+    pendingLevelRef.current = value;
+    if (!room) return;
+    if (!noiseRef.current) {
+      const engine = new RoadNoiseEngine();
+      noiseRef.current = engine;
+      try {
+        await engine.start(room);
+        setNoiseActive(true);
+      } catch {
+        noiseRef.current = null;
+        return;
+      }
+    }
+    noiseRef.current.setLevel(pendingLevelRef.current / 100);
   };
 
   const tokenError = error instanceof MintTokenError ? error : null;
@@ -208,8 +254,29 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
             >
               {muted ? 'mic off' : 'mic on'}
             </button>
-            {live && room ? <MicDeviceSelect /> : null}
+            {live && room && !noiseActive ? <MicDeviceSelect /> : null}
           </div>
+
+          {live && room ? (
+            <div className="flex items-center gap-3 border-t border-[color:var(--color-border-dim)] px-[15px] py-[11px]">
+              <span className="font-mono text-[11px] tracking-[0.08em] whitespace-nowrap text-[color:var(--color-text-mute)] uppercase">
+                road noise
+              </span>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={noiseLevel}
+                onChange={(e) => void onNoiseChange(Number(e.target.value))}
+                aria-label="Road noise level"
+                className="h-1 flex-1 cursor-pointer"
+                style={{ accentColor: 'var(--color-accent)' }}
+              />
+              <span className="w-7 text-right font-mono text-[11px] text-[color:var(--color-text-dim)] tabular-nums">
+                {noiseLevel}
+              </span>
+            </div>
+          ) : null}
         </ScopeFrame>
 
         {agentMissing ? (
