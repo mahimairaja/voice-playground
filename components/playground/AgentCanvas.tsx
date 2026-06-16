@@ -6,6 +6,7 @@ import { AgentCanvasEmpty } from '@/components/playground/AgentCanvasEmpty';
 import type { useDemoSession } from '@/hooks/useDemoSession';
 import type { ShippedDemo } from '@/lib/demos';
 import { useUiStore } from '@/lib/generative-ui/dispatcher';
+import { HEALTH_INSTANCE_ID } from '@/lib/generative-ui/health';
 import { resolve } from '@/lib/generative-ui/registry';
 
 /**
@@ -34,7 +35,10 @@ export function AgentCanvas({ demo, session }: AgentCanvasProps) {
   // Zustand's identity check is happy. Sort + arrayify inside useMemo.
   const instancesMap = useUiStore((s) => s.instances);
   const instances = useMemo(
-    () => Object.values(instancesMap).sort((a, b) => a.mountedAt - b.mountedAt),
+    () =>
+      Object.values(instancesMap)
+        .filter((i) => i.id !== HEALTH_INSTANCE_ID)
+        .sort((a, b) => a.mountedAt - b.mountedAt),
     [instancesMap]
   );
 

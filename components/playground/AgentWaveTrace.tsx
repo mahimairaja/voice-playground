@@ -15,12 +15,17 @@ import { COLOR } from '@/lib/design/tokens';
  * branch). useVoiceAssistant() throws outside RoomContext, the same reason
  * Transcript is gated to live/ended.
  */
-export function AgentWaveTrace() {
+
+interface AgentWaveTraceProps {
+  color?: string;
+}
+
+export function AgentWaveTrace({ color = COLOR.accent }: AgentWaveTraceProps) {
   const { state, audioTrack } = useVoiceAssistant();
 
   return (
     <AgentAudioVisualizerWave
-      color={COLOR.accent}
+      color={color as `#${string}`}
       audioTrack={audioTrack}
       state={state}
       className="aspect-auto h-full w-full"

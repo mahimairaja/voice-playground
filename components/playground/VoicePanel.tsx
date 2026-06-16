@@ -3,12 +3,15 @@
 import { useEffect, useState } from 'react';
 import { RoomEvent } from 'livekit-client';
 import { Btn, Grain, ScopeFrame } from '@/components/phosphor';
+import type { ScopeFooterCell } from '@/components/phosphor';
 import { AgentWaveTrace } from '@/components/playground/AgentWaveTrace';
 import { MicDeviceSelect } from '@/components/playground/MicDeviceSelect';
 import { SessionTimer } from '@/components/playground/SessionTimer';
 import { Transcript } from '@/components/playground/Transcript';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import type { useDemoSession } from '@/hooks/useDemoSession';
+import { COLOR } from '@/lib/design/tokens';
+import { bandColor, useHealth } from '@/lib/generative-ui/health';
 import { MintTokenError } from '@/lib/livekit/mintToken';
 
 /**
@@ -82,6 +85,13 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
   const connecting = state === 'connecting';
   const ended = state === 'ended';
 
+  const health = useHealth();
+  const waveColor = live && health ? bandColor(health.band) : COLOR.accent;
+  const riskCell: ScopeFooterCell =
+    live && health
+      ? ['RISK', health.risk.toFixed(2), bandColor(health.band)]
+      : ['RISK', '··', 'var(--color-text-mute)'];
+
   const statusText = live
     ? '● LIVE'
     : connecting
@@ -135,7 +145,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
           footer={[
             ['STATUS', live ? 'listening' : ended ? 'ended' : 'idle', statusColor],
             ['DURATION', <SessionTimer key="dur" state={state} variant="value" />],
-            ['TTFB', live ? '0.38 s' : '··'],
+            riskCell,
           ]}
         >
           <Grain
@@ -149,7 +159,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
           >
             <div className="absolute inset-0 flex items-center px-2">
               {live ? (
-                <AgentWaveTrace />
+                <AgentWaveTrace color={waveColor} />
               ) : (
                 <div
                   className="h-[2px] w-full"
