@@ -6,6 +6,7 @@ import {
   CostPanel,
   KeyValuePanel,
   ListPanel,
+  MetersPanel,
   StatPanel,
   TablePanel,
 } from '@/components/demos/_primitives';
@@ -43,6 +44,7 @@ registerGlobal({
   List: g(ListPanel),
   KeyValue: g(KeyValuePanel),
   Stat: g(StatPanel),
+  Meters: g(MetersPanel),
   Card: g(CardPanel),
   Buttons: g(ButtonRowPanel),
   Table: g(TablePanel),
