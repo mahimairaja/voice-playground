@@ -158,7 +158,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
             }}
           >
             <div className="absolute inset-0 flex items-center px-2">
-              {live ? (
+              {live && room ? (
                 <AgentWaveTrace color={waveColor} />
               ) : (
                 <div
@@ -208,7 +208,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
             >
               {muted ? 'mic off' : 'mic on'}
             </button>
-            {live ? <MicDeviceSelect /> : null}
+            {live && room ? <MicDeviceSelect /> : null}
           </div>
         </ScopeFrame>
 
@@ -228,7 +228,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
         ) : null}
 
         <ScopeFrame title="TRANSCRIPT" bodyClassName="p-4">
-          {state === 'live' || state === 'ended' ? (
+          {room ? (
             <Transcript defaultOpen />
           ) : (
             <p className="px-1 py-6 text-center font-mono text-[12px] text-[color:var(--color-text-mute)]">
