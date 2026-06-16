@@ -71,10 +71,18 @@ export class RoadNoiseEngine {
     );
 
     // --- Best-effort: mix the rumble into the published mic so the agent hears
-    // it too. A failure here must NOT silence the monitor above. ---
+    // it too. Reuse LiveKit's LIVE mic track as the voice source: a second
+    // getUserMedia grabs the default/idle device and comes back silent, which
+    // makes the agent hear noise with no speaker. A failure here must NOT
+    // silence the monitor above. ---
     try {
-      const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const micSource = ctx.createMediaStreamSource(micStream);
+      const micPub = [...room.localParticipant.trackPublications.values()].find(
+        (p) => p.source === Track.Source.Microphone
+      );
+      const micMedia = micPub?.track?.mediaStreamTrack;
+      if (!micMedia) throw new Error('no live microphone track to mix');
+
+      const micSource = ctx.createMediaStreamSource(new MediaStream([micMedia]));
       const micGain = ctx.createGain();
       micGain.gain.value = 1;
       micSource.connect(micGain);
@@ -83,24 +91,19 @@ export class RoadNoiseEngine {
       micGain.connect(mixDest);
       noiseGain.connect(mixDest);
 
-      await room.localParticipant.setMicrophoneEnabled(false);
-      const track = mixDest.stream.getAudioTracks()[0];
-      await room.localParticipant.publishTrack(track, { source: Track.Source.Microphone });
+      const mixed = mixDest.stream.getAudioTracks()[0];
+      // Unpublish the original WITHOUT stopping it: we keep reading its
+      // mediaStreamTrack as the live voice source for the mix.
+      if (micPub?.track) {
+        await room.localParticipant.unpublishTrack(micPub.track, false);
+      }
+      await room.localParticipant.publishTrack(mixed, { source: Track.Source.Microphone });
 
       this.micGain = micGain;
-      this.micStream = micStream;
-      this.publishedTrack = track;
-      console.info('[road-noise] mixed into the published mic; the agent hears it too');
+      this.publishedTrack = mixed;
+      console.info('[road-noise] mixed the live mic + rumble into the published track');
     } catch (err) {
-      console.warn(
-        '[road-noise] could not mix into the mic; you hear it but the agent may not',
-        err
-      );
-      try {
-        await room.localParticipant.setMicrophoneEnabled(true);
-      } catch {
-        /* ignore: leave the mic as-is */
-      }
+      console.warn('[road-noise] mic mix failed; you hear it but the agent may not', err);
     }
   }
 
