@@ -2,7 +2,7 @@
 
 import { Fragment } from 'react';
 import Link from 'next/link';
-import { RoomContext } from '@livekit/components-react';
+import { RoomAudioRenderer, RoomContext } from '@livekit/components-react';
 import { CredentialsButton } from '@/components/credentials/CredentialsButton';
 import { DemoBundleLoader } from '@/components/demos/DemoBundleLoader';
 import { Eyebrow, ScopeFrame } from '@/components/phosphor';
@@ -51,6 +51,11 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
   return (
     <Wrapper {...wrapperProps}>
       <>
+        {/* Play the agent's remote audio track. Without this the TTS track is
+            received and visualized but never routed to the speakers. Renders
+            only inside a live RoomContext (uses LiveKit room hooks). */}
+        {session.room ? <RoomAudioRenderer /> : null}
+
         <DemoBundleLoader slug={demo.slug} />
 
         <div className="mx-auto w-full max-w-[1180px] px-6 pt-8 pb-16">
