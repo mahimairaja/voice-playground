@@ -4,24 +4,23 @@ import { type Room, Track } from 'livekit-client';
  * Synthetic road-noise injector for stress-testing voice agents.
  *
  * The noise is generated live in the browser (no audio file): brown noise
- * (integrated white noise) through a low-pass filter for road rumble, into a
- * gain node (the slider). The gain feeds two places: the operator's speakers
- * (so they hear it) and a re-published microphone track (so the agent, and any
- * audio analysis it runs such as Tyto, hears the degraded line).
+ * (integrated white noise) into a gain node (the slider). The gain feeds two
+ * places: the operator's speakers (so they hear it) and the published mic.
  *
- * Ordering matters: the audible monitor is wired and started FIRST and is
- * independent of the mic plumbing, so a getUserMedia/publish failure cannot
- * silence it. The AudioContext is resumed explicitly (browsers create it
- * suspended). It is opt-in: nothing runs until 'start' is called.
+ * The mic injection uses LocalTrack.replaceTrack(): it swaps the media on the
+ * SAME RTP sender, so the agent keeps its subscription and its audio tap never
+ * breaks. (Re-publishing the mic, which an earlier version did, severed the
+ * agent's score loop and froze the HUD.) A clone of the live mic is the voice
+ * source, so it stays alive regardless of the swap. Opt-in: nothing runs until
+ * 'start' is called.
  */
 export class RoadNoiseEngine {
   private ctx: AudioContext | null = null;
   private noiseGain: GainNode | null = null;
   private micGain: GainNode | null = null;
   private noise: AudioBufferSourceNode | null = null;
-  private publishedTrack: MediaStreamTrack | null = null;
-  private micStream: MediaStream | null = null;
-  private room: Room | null = null;
+  private micClone: MediaStreamTrack | null = null;
+  private mixedTrack: MediaStreamTrack | null = null;
 
   get active(): boolean {
     return this.ctx !== null;
@@ -31,7 +30,6 @@ export class RoadNoiseEngine {
     if (this.ctx) return;
     const ctx = new AudioContext();
     this.ctx = ctx;
-    this.room = room;
 
     // Browsers create the context suspended; resume it (we are inside the
     // slider's user gesture) or nothing plays.
@@ -54,33 +52,27 @@ export class RoadNoiseEngine {
 
     const noiseGain = ctx.createGain();
     noiseGain.gain.value = 0;
-    // No low-pass: a low-passed rumble reads as room reverb to Tyto, not noise.
-    // Broadband brown noise is what its `noise` dimension actually responds to.
+    // No low-pass: low-passed rumble reads as room reverb to Tyto, not noise.
     noise.connect(noiseGain);
     noiseGain.connect(ctx.destination); // monitor to the operator's speakers
     noise.start();
 
     this.noise = noise;
     this.noiseGain = noiseGain;
-    console.info(
-      '[road-noise] context',
-      ctx.state,
-      '- rumble running (raise the slider to hear it)'
-    );
+    console.info('[road-noise] context', ctx.state, '- rumble running');
 
-    // --- Best-effort: mix the rumble into the published mic so the agent hears
-    // it too. Reuse LiveKit's LIVE mic track as the voice source: a second
-    // getUserMedia grabs the default/idle device and comes back silent, which
-    // makes the agent hear noise with no speaker. A failure here must NOT
-    // silence the monitor above. ---
+    // --- Mix the rumble into the published mic via replaceTrack: swap the
+    // sender's media in place so the agent keeps its subscription (no
+    // re-publish, no re-subscribe). A failure here must NOT silence the
+    // monitor above. ---
     try {
-      const micPub = [...room.localParticipant.trackPublications.values()].find(
-        (p) => p.source === Track.Source.Microphone
-      );
-      const micMedia = micPub?.track?.mediaStreamTrack;
-      if (!micMedia) throw new Error('no live microphone track to mix');
+      const micTrack = room.localParticipant.getTrackPublication(Track.Source.Microphone)?.track;
+      const micMedia = micTrack?.mediaStreamTrack;
+      if (!micTrack || !micMedia) throw new Error('no live microphone track to mix');
 
-      const micSource = ctx.createMediaStreamSource(new MediaStream([micMedia]));
+      // Clone the live mic so our voice source survives the swap below.
+      const micClone = micMedia.clone();
+      const micSource = ctx.createMediaStreamSource(new MediaStream([micClone]));
       const micGain = ctx.createGain();
       micGain.gain.value = 1;
       micSource.connect(micGain);
@@ -90,16 +82,14 @@ export class RoadNoiseEngine {
       noiseGain.connect(mixDest);
 
       const mixed = mixDest.stream.getAudioTracks()[0];
-      // Unpublish the original WITHOUT stopping it: we keep reading its
-      // mediaStreamTrack as the live voice source for the mix.
-      if (micPub?.track) {
-        await room.localParticipant.unpublishTrack(micPub.track, false);
-      }
-      await room.localParticipant.publishTrack(mixed, { source: Track.Source.Microphone });
+      // Swap in place: the agent stays subscribed to the same track; only the
+      // content (voice + noise) changes. userProvidedTrack=true: we own it.
+      await micTrack.replaceTrack(mixed, true);
 
       this.micGain = micGain;
-      this.publishedTrack = mixed;
-      console.info('[road-noise] mixed the live mic + rumble into the published track');
+      this.micClone = micClone;
+      this.mixedTrack = mixed;
+      console.info('[road-noise] swapped mic media to voice+rumble (no re-subscribe)');
     } catch (err) {
       console.warn('[road-noise] mic mix failed; you hear it but the agent may not', err);
     }
@@ -122,14 +112,8 @@ export class RoadNoiseEngine {
     } catch {
       /* already stopped */
     }
-    if (this.publishedTrack && this.room) {
-      try {
-        await this.room.localParticipant.unpublishTrack(this.publishedTrack, true);
-      } catch {
-        /* ignore unpublish failures during teardown */
-      }
-    }
-    this.micStream?.getTracks().forEach((t) => t.stop());
+    this.micClone?.stop();
+    this.mixedTrack?.stop();
     if (this.ctx) {
       try {
         await this.ctx.close();
@@ -141,8 +125,7 @@ export class RoadNoiseEngine {
     this.noiseGain = null;
     this.micGain = null;
     this.noise = null;
-    this.publishedTrack = null;
-    this.micStream = null;
-    this.room = null;
+    this.micClone = null;
+    this.mixedTrack = null;
   }
 }
