@@ -1,6 +1,7 @@
 'use client';
 
 import { type ComponentProps } from 'react';
+import { Bot, User } from 'lucide-react';
 import { AnimatePresence } from 'motion/react';
 import { type AgentState, type ReceivedMessage } from '@livekit/components-react';
 import { AgentChatIndicator } from '@/components/agents-ui/agent-chat-indicator';
@@ -10,6 +11,7 @@ import {
   ConversationScrollButton,
 } from '@/components/ai-elements/conversation';
 import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message';
+import { cn } from '@/lib/shadcn/utils';
 
 /**
  * Props for the AgentChatTranscript component.
@@ -63,6 +65,15 @@ export function AgentChatTranscript({
 
           return (
             <Message key={id} title={title} from={messageOrigin}>
+              <div
+                className={cn(
+                  'flex items-center gap-1.5 font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-text-mute)] uppercase',
+                  messageOrigin === 'user' && 'flex-row-reverse'
+                )}
+              >
+                {messageOrigin === 'user' ? <User size={12} /> : <Bot size={12} />}
+                <span>{messageOrigin === 'user' ? 'you' : 'agent'}</span>
+              </div>
               <MessageContent>
                 <MessageResponse>{message}</MessageResponse>
               </MessageContent>

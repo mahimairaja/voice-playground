@@ -6,6 +6,7 @@ import {
   CostPanel,
   KeyValuePanel,
   ListPanel,
+  MetersPanel,
   StatPanel,
   TablePanel,
 } from '@/components/demos/_primitives';
@@ -76,6 +77,23 @@ export const GALLERY: GalleryEntry[] = [
     description: 'big number with label and progress bar',
     sampleProps: { value: 7, label: 'open slots', of: 10 },
     propHints: ['value: string | number', 'label?: string', 'of?: number', 'caption?: string'],
+  },
+  {
+    name: 'Meters',
+    Component: c(MetersPanel),
+    description: 'labeled 0-to-1 bars with band coloring and a driver mark',
+    sampleProps: {
+      title: 'audio health',
+      items: [
+        { label: 'noise', value: 0.72, band: 'bad', driver: true },
+        { label: 'reverb', value: 0.18, band: 'good' },
+        { label: 'loudness', value: 0.55, neutral: true },
+      ],
+    },
+    propHints: [
+      'items: { label, value: number (0..1), band?: "good"|"warn"|"bad", neutral?: boolean, driver?: boolean }[]',
+      'title?: string',
+    ],
   },
   {
     name: 'Card',

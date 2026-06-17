@@ -12,6 +12,15 @@ import {
 } from '@/components/ui/select';
 
 /**
+ * Strip the trailing USB hardware id browsers append to device labels, e.g.
+ * "USB Condenser Microphone (31b2:0011)" -> "USB Condenser Microphone". Leaves
+ * meaningful parentheticals like "(Built-in)" alone.
+ */
+function cleanDeviceLabel(label: string): string {
+  return label.replace(/\s*\([0-9a-f]{4}:[0-9a-f]{4}\)\s*$/i, '').trim();
+}
+
+/**
  * Microphone device picker for the live voice panel. Thin composition over
  * LiveKit's stable useMediaDeviceSelect: permissions are requested lazily on
  * first open, and the control hides itself when fewer than two input devices
@@ -51,7 +60,7 @@ export function MicDeviceSelect() {
       <SelectContent position="popper">
         {filtered.map((device) => (
           <SelectItem key={device.deviceId} value={device.deviceId} className="font-mono text-xs">
-            {device.label}
+            {cleanDeviceLabel(device.label)}
           </SelectItem>
         ))}
       </SelectContent>

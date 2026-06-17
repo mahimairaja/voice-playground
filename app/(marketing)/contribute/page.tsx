@@ -147,7 +147,16 @@ export default function ContributePage() {
           <code className="font-mono text-[13px] text-[color:var(--color-accent-dim)]">
             playground.json
           </code>
-          . Plain markdown only (no raw HTML, no em dashes). Start from this:
+          . Plain markdown only (no raw HTML, no em dashes). To add an image or diagram, host it at
+          a public internet URL and link it inline, like{' '}
+          <code className="font-mono text-[13px] text-[color:var(--color-accent-dim)]">
+            ![alt](https://your-host/diagram.svg)
+          </code>
+          . Image files are not committed to the repo, and inline{' '}
+          <code className="font-mono text-[13px] text-[color:var(--color-accent-dim)]">
+            &lt;svg&gt;
+          </code>{' '}
+          or HTML is stripped, so the URL must be publicly fetchable. Start from this:
           <pre className="mt-3 overflow-x-auto rounded-[8px] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] p-3.5 font-mono text-[12px] leading-[1.55] text-[color:var(--color-text-dim)]">
             {BLOG_SKELETON}
           </pre>

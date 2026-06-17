@@ -21,3 +21,6 @@ export type { StatPanelProps } from './StatPanel';
 
 export { TablePanel } from './TablePanel';
 export type { TablePanelProps } from './TablePanel';
+
+export { MetersPanel } from './MetersPanel';
+export type { MeterBand, MeterItem, MetersPanelProps } from './MetersPanel';
