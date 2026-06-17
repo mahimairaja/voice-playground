@@ -72,7 +72,7 @@ export function CardPanel({
       )}
       {expandable && (
         <Dialog.Root>
-          <Dialog.Trigger className="mt-2 cursor-pointer font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-accent-dim)] uppercase transition-colors hover:text-[color:var(--color-accent)]">
+          <Dialog.Trigger className="mt-2 cursor-pointer font-mono text-[10px] tracking-[0.08em] text-[color:var(--color-accent-dim)] uppercase transition-colors hover:text-[color:var(--color-text)]">
             Read full passage
           </Dialog.Trigger>
           <Dialog.Portal>

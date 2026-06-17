@@ -13,6 +13,12 @@ describe('resolveMessageOrigin', () => {
     expect(resolveMessageOrigin({ type: 'agentTranscript' })).toBe('assistant');
   });
 
+  it('keeps an agent transcript as assistant even if from.isLocal is set', () => {
+    expect(resolveMessageOrigin({ type: 'agentTranscript', from: { isLocal: true } })).toBe(
+      'assistant'
+    );
+  });
+
   it('labels a local chat message as the user via from.isLocal', () => {
     expect(resolveMessageOrigin({ type: 'chatMessage', from: { isLocal: true } })).toBe('user');
   });

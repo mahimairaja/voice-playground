@@ -45,7 +45,11 @@ export function resolveMessageOrigin(message: {
   type?: ReceivedMessage['type'];
   from?: { isLocal?: boolean };
 }): 'user' | 'assistant' {
-  return message.type === 'userTranscript' || message.from?.isLocal ? 'user' : 'assistant';
+  // Type is authoritative for transcript lines; from.isLocal is only the
+  // fallback for typed chat messages, which have no transcript type.
+  if (message.type === 'userTranscript') return 'user';
+  if (message.type === 'agentTranscript') return 'assistant';
+  return message.from?.isLocal ? 'user' : 'assistant';
 }
 
 /**
