@@ -46,7 +46,7 @@ export class RoadNoiseEngine {
     for (let i = 0; i < data.length; i++) {
       const white = Math.random() * 2 - 1;
       last = (last + 0.02 * white) / 1.02;
-      data[i] = last * 6; // healthy amplitude
+      data[i] = last * 12; // calibrated so full slider reads ~0.9 noise on Tyto
     }
     const noise = ctx.createBufferSource();
     noise.buffer = buffer;
