@@ -6,6 +6,7 @@ export interface ListItem {
   subtitle?: string;
   right?: string;
   image_url?: string;
+  avatar?: string;
   href?: string;
 }
 
@@ -13,6 +14,16 @@ export interface ListPanelProps {
   title?: string;
   items: ListItem[];
   className?: string;
+}
+
+// Deterministic, theme-friendly fill for an initials avatar: the same seed always
+// maps to the same hue, so a given name keeps a stable color across renders.
+function avatarStyle(seed: string): { backgroundColor: string } {
+  let hue = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hue = (hue * 31 + seed.charCodeAt(i)) % 360;
+  }
+  return { backgroundColor: `hsl(${hue} 38% 42%)` };
 }
 
 export function ListPanel({ title, items, className }: ListPanelProps) {
@@ -32,14 +43,22 @@ export function ListPanel({ title, items, className }: ListPanelProps) {
         {items.map((item, i) => {
           const inner = (
             <div className="flex items-center gap-3">
-              {item.image_url && (
+              {item.image_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={item.image_url}
                   alt=""
                   className="block h-11 w-11 flex-none rounded-[4px] border border-[color:var(--color-border)] object-cover"
                 />
-              )}
+              ) : item.avatar ? (
+                <span
+                  aria-hidden
+                  className="flex h-11 w-11 flex-none items-center justify-center rounded-full text-[13px] font-semibold tracking-[0.02em] text-white"
+                  style={avatarStyle(item.avatar)}
+                >
+                  {item.avatar}
+                </span>
+              ) : null}
               <div className="flex-1">
                 <p className="text-[14px] leading-tight font-semibold text-[color:var(--color-text)]">
                   {item.title}
