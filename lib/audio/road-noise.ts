@@ -52,13 +52,11 @@ export class RoadNoiseEngine {
     noise.buffer = buffer;
     noise.loop = true;
 
-    const lowpass = ctx.createBiquadFilter();
-    lowpass.type = 'lowpass';
-    lowpass.frequency.value = 600;
-
     const noiseGain = ctx.createGain();
     noiseGain.gain.value = 0;
-    noise.connect(lowpass).connect(noiseGain);
+    // No low-pass: a low-passed rumble reads as room reverb to Tyto, not noise.
+    // Broadband brown noise is what its `noise` dimension actually responds to.
+    noise.connect(noiseGain);
     noiseGain.connect(ctx.destination); // monitor to the operator's speakers
     noise.start();
 
