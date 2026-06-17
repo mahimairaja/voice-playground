@@ -86,7 +86,7 @@ export function Transcript({ defaultOpen = false, className }: TranscriptProps) 
         id="transcript-body"
         hidden={!open}
         style={{ display: open ? undefined : 'none' }}
-        className="mt-3 max-h-[230px] overflow-y-auto"
+        className="mt-3 flex h-[230px] flex-col"
       >
         {merged.length === 0 ? (
           <p className="px-1 py-6 text-center font-mono text-[12px] text-[color:var(--color-text-mute)]">
