@@ -33,6 +33,22 @@ export interface AgentChatTranscriptProps extends ComponentProps<'div'> {
 }
 
 /**
+ * Resolve which side of the transcript a message belongs to.
+ *
+ * STT transcript lines carry the speaker in `type` (`userTranscript` /
+ * `agentTranscript`) and have no `from`; typed chat messages carry it in
+ * `from.isLocal`. Both signals must be checked: a voice call is almost all
+ * transcript lines, and reading `from.isLocal` alone labels every one of them
+ * as the agent.
+ */
+export function resolveMessageOrigin(message: {
+  type?: ReceivedMessage['type'];
+  from?: { isLocal?: boolean };
+}): 'user' | 'assistant' {
+  return message.type === 'userTranscript' || message.from?.isLocal ? 'user' : 'assistant';
+}
+
+/**
  * A chat transcript component that displays a conversation between the user and agent.
  * Shows messages with timestamps and origin indicators, plus a thinking indicator
  * when the agent is processing.
@@ -57,9 +73,9 @@ export function AgentChatTranscript({
     <Conversation className={className} {...props}>
       <ConversationContent>
         {messages.map((receivedMessage) => {
-          const { id, timestamp, from, message } = receivedMessage;
+          const { id, timestamp, message } = receivedMessage;
           const locale = navigator?.language ?? 'en-US';
-          const messageOrigin = from?.isLocal ? 'user' : 'assistant';
+          const messageOrigin = resolveMessageOrigin(receivedMessage);
           const time = new Date(timestamp);
           const title = time.toLocaleTimeString(locale, { timeStyle: 'full' });
 
