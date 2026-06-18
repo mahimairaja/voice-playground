@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import { PlaygroundFooter } from '@/components/layout/PlaygroundFooter';
 import { PlaygroundHeader } from '@/components/layout/PlaygroundHeader';
+import { UpvoteProvider } from '@/components/playground/UpvoteProvider';
 import { Toaster } from '@/components/ui/sonner';
 import '@/styles/globals.css';
 
@@ -88,7 +89,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
       <body className="bg-[color:var(--color-bg)] text-[color:var(--color-text)] antialiased">
         <PlaygroundHeader />
-        <main className="min-h-[calc(100dvh-56px-44px)]">{children}</main>
+        <main className="min-h-[calc(100dvh-56px-44px)]">
+          <UpvoteProvider>{children}</UpvoteProvider>
+        </main>
         <PlaygroundFooter />
         <Toaster position="bottom-center" />
       </body>

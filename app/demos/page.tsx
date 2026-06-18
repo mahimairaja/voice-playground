@@ -5,6 +5,7 @@ import { CatalogError } from '@/components/playground/CatalogError';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
 import { NewBadge } from '@/components/playground/NewBadge';
 import { StackLine } from '@/components/playground/StackLine';
+import { UpvoteButton } from '@/components/playground/UpvoteButton';
 import { CatalogFetchError } from '@/lib/cookbook/manifest';
 import {
   type PlannedDemo,
@@ -242,7 +243,10 @@ function ShippedCard({ demo }: { demo: ShippedDemo }) {
         <StackLine stack={demo.stack} />
       </Link>
       <div className="mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px]">
-        <CookbookSourceLink slug={demo.slug} variant="inline" />
+        <div className="flex items-center gap-2.5">
+          <UpvoteButton slug={demo.slug} />
+          <CookbookSourceLink slug={demo.slug} variant="inline" />
+        </div>
         <Link
           href={`/demos/${demo.slug}`}
           className="font-mono text-[11px] font-semibold tracking-[0.08em] text-[color:var(--color-accent-dim)] uppercase hover:underline"
