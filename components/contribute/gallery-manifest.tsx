@@ -4,6 +4,7 @@ import {
   CaptionsPanel,
   CardPanel,
   CostPanel,
+  EditableTablePanel,
   KeyValuePanel,
   ListPanel,
   MetersPanel,
@@ -139,6 +140,28 @@ export const GALLERY: GalleryEntry[] = [
       ],
     },
     propHints: ['columns: string[]', 'rows: string[][]', 'title?: string'],
+  },
+  {
+    name: 'EditableTable',
+    Component: c(EditableTablePanel),
+    description: 'editable grid; publishes the saved rows back to the agent',
+    sampleProps: {
+      title: 'your quiz',
+      columns: ['Question', 'Answer'],
+      rows: [
+        ['What planet is closest to the sun?', 'Mercury'],
+        ['How many sides does a hexagon have?', 'Six'],
+      ],
+      submitLabel: 'Use these',
+      actionId: 'quiz',
+    },
+    propHints: [
+      'columns: string[]',
+      'rows: string[][]',
+      'submitLabel?: string',
+      'actionId?: string (echoed in the ui_action it publishes)',
+      'title?: string',
+    ],
   },
   {
     name: 'Captions',

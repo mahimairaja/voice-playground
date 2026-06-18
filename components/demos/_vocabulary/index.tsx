@@ -4,6 +4,7 @@ import {
   CaptionsPanel,
   CardPanel,
   CostPanel,
+  EditableTablePanel,
   KeyValuePanel,
   ListPanel,
   MetersPanel,
@@ -48,6 +49,7 @@ registerGlobal({
   Card: g(CardPanel),
   Buttons: g(ButtonRowPanel),
   Table: g(TablePanel),
+  EditableTable: g(EditableTablePanel),
   Captions: g(CaptionsPanel),
 
   // Semantic aliases: domain names mapped onto the primitives.
