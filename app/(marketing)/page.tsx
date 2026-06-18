@@ -5,6 +5,7 @@ import { CatalogError } from '@/components/playground/CatalogError';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
 import { NewBadge } from '@/components/playground/NewBadge';
 import { StackLine } from '@/components/playground/StackLine';
+import { UpvoteButton } from '@/components/playground/UpvoteButton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CatalogFetchError } from '@/lib/cookbook/manifest';
 import { COOKBOOK_BASE_URL } from '@/lib/cookbook/url';
@@ -203,7 +204,10 @@ function ShippedCard({ demo }: { demo: ShippedDemo }) {
         <StackLine stack={demo.stack} />
       </div>
       <div className="relative z-10 mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px] font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)]">
-        <CookbookSourceLink slug={demo.slug} variant="inline" />
+        <div className="flex items-center gap-2.5">
+          <UpvoteButton slug={demo.slug} />
+          <CookbookSourceLink slug={demo.slug} variant="inline" />
+        </div>
         <span className="font-semibold text-[color:var(--color-accent-dim)]">▶ play</span>
       </div>
     </div>

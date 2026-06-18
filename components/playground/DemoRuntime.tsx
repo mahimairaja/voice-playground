@@ -9,6 +9,7 @@ import { Eyebrow, ScopeFrame } from '@/components/phosphor';
 import { AgentCanvas } from '@/components/playground/AgentCanvas';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
 import { CopySnippet } from '@/components/playground/CopySnippet';
+import { UpvoteButton } from '@/components/playground/UpvoteButton';
 import { VoicePanel } from '@/components/playground/VoicePanel';
 import { useDemoSession } from '@/hooks/useDemoSession';
 import { CRED_OPEN_DRAWER_EVENT, LIVEKIT_KEYS } from '@/lib/credentials/store';
@@ -80,6 +81,7 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <UpvoteButton slug={demo.slug} />
               <CookbookSourceLink slug={demo.slug} variant="chip" />
               <CredentialsButton demoTitle={demo.title} />
             </div>
