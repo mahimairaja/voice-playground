@@ -10,6 +10,9 @@ export type { CardPanelProps } from './CardPanel';
 export { CostPanel } from './CostPanel';
 export type { CostLine, CostPanelProps } from './CostPanel';
 
+export { EditableTablePanel } from './EditableTable';
+export type { EditableTablePanelProps } from './EditableTable';
+
 export { KeyValuePanel } from './KeyValuePanel';
 export type { KeyValueItem, KeyValuePanelProps } from './KeyValuePanel';
 
