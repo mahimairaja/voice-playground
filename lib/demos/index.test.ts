@@ -36,6 +36,30 @@ describe('lib/demos/index', () => {
     expect(shipped[0].slug).toBe('drive-thru-coffee');
   });
 
+  it('getAllShipped returns demos newest-first, missing dates last', async () => {
+    const base = {
+      title: 'X',
+      category: 'restaurant',
+      description: 'd',
+      who_for: 'w',
+      recording_url: null,
+      ui_components: ['Order'],
+    };
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        'old-demo': { ...base, released: '2026-05-12' },
+        'new-demo': { ...base, released: '2026-06-15' },
+        'mid-demo': { ...base, released: '2026-05-29' },
+        'no-date': { ...base },
+      }),
+    } as Response);
+    const { getAllShipped } = await import('./index');
+    const shipped = await getAllShipped();
+    expect(shipped.map((d) => d.slug)).toEqual(['new-demo', 'mid-demo', 'old-demo', 'no-date']);
+  });
+
   it('getShippedBySlug returns undefined for unknown slugs', async () => {
     const { getShippedBySlug } = await import('./index');
     const hit = await getShippedBySlug('drive-thru-coffee');

@@ -2,6 +2,7 @@ import 'server-only';
 import { fetchCatalog, fetchDemoBySlug } from '@/lib/cookbook/manifest';
 import { type CatalogEntry } from '@/lib/cookbook/schema';
 import { PLANNED_DEMOS, type PlannedDemo } from './planned';
+import { compareByReleasedDesc } from './released';
 
 /**
  * Thin adapter over the cookbook fetcher. Routes call these to render
@@ -23,7 +24,8 @@ export type DemoCard =
   | (PlannedDemo & { status: 'planned' });
 
 export async function getAllShipped(): Promise<readonly ShippedDemo[]> {
-  return fetchCatalog();
+  const shipped = await fetchCatalog();
+  return [...shipped].sort(compareByReleasedDesc);
 }
 
 export function getAllPlanned(): readonly PlannedDemo[] {
@@ -31,7 +33,7 @@ export function getAllPlanned(): readonly PlannedDemo[] {
 }
 
 export async function getAllDemos(): Promise<readonly DemoCard[]> {
-  const shipped = await fetchCatalog();
+  const shipped = await getAllShipped();
   return [
     ...shipped.map((d) => ({ ...d, status: 'shipped' as const })),
     ...PLANNED_DEMOS.map((d) => ({ ...d, status: 'planned' as const })),
