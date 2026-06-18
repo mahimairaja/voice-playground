@@ -41,6 +41,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ slug: 
   if (isNew) {
     res.cookies.set(VID_COOKIE, vid, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: ONE_YEAR,
       path: '/',

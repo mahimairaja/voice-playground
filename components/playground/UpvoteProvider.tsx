@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 /**
  * Holds vote counts and the visitor's voted set for the whole app, fetched once
@@ -26,6 +26,9 @@ export function UpvoteProvider({ children }: { children: React.ReactNode }) {
   const [configured, setConfigured] = useState(false);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [voted, setVoted] = useState<Set<string>>(() => new Set());
+  // One in-flight request per slug, so rapid clicks cannot apply responses out
+  // of order or revert against a stale closure value.
+  const pending = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     let active = true;
@@ -45,6 +48,9 @@ export function UpvoteProvider({ children }: { children: React.ReactNode }) {
 
   const toggle = useCallback(
     (slug: string) => {
+      if (pending.current.has(slug)) return;
+      pending.current.add(slug);
+
       const wasVoted = voted.has(slug);
       const delta = wasVoted ? -1 : 1;
 
@@ -72,6 +78,9 @@ export function UpvoteProvider({ children }: { children: React.ReactNode }) {
           // revert
           setVotedFor(wasVoted);
           setCounts((prev) => ({ ...prev, [slug]: Math.max(0, (prev[slug] ?? 0) - delta) }));
+        })
+        .finally(() => {
+          pending.current.delete(slug);
         });
     },
     [voted]
