@@ -4,6 +4,7 @@ import { Btn, Eyebrow } from '@/components/phosphor';
 import { CatalogError } from '@/components/playground/CatalogError';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
 import { NewBadge } from '@/components/playground/NewBadge';
+import { StackLine } from '@/components/playground/StackLine';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CatalogFetchError } from '@/lib/cookbook/manifest';
 import { COOKBOOK_BASE_URL } from '@/lib/cookbook/url';
@@ -195,9 +196,12 @@ function ShippedCard({ demo }: { demo: ShippedDemo }) {
       <h3 className="mt-[13px] text-[19px] leading-tight font-semibold tracking-[-0.01em] text-[color:var(--color-text)]">
         {demo.title}
       </h3>
-      <p className="mt-2 flex-1 text-[14.5px] leading-[1.6] text-[color:var(--color-text-dim)]">
-        {demo.description}
-      </p>
+      <div className="flex-1">
+        <p className="mt-2 text-[14.5px] leading-[1.6] text-[color:var(--color-text-dim)]">
+          {demo.description}
+        </p>
+        <StackLine stack={demo.stack} />
+      </div>
       <div className="relative z-10 mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px] font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)]">
         <CookbookSourceLink slug={demo.slug} variant="inline" />
         <span className="font-semibold text-[color:var(--color-accent-dim)]">▶ play</span>
