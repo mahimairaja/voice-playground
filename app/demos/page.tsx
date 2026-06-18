@@ -4,6 +4,7 @@ import { Eyebrow } from '@/components/phosphor';
 import { CatalogError } from '@/components/playground/CatalogError';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
 import { NewBadge } from '@/components/playground/NewBadge';
+import { StackLine } from '@/components/playground/StackLine';
 import { CatalogFetchError } from '@/lib/cookbook/manifest';
 import {
   type PlannedDemo,
@@ -11,8 +12,10 @@ import {
   getAllPlanned,
   getAllShipped,
   getDemoCategories,
+  getDemoProviders,
 } from '@/lib/demos';
 import { isRecentlyReleased } from '@/lib/demos/released';
+import { demoUsesProvider } from '@/lib/demos/stack';
 
 /**
  * F1.2 demos-index rebuild. Renders shipped + planned cards together,
@@ -30,36 +33,57 @@ export const metadata: Metadata = {
 const ALL_FILTER = '__all__';
 
 interface DemosPageProps {
-  searchParams: Promise<{ category?: string | string[] }>;
+  searchParams: Promise<{ category?: string | string[]; provider?: string | string[] }>;
 }
 
-function pickCategory(raw: string | string[] | undefined): string | null {
+function pickParam(raw: string | string[] | undefined): string | null {
   if (!raw) return null;
   const value = Array.isArray(raw) ? raw[0] : raw;
   return value && value !== ALL_FILTER ? value : null;
 }
 
+// Build a /demos href that keeps the other active filter, so the two
+// dimensions (category and stack) compose instead of clobbering each other.
+function filterHref(category: string | null, provider: string | null): string {
+  const params = new URLSearchParams();
+  if (category) params.set('category', category);
+  if (provider) params.set('provider', provider);
+  const qs = params.toString();
+  return qs ? `/demos?${qs}` : '/demos';
+}
+
 export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
-  const { category: rawCategory } = await searchParams;
-  const activeCategory = pickCategory(rawCategory);
+  const { category: rawCategory, provider: rawProvider } = await searchParams;
+  const activeCategory = pickParam(rawCategory);
+  const activeProvider = pickParam(rawProvider);
 
   let shipped: readonly ShippedDemo[] = [];
   let categories: readonly string[] = [];
+  let providers: readonly string[] = [];
   let catalogError: CatalogFetchError | null = null;
   try {
-    [shipped, categories] = await Promise.all([getAllShipped(), getDemoCategories()]);
+    [shipped, categories, providers] = await Promise.all([
+      getAllShipped(),
+      getDemoCategories(),
+      getDemoProviders(),
+    ]);
   } catch (err) {
     if (err instanceof CatalogFetchError) catalogError = err;
     else throw err;
   }
   const planned = getAllPlanned();
 
-  const visibleShipped = activeCategory
-    ? shipped.filter((d) => d.category === activeCategory)
-    : shipped;
-  const visiblePlanned = activeCategory
-    ? planned.filter((d) => d.category === activeCategory)
-    : planned;
+  const visibleShipped = shipped.filter(
+    (d) =>
+      (!activeCategory || d.category === activeCategory) &&
+      (!activeProvider || demoUsesProvider(d.stack, activeProvider))
+  );
+  // Planned demos carry no stack, so a provider filter hides them.
+  const visiblePlanned = activeProvider
+    ? []
+    : activeCategory
+      ? planned.filter((d) => d.category === activeCategory)
+      : planned;
 
   return (
     <>
@@ -80,13 +104,37 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
 
         {categories.length > 1 ? (
           <nav aria-label="Filter by category" className="mt-6 flex flex-wrap items-center gap-1.5">
-            <CategoryChip label="all" href="/demos" active={activeCategory === null} />
+            <FilterLabel>category</FilterLabel>
+            <CategoryChip
+              label="all"
+              href={filterHref(null, activeProvider)}
+              active={activeCategory === null}
+            />
             {categories.map((cat) => (
               <CategoryChip
                 key={cat}
                 label={cat}
-                href={`/demos?category=${encodeURIComponent(cat)}`}
+                href={filterHref(cat, activeProvider)}
                 active={activeCategory === cat}
+              />
+            ))}
+          </nav>
+        ) : null}
+
+        {providers.length > 1 ? (
+          <nav aria-label="Filter by provider" className="mt-2 flex flex-wrap items-center gap-1.5">
+            <FilterLabel>stack</FilterLabel>
+            <CategoryChip
+              label="all"
+              href={filterHref(activeCategory, null)}
+              active={activeProvider === null}
+            />
+            {providers.map((prov) => (
+              <CategoryChip
+                key={prov}
+                label={prov}
+                href={filterHref(activeCategory, prov)}
+                active={activeProvider === prov}
               />
             ))}
           </nav>
@@ -97,7 +145,7 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
             <CatalogError cause={catalogError.cause} />
           ) : visibleShipped.length + visiblePlanned.length === 0 ? (
             <EmptyState
-              activeCategory={activeCategory}
+              filtered={Boolean(activeCategory || activeProvider)}
               totalShipped={shipped.length}
               totalPlanned={planned.length}
             />
@@ -120,13 +168,13 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
             </ul>
           )}
 
-          {activeCategory ? (
+          {activeCategory || activeProvider ? (
             <div className="mt-5">
               <Link
                 href="/demos"
                 className="font-mono text-[11px] tracking-[0.06em] text-[color:var(--color-text-mute)] uppercase underline-offset-4 hover:underline"
               >
-                · clear filter
+                · clear filters
               </Link>
             </div>
           ) : null}
@@ -160,6 +208,14 @@ function CategoryChip({ label, href, active }: CategoryChipProps) {
   );
 }
 
+function FilterLabel({ children }: { children: string }) {
+  return (
+    <span className="mr-1 font-mono text-[10px] tracking-[0.12em] text-[color:var(--color-text-fade)] uppercase">
+      {children}
+    </span>
+  );
+}
+
 function ShippedCard({ demo }: { demo: ShippedDemo }) {
   return (
     <div className="flex h-full flex-col rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-[18px] transition-colors hover:border-[color:var(--color-accent)]">
@@ -183,6 +239,7 @@ function ShippedCard({ demo }: { demo: ShippedDemo }) {
         <p className="mt-2 text-[14.5px] leading-[1.6] text-[color:var(--color-text-dim)]">
           {demo.description}
         </p>
+        <StackLine stack={demo.stack} />
       </Link>
       <div className="mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px]">
         <CookbookSourceLink slug={demo.slug} variant="inline" />
@@ -225,17 +282,16 @@ function PlannedCard({ demo }: { demo: PlannedDemo }) {
 }
 
 interface EmptyStateProps {
-  activeCategory: string | null;
+  filtered: boolean;
   totalShipped: number;
   totalPlanned: number;
 }
 
-function EmptyState({ activeCategory, totalShipped, totalPlanned }: EmptyStateProps) {
-  if (activeCategory) {
+function EmptyState({ filtered, totalShipped, totalPlanned }: EmptyStateProps) {
+  if (filtered) {
     return (
       <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-7 font-mono text-[13px] text-[color:var(--color-text-mute)]">
-        No demos in <span className="text-[color:var(--color-text-dim)]">{activeCategory}</span>{' '}
-        yet.{' '}
+        No demos match this filter.{' '}
         <Link href="/demos" className="text-[color:var(--color-accent-dim)] hover:underline">
           see all
         </Link>

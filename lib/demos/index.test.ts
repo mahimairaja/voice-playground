@@ -60,6 +60,28 @@ describe('lib/demos/index', () => {
     expect(shipped.map((d) => d.slug)).toEqual(['new-demo', 'mid-demo', 'old-demo', 'no-date']);
   });
 
+  it('getDemoProviders returns the sorted union of stack providers', async () => {
+    const base = {
+      title: 'X',
+      category: 'restaurant',
+      description: 'd',
+      who_for: 'w',
+      recording_url: null,
+      ui_components: ['Order'],
+    };
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        a: { ...base, stack: { stt: 'deepgram', llm: 'openai', tts: 'cartesia' } },
+        b: { ...base, stack: { stt: 'nvidia', llm: 'nvidia', tts: 'nvidia' } },
+        c: { ...base },
+      }),
+    } as Response);
+    const { getDemoProviders } = await import('./index');
+    expect(await getDemoProviders()).toEqual(['cartesia', 'deepgram', 'nvidia', 'openai']);
+  });
+
   it('getShippedBySlug returns undefined for unknown slugs', async () => {
     const { getShippedBySlug } = await import('./index');
     const hit = await getShippedBySlug('drive-thru-coffee');

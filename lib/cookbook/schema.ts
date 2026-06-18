@@ -55,6 +55,13 @@ export const CatalogValueSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/)
     .optional()
     .catch(undefined),
+  /** Provider per role. Drives the stack line on the card and the provider
+   * filter. A malformed value falls back to undefined (no line, matches no
+   * provider filter) rather than dropping the card. */
+  stack: z
+    .object({ stt: z.string().min(1), llm: z.string().min(1), tts: z.string().min(1) })
+    .optional()
+    .catch(undefined),
 });
 
 /**

@@ -3,6 +3,7 @@ import { fetchCatalog, fetchDemoBySlug } from '@/lib/cookbook/manifest';
 import { type CatalogEntry } from '@/lib/cookbook/schema';
 import { PLANNED_DEMOS, type PlannedDemo } from './planned';
 import { compareByReleasedDesc } from './released';
+import { stackProviders } from './stack';
 
 /**
  * Thin adapter over the cookbook fetcher. Routes call these to render
@@ -54,4 +55,15 @@ export async function getDemoCategories(): Promise<readonly string[]> {
   for (const d of shipped) categories.add(d.category);
   for (const d of PLANNED_DEMOS) categories.add(d.category);
   return Array.from(categories).sort();
+}
+
+/**
+ * Providers that appear in at least one shipped demo's stack, sorted. Powers
+ * the demos-page provider filter chip row. Planned demos carry no stack.
+ */
+export async function getDemoProviders(): Promise<readonly string[]> {
+  const shipped = await fetchCatalog();
+  const providers = new Set<string>();
+  for (const d of shipped) for (const p of stackProviders(d.stack)) providers.add(p);
+  return Array.from(providers).sort();
 }
