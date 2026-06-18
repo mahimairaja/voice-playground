@@ -20,6 +20,15 @@ export const WriteupFrontmatterSchema = z.object({
     .catch(undefined),
   canonical: z.string().url().optional().catch(undefined),
   author: z.string().min(1).default('Mahimai'),
+  // GitHub username (alphanumeric and single internal hyphens, 1 to 39 chars).
+  // Used for the author's avatar and a link to their profile. A malformed
+  // handle falls back to undefined (a plain byline) rather than failing the
+  // whole writeup.
+  github: z
+    .string()
+    .regex(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i)
+    .optional()
+    .catch(undefined),
 });
 
 export type WriteupFrontmatter = z.infer<typeof WriteupFrontmatterSchema>;
