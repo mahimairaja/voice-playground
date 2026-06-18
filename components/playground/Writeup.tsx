@@ -1,5 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 import { Eyebrow } from '@/components/phosphor/Eyebrow';
+import { AuthorByline } from '@/components/playground/AuthorByline';
 import type { Writeup as WriteupData } from '@/lib/cookbook/blog';
 import { WRITEUP_REHYPE_PLUGINS } from '@/lib/cookbook/markdown';
 
@@ -47,9 +48,7 @@ export function Writeup({ writeup }: WriteupProps) {
         <h2 className="mt-4 text-[28px] font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
           {frontmatter.title}
         </h2>
-        <p className="mt-1.5 font-mono text-[12px] tracking-[0.04em] text-[color:var(--color-text-mute)]">
-          by {frontmatter.author}
-        </p>
+        <AuthorByline author={frontmatter.author} github={frontmatter.github} />
         <div className={PROSE}>
           <ReactMarkdown rehypePlugins={WRITEUP_REHYPE_PLUGINS}>{body}</ReactMarkdown>
         </div>

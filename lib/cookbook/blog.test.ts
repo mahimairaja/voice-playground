@@ -61,6 +61,28 @@ describe('WriteupFrontmatterSchema', () => {
     });
     expect(parsed.cover).toBe('https://example.com/a.png');
   });
+
+  it('keeps a valid github handle', () => {
+    const parsed = WriteupFrontmatterSchema.parse({
+      title: 'T',
+      summary: 'S',
+      github: 'mahimairaja',
+    });
+    expect(parsed.github).toBe('mahimairaja');
+  });
+
+  it('drops a malformed github handle', () => {
+    const parsed = WriteupFrontmatterSchema.parse({
+      title: 'T',
+      summary: 'S',
+      github: 'bad handle!',
+    });
+    expect(parsed.github).toBeUndefined();
+  });
+
+  it('leaves github undefined when absent', () => {
+    expect(WriteupFrontmatterSchema.parse({ title: 'T', summary: 'S' }).github).toBeUndefined();
+  });
 });
 
 describe('fetchWriteup', () => {
