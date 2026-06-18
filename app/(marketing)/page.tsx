@@ -3,10 +3,12 @@ import Link from 'next/link';
 import { Btn, Eyebrow } from '@/components/phosphor';
 import { CatalogError } from '@/components/playground/CatalogError';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
+import { NewBadge } from '@/components/playground/NewBadge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CatalogFetchError } from '@/lib/cookbook/manifest';
 import { COOKBOOK_BASE_URL } from '@/lib/cookbook/url';
 import { type PlannedDemo, type ShippedDemo, getAllPlanned, getAllShipped } from '@/lib/demos';
+import { isRecentlyReleased } from '@/lib/demos/released';
 import { HeroScope } from './HeroScope';
 
 /**
@@ -184,9 +186,12 @@ function ShippedCard({ demo }: { demo: ShippedDemo }) {
         aria-label={`Open ${demo.title}`}
         className="absolute inset-0 z-0 rounded-[var(--radius-panel)]"
       />
-      <Eyebrow accent className="text-[11px]">
-        {demo.category}
-      </Eyebrow>
+      <span className="inline-flex items-center gap-2">
+        <Eyebrow accent className="text-[11px]">
+          {demo.category}
+        </Eyebrow>
+        {isRecentlyReleased(demo.released, new Date()) ? <NewBadge /> : null}
+      </span>
       <h3 className="mt-[13px] text-[19px] leading-tight font-semibold tracking-[-0.01em] text-[color:var(--color-text)]">
         {demo.title}
       </h3>

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Eyebrow } from '@/components/phosphor';
 import { CatalogError } from '@/components/playground/CatalogError';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
+import { NewBadge } from '@/components/playground/NewBadge';
 import { CatalogFetchError } from '@/lib/cookbook/manifest';
 import {
   type PlannedDemo,
@@ -11,6 +12,7 @@ import {
   getAllShipped,
   getDemoCategories,
 } from '@/lib/demos';
+import { isRecentlyReleased } from '@/lib/demos/released';
 
 /**
  * F1.2 demos-index rebuild. Renders shipped + planned cards together,
@@ -163,9 +165,12 @@ function ShippedCard({ demo }: { demo: ShippedDemo }) {
     <div className="flex h-full flex-col rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-[18px] transition-colors hover:border-[color:var(--color-accent)]">
       <Link href={`/demos/${demo.slug}`} className="block flex-1">
         <div className="flex items-center justify-between">
-          <Eyebrow accent className="text-[11px] tracking-[0.08em]">
-            {demo.category}
-          </Eyebrow>
+          <span className="inline-flex items-center gap-2">
+            <Eyebrow accent className="text-[11px] tracking-[0.08em]">
+              {demo.category}
+            </Eyebrow>
+            {isRecentlyReleased(demo.released, new Date()) ? <NewBadge /> : null}
+          </span>
           {demo.card_stat ? (
             <span className="font-mono text-[11px] text-[color:var(--color-text-mute)]">
               {demo.card_stat}

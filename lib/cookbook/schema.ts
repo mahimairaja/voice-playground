@@ -47,6 +47,14 @@ export const CatalogValueSchema = z.object({
   card_stat: z.string().min(1).optional(),
   /** True when the demo carries a blog.md build writeup in the cookbook. */
   blog: z.boolean().optional(),
+  /** Ship date (YYYY-MM-DD). Drives newest-first sort and the 'new' badge. A
+   * malformed value falls back to undefined (sorts last, no badge) rather than
+   * dropping the whole card. */
+  released: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional()
+    .catch(undefined),
 });
 
 /**
