@@ -7,6 +7,7 @@ import { RoomAudioRenderer, RoomContext } from '@livekit/components-react';
 import { CallView } from '@/components/playground/call/CallView';
 import { type JoinCreds, parseFragment } from '@/components/playground/call/links';
 import { useUiDispatcher } from '@/lib/generative-ui/dispatcher';
+import { UI_REQUEST_TOPIC } from '@/lib/generative-ui/protocol';
 
 /**
  * Guest side of the front-desk interpreter call. A host on the demo page mints a
@@ -21,9 +22,22 @@ const SLUG = 'front-desk-interpreter';
 
 type JoinState = 'parsing' | 'ready' | 'connecting' | 'live' | 'ended' | 'error';
 
-/** Captions need the dispatcher bound inside RoomContext; mount this there. */
+/**
+ * Binds the dispatcher to the room (captions, scene) and, once that listener is
+ * attached, asks the agent to replay the current UI. The agent's own join-time
+ * replay would race this listener (it only attaches after we finish connecting
+ * media), so this request is what reliably populates the guest's captions.
+ */
 function CaptionBridge({ room }: { room: Room }) {
   useUiDispatcher(room, SLUG);
+  useEffect(() => {
+    const payload = new TextEncoder().encode(JSON.stringify({ type: 'ui_request' }));
+    void room.localParticipant
+      .publishData(payload, { reliable: true, topic: UI_REQUEST_TOPIC })
+      .catch(() => {
+        /* best effort; nothing actionable if the request fails to send */
+      });
+  }, [room]);
   return null;
 }
 

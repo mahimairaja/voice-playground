@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useRef } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ParticipantKind } from 'livekit-client';
 import { toast } from 'sonner';
@@ -15,6 +15,10 @@ import { UpvoteButton } from '@/components/playground/UpvoteButton';
 import { VoicePanel } from '@/components/playground/VoicePanel';
 import { CallView } from '@/components/playground/call/CallView';
 import { InviteToCall } from '@/components/playground/call/InviteToCall';
+import {
+  DEFAULT_TARGET_LANGUAGE,
+  TargetLanguageSelect,
+} from '@/components/playground/call/TargetLanguageSelect';
 import { useDemoSession } from '@/hooks/useDemoSession';
 import { CRED_OPEN_DRAWER_EVENT, LIVEKIT_KEYS } from '@/lib/credentials/store';
 import { useCredentials } from '@/lib/credentials/useCredentials';
@@ -158,7 +162,14 @@ function MultipartyCallLayer({
  * can hit LiveKit hooks without per-component room threading.
  */
 export function DemoRuntime({ demo }: DemoRuntimeProps) {
-  const session = useDemoSession({ slug: demo.slug });
+  const multiparty = demo.multiparty === true;
+  const [targetLanguage, setTargetLanguage] = useState(DEFAULT_TARGET_LANGUAGE);
+  const session = useDemoSession({
+    slug: demo.slug,
+    // The desk language only applies to the interpreter; other demos dispatch
+    // their agent without metadata.
+    agentMetadata: multiparty ? targetLanguage : undefined,
+  });
   const { isReady } = useCredentials(LIVEKIT_KEYS);
 
   // Subscribe the dispatcher store to the LiveKit data channel; clears on
@@ -228,7 +239,17 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
             </div>
           ) : null}
 
-          {demo.multiparty === true && session.room ? (
+          {multiparty ? (
+            <div className="mt-5">
+              <TargetLanguageSelect
+                value={targetLanguage}
+                onChange={setTargetLanguage}
+                disabled={session.state === 'connecting' || session.state === 'live'}
+              />
+            </div>
+          ) : null}
+
+          {multiparty && session.room ? (
             <div className="mt-6">
               <MultipartyCallLayer
                 demo={demo}
