@@ -124,11 +124,19 @@ function MultipartyCallLayer({
   const cameraOnRef = useRef(false);
 
   useEffect(() => {
-    if (!inCall || !room || cameraOnRef.current) return;
-    cameraOnRef.current = true;
-    room.localParticipant.setCameraEnabled(true).catch(() => {
-      toast.error('Could not turn on your camera. You are on the call with audio only.');
-    });
+    if (!room) return;
+    if (inCall && !cameraOnRef.current) {
+      cameraOnRef.current = true;
+      room.localParticipant.setCameraEnabled(true).catch(() => {
+        toast.error('Could not turn on your camera. You are on the call with audio only.');
+      });
+    } else if (!inCall && cameraOnRef.current) {
+      // Guest left or the call ended: stop publishing the camera so the host's
+      // webcam light does not stay on over the solo demo, and reset so a later
+      // guest re-enables it.
+      cameraOnRef.current = false;
+      room.localParticipant.setCameraEnabled(false).catch(() => {});
+    }
   }, [inCall, room]);
 
   if (inCall && room) {
