@@ -47,6 +47,9 @@ export const CatalogValueSchema = z.object({
   card_stat: z.string().min(1).optional(),
   /** True when the demo carries a blog.md build writeup in the cookbook. */
   blog: z.boolean().optional(),
+  /** True when the demo supports a second human on the call (the front-desk
+   * interpreter). Gates the invite control and the call-first layout swap. */
+  multiparty: z.boolean().optional(),
   /** Ship date (YYYY-MM-DD). Drives newest-first sort and the 'new' badge. A
    * malformed value falls back to undefined (sorts last, no badge) rather than
    * dropping the whole card. */
