@@ -40,6 +40,28 @@ describe('lib/livekit/mintToken', () => {
     expect(decoded.roomConfig?.agents).toEqual([{ agentName: 'drive-thru-coffee' }]);
   });
 
+  it('passes agentMetadata as the dispatch metadata when set', async () => {
+    const { token } = await mintToken({
+      ...validArgs,
+      agentName: 'front-desk-interpreter',
+      agentMetadata: 'Spanish',
+    });
+    const decoded = decodeJwt(token) as {
+      roomConfig?: { agents?: { agentName?: string; metadata?: string }[] };
+    };
+    expect(decoded.roomConfig?.agents).toEqual([
+      { agentName: 'front-desk-interpreter', metadata: 'Spanish' },
+    ]);
+  });
+
+  it('omits dispatch metadata when agentMetadata is unset', async () => {
+    const { token } = await mintToken({ ...validArgs, agentName: 'front-desk-interpreter' });
+    const decoded = decodeJwt(token) as {
+      roomConfig?: { agents?: Record<string, unknown>[] };
+    };
+    expect(decoded.roomConfig?.agents?.[0]).not.toHaveProperty('metadata');
+  });
+
   it('omits the roomConfig claim without agentName', async () => {
     const { token } = await mintToken(validArgs);
     const decoded = decodeJwt(token) as Record<string, unknown>;

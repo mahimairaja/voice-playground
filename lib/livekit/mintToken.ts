@@ -40,6 +40,12 @@ export interface MintTokenArgs {
    * this claim the worker registers and idles while the visitor sits alone.
    */
   agentName?: string;
+  /**
+   * Optional metadata string handed to the dispatched agent; it arrives as
+   * 'ctx.job.metadata'. The interpreter uses it to set the desk-side language.
+   * Ignored without 'agentName' (nothing is dispatched to receive it).
+   */
+  agentMetadata?: string;
   /** Optional explicit identity. Defaults to 'visitor_<nanoid6>'. */
   identity?: string;
   /** Optional explicit room name. Defaults to '<slug>_<nanoid6>'. */
@@ -97,7 +103,9 @@ export async function mintToken(args: MintTokenArgs): Promise<MintTokenResult> {
   // serializes RoomConfiguration as a camelCase `roomConfig` claim.
   const claims: { video: LiveKitVideoGrant; roomConfig?: object } = { video: grant };
   if (args.agentName) {
-    claims.roomConfig = { agents: [{ agentName: args.agentName }] };
+    const agent: { agentName: string; metadata?: string } = { agentName: args.agentName };
+    if (args.agentMetadata) agent.metadata = args.agentMetadata;
+    claims.roomConfig = { agents: [agent] };
   }
   const token = await new SignJWT(claims)
     .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })

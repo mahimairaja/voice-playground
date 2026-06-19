@@ -12,6 +12,12 @@ export type SessionState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 
 export interface UseDemoSessionOptions {
   slug: string;
+  /**
+   * Optional metadata handed to the dispatched agent (arrives as
+   * 'ctx.job.metadata'). The interpreter uses it to set the desk language. It
+   * is read at connect, so changing it takes effect on the next connect.
+   */
+  agentMetadata?: string;
 }
 
 export interface UseDemoSessionReturn {
@@ -31,7 +37,10 @@ class MissingCredentialsError extends Error {
   }
 }
 
-export function useDemoSession({ slug }: UseDemoSessionOptions): UseDemoSessionReturn {
+export function useDemoSession({
+  slug,
+  agentMetadata,
+}: UseDemoSessionOptions): UseDemoSessionReturn {
   const [state, setState] = useState<SessionState>('idle');
   const [error, setError] = useState<Error | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
@@ -83,6 +92,7 @@ export function useDemoSession({ slug }: UseDemoSessionOptions): UseDemoSessionR
         // Cookbook agents register with agent_name equal to the slug; the
         // token must request the named agent or it is never dispatched.
         agentName: slug,
+        agentMetadata,
       });
 
       const r = new Room();
@@ -122,7 +132,7 @@ export function useDemoSession({ slug }: UseDemoSessionOptions): UseDemoSessionR
     } finally {
       inFlightRef.current = false;
     }
-  }, [slug, state, teardown]);
+  }, [slug, agentMetadata, state, teardown]);
 
   const disconnect = useCallback(async () => {
     if (state !== 'live' && state !== 'connecting') return;
