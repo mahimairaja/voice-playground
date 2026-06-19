@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { ParticipantKind } from 'livekit-client';
+import { describe, expect, it } from 'vitest';
 import { orderTiles } from './tiles';
 
 const ref = (identity: string, kind: number = ParticipantKind.STANDARD) =>

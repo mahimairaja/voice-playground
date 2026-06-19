@@ -1,5 +1,5 @@
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-react';
 import { ParticipantKind } from 'livekit-client';
+import type { TrackReferenceOrPlaceholder } from '@livekit/components-react';
 
 export interface Tile {
   /** Participant identity; stable React key. */

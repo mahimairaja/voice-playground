@@ -1,7 +1,7 @@
 'use client';
 
-import { VideoTrack, isTrackReference } from '@livekit/components-react';
 import { VideoOff } from 'lucide-react';
+import { VideoTrack, isTrackReference } from '@livekit/components-react';
 import type { Tile } from './tiles';
 
 /**
@@ -10,12 +10,12 @@ import type { Tile } from './tiles';
  * mirrored so the host/guest sees themselves the natural way round.
  */
 export function VideoTile({ tile }: { tile: Tile }) {
-  const live = isTrackReference(tile.trackRef);
+  const ref = tile.trackRef;
   return (
     <div className="relative aspect-video w-full overflow-hidden rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)]">
-      {live ? (
+      {isTrackReference(ref) ? (
         <VideoTrack
-          trackRef={tile.trackRef}
+          trackRef={ref}
           className={`h-full w-full object-cover ${tile.isLocal ? 'scale-x-[-1]' : ''}`}
         />
       ) : (

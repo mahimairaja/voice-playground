@@ -1,6 +1,6 @@
 'use client';
 
-import { CaptionsPanel, type CaptionItem } from '@/components/demos/_primitives/CaptionsPanel';
+import { type CaptionItem, CaptionsPanel } from '@/components/demos/_primitives/CaptionsPanel';
 import { type UiInstance, useUiStore } from '@/lib/generative-ui/dispatcher';
 
 /**
