@@ -22,6 +22,13 @@ import { z } from 'zod';
 
 export const UI_EVENT_TYPE = 'ui_event' as const;
 export const UI_EVENT_TOPIC = 'ui';
+/**
+ * A client publishes an empty message on this topic to ask the agent to replay
+ * the current UI to it. A late joiner (the interpreter call guest) needs this:
+ * the agent's broadcast mounts predate the joiner's data listener, and the
+ * dispatcher drops updates for a component it never mounted.
+ */
+export const UI_REQUEST_TOPIC = 'ui_request';
 export const COST_COMPONENT_NAME = 'Cost';
 export const FINAL_COST_INSTANCE_ID = 'final_cost';
 
