@@ -44,3 +44,13 @@ describe('CatalogValueSchema stack', () => {
     expect(CatalogValueSchema.parse(base).stack).toBeUndefined();
   });
 });
+
+describe('CatalogValueSchema multiparty', () => {
+  it('keeps multiparty: true', () => {
+    expect(CatalogValueSchema.parse({ ...base, multiparty: true }).multiparty).toBe(true);
+  });
+
+  it('leaves multiparty undefined when absent', () => {
+    expect(CatalogValueSchema.parse(base).multiparty).toBeUndefined();
+  });
+});
