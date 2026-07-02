@@ -87,9 +87,9 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="bg-[color:var(--color-bg)] text-[color:var(--color-text)] antialiased">
+      <body className="flex min-h-dvh flex-col bg-[color:var(--color-bg)] text-[color:var(--color-text)] antialiased">
         <PlaygroundHeader />
-        <main className="min-h-[calc(100dvh-56px-44px)]">
+        <main className="flex-1">
           <UpvoteProvider>{children}</UpvoteProvider>
         </main>
         <PlaygroundFooter />
