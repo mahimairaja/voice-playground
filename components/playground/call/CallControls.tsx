@@ -37,7 +37,7 @@ function MediaToggle({
       aria-pressed={enabled}
       disabled={pending}
       onClick={() => void toggle()}
-      className="flex items-center gap-2 rounded-[var(--radius-input)] border border-[color:var(--color-border)] px-3.5 py-2 font-mono text-[12px] tracking-[0.04em] transition-colors disabled:opacity-50"
+      className="flex items-center gap-2 rounded-[var(--radius-input)] border border-[color:var(--color-border)] px-3.5 py-2 text-[13px] transition-colors disabled:opacity-50"
       style={{ color: enabled ? 'var(--color-text-dim)' : 'var(--color-warning)' }}
     >
       <Icon size={15} />
@@ -83,7 +83,7 @@ export function CallControls({
       <button
         type="button"
         onClick={onLeave}
-        className="flex items-center gap-2 rounded-[var(--radius-input)] border border-[color:color-mix(in_srgb,var(--color-warning)_45%,transparent)] px-3.5 py-2 font-mono text-[12px] tracking-[0.04em] text-[color:var(--color-warning)] transition-colors hover:bg-[color:color-mix(in_srgb,var(--color-warning)_10%,transparent)]"
+        className="flex items-center gap-2 rounded-[var(--radius-input)] border border-[color:color-mix(in_srgb,var(--color-warning)_45%,transparent)] px-3.5 py-2 text-[13px] text-[color:var(--color-warning)] transition-colors hover:bg-[color:color-mix(in_srgb,var(--color-warning)_10%,transparent)]"
       >
         <PhoneOff size={15} />
         leave

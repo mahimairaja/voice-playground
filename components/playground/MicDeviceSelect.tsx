@@ -52,14 +52,14 @@ export function MicDeviceSelect() {
       <SelectTrigger
         size="sm"
         aria-label="Choose microphone"
-        className="border-[color:var(--color-border)] font-mono text-[12px] text-[color:var(--color-text-dim)]"
+        className="border-[color:var(--color-border)] text-[13px] text-[color:var(--color-text-dim)]"
       >
         <Mic size={13} aria-hidden="true" />
         <SelectValue placeholder="microphone" />
       </SelectTrigger>
       <SelectContent position="popper">
         {filtered.map((device) => (
-          <SelectItem key={device.deviceId} value={device.deviceId} className="font-mono text-xs">
+          <SelectItem key={device.deviceId} value={device.deviceId} className="text-[13px]">
             {cleanDeviceLabel(device.label)}
           </SelectItem>
         ))}

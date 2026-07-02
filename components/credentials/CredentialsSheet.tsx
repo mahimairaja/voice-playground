@@ -136,7 +136,7 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
             </div>
             <Dialog.Close
               aria-label="Close credentials"
-              className="flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-[color:var(--color-border)] bg-transparent font-mono text-[14px] text-[color:var(--color-text-mute)] hover:text-[color:var(--color-text)]"
+              className="flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-[color:var(--color-border)] bg-transparent text-sm text-[color:var(--color-text-mute)] hover:text-[color:var(--color-text)]"
             >
               ✕
             </Dialog.Close>
@@ -166,9 +166,7 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
                         {meta.label}
                       </span>
                       {isMissing ? (
-                        <span className="font-mono text-[11px] tracking-[0.04em] text-[color:var(--color-warning)]">
-                          missing
-                        </span>
+                        <span className="text-xs text-[color:var(--color-warning)]">missing</span>
                       ) : null}
                     </span>
                     <span className="mt-0.5 block text-[12.5px] leading-[1.5] text-[color:var(--color-text-mute)]">
@@ -217,7 +215,7 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
 
           <div className="flex items-center gap-3 border-t border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-[22px] py-4">
             <span
-              className="mr-auto flex items-center gap-[7px] font-mono text-[11px]"
+              className="mr-auto flex items-center gap-[7px] text-xs"
               style={{ color: ready ? 'var(--color-live)' : 'var(--color-warning)' }}
             >
               <span
@@ -247,12 +245,12 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
                     any time.
                   </AlertDialogPrimitive.Description>
                   <div className="mt-5 flex justify-end gap-3">
-                    <AlertDialogPrimitive.Cancel className="inline-flex cursor-pointer items-center rounded-[var(--radius-button)] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] px-3.5 py-2 font-mono text-[13px] font-medium text-[color:var(--color-text-dim)] hover:text-[color:var(--color-text)]">
+                    <AlertDialogPrimitive.Cancel className="inline-flex cursor-pointer items-center rounded-[var(--radius-button)] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] px-3.5 py-2 text-[13px] font-medium text-[color:var(--color-text-dim)] hover:text-[color:var(--color-text)]">
                       cancel
                     </AlertDialogPrimitive.Cancel>
                     <AlertDialogPrimitive.Action
                       onClick={handleConfirmedClear}
-                      className="inline-flex cursor-pointer items-center rounded-[var(--radius-button)] border border-[color:color-mix(in_srgb,var(--color-danger)_45%,transparent)] px-3.5 py-2 font-mono text-[13px] font-semibold text-[color:var(--color-danger)] hover:border-[color:var(--color-danger)]"
+                      className="inline-flex cursor-pointer items-center rounded-[var(--radius-button)] border border-[color:color-mix(in_srgb,var(--color-danger)_45%,transparent)] px-3.5 py-2 text-[13px] font-semibold text-[color:var(--color-danger)] hover:border-[color:var(--color-danger)]"
                     >
                       Remove keys
                     </AlertDialogPrimitive.Action>
