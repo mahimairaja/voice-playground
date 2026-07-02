@@ -28,13 +28,15 @@ export default function HomePage() {
       <main className="mx-auto max-w-[1140px] px-8 pt-14 pb-4">
         <section aria-label="Hero" className="grid items-start gap-11 md:grid-cols-[1.25fr_1fr]">
           <div>
-            <Eyebrow>voice agents · live demos</Eyebrow>
-            <h1 className="mt-4 text-[52px] leading-[1.04] font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
+            <Eyebrow accent>voice agents · live demos</Eyebrow>
+            <h1 className="mt-5 text-5xl leading-[1.04] font-black tracking-tight text-[color:var(--color-text)] sm:text-6xl">
               Stop reading about voice agents.
               <br />
-              <span className="text-[color:var(--color-accent-deep)]">Talk to one.</span>
+              <span className="bg-gradient-to-r from-[color:var(--color-accent-dim)] to-[color:var(--color-accent)] bg-clip-text text-transparent">
+                Talk to one.
+              </span>
             </h1>
-            <p className="mt-[22px] max-w-[48ch] text-[17px] leading-[1.65] text-[color:var(--color-text-dim)]">
+            <p className="mt-6 max-w-[48ch] text-lg leading-relaxed text-[color:var(--color-text-dim)]">
               Open-source voice agents you run locally and talk to right here. Your keys, your
               machine, nothing stored.
             </p>

@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 export default function NotFoundPage() {
   return (
     <main className="mx-auto flex max-w-[520px] flex-col gap-4 px-6 py-24">
-      <span className="font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)] uppercase">
-        404 · NO ROUTE
+      <span className="text-xs font-bold tracking-widest text-[color:var(--color-text-mute)] uppercase">
+        404 · No route
       </span>
-      <h1 className="text-[28px] font-semibold tracking-tight text-[color:var(--color-text)]">
+      <h1 className="text-[28px] font-bold tracking-tight text-[color:var(--color-text)]">
         That page doesn&apos;t live here.
       </h1>
       <p className="text-[15px] text-[color:var(--color-text-dim)]">
@@ -21,13 +21,13 @@ export default function NotFoundPage() {
       <div className="mt-4 flex items-center gap-3">
         <Link
           href="/demos"
-          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13.5px] font-semibold text-[color:var(--color-text)] hover:brightness-105"
+          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-[18px] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[color:var(--color-accent-dim)]"
         >
-          → Back to demos
+          Back to demos
         </Link>
         <Link
           href="/"
-          className="rounded-[var(--radius-button)] border border-[color:var(--color-border)] px-4 py-2 text-[13px] text-[color:var(--color-text)] hover:border-[color:var(--color-border-strong)]"
+          className="rounded-[var(--radius-button)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] px-[18px] py-2.5 text-sm font-semibold text-[color:var(--color-text)] transition-colors hover:bg-[color:var(--color-surface-2)]"
         >
           Home
         </Link>

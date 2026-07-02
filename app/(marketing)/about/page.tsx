@@ -54,7 +54,7 @@ export default function AboutPage() {
 
         <div className="mt-7 grid gap-[44px] md:grid-cols-[6fr_4fr]">
           <section>
-            <h1 className="text-[30px] font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
+            <h1 className="text-4xl font-black tracking-tight text-[color:var(--color-text)]">
               What this is.
             </h1>
 
@@ -129,7 +129,7 @@ export default function AboutPage() {
           {TECH_CHIPS.map((chip) => (
             <span
               key={chip}
-              className="inline-flex items-center rounded-full border border-[color:var(--color-border)] px-3 py-[6px] font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)]"
+              className="inline-flex items-center rounded-full border border-[color:var(--color-border)] px-3 py-[6px] text-xs font-medium text-[color:var(--color-text-mute)]"
             >
               {chip}
             </span>

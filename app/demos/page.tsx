@@ -94,10 +94,10 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
             DEMOS · {shipped.length} SHIPPED · {planned.length} PLANNED
             {activeCategory ? ` · ${activeCategory}` : ''}
           </Eyebrow>
-          <h1 className="mt-2.5 text-[34px] leading-none font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
+          <h1 className="mt-3 text-4xl leading-none font-black tracking-tight text-[color:var(--color-text)]">
             Demos
           </h1>
-          <p className="mt-2 max-w-[58ch] text-[14.5px] leading-[1.55] text-[color:var(--color-text-dim)]">
+          <p className="mt-3 max-w-[58ch] text-lg leading-relaxed text-[color:var(--color-text-dim)]">
             Voice agents you can talk to in your browser. Run one locally, paste your LiveKit keys,
             start the call.
           </p>
