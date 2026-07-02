@@ -24,9 +24,9 @@ export function UpvoteButton({ slug }: { slug: string }) {
         e.stopPropagation();
         votes.toggle(slug);
       }}
-      className={`inline-flex items-center gap-1 rounded-[var(--radius-pill)] border px-2 py-0.5 font-mono text-[11px] tabular-nums transition-colors ${
+      className={`inline-flex items-center gap-1 rounded-[var(--radius-pill)] border px-2 py-0.5 text-xs tabular-nums transition-colors ${
         isVoted
-          ? 'border-[color:var(--color-accent)] bg-[color:var(--color-accent)] font-semibold text-[color:var(--color-text)]'
+          ? 'border-[color:var(--color-accent)] bg-[color:var(--color-accent)] font-semibold text-white'
           : 'border-[color:var(--color-border)] text-[color:var(--color-text-mute)] hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-text)]'
       }`}
     >

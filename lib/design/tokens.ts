@@ -41,10 +41,10 @@ export const COLOR = {
 } as const;
 
 export const RADIUS = {
-  input: '7px',
-  button: '7px',
-  panel: '12px',
-  card: '12px',
+  input: '8px', // 0.5rem, the mahimai.ca button/field radius
+  button: '8px',
+  panel: '16px', // 1rem, the mahimai.ca card radius
+  card: '16px',
   pill: '999px',
 } as const;
 

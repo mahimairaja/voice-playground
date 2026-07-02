@@ -40,10 +40,10 @@ export default function HomePage() {
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Btn kind="primary" href="/demos">
-                ▶ open demos
+                Open demos
               </Btn>
               <Btn kind="ghost" href="/about">
-                how it works
+                How it works
               </Btn>
             </div>
           </div>
@@ -58,9 +58,9 @@ export default function HomePage() {
             </Eyebrow>
             <Link
               href="/demos"
-              className="text-[13.5px] font-medium text-[color:var(--color-accent-dim)] hover:underline"
+              className="text-sm font-semibold text-[color:var(--color-accent-dim)] hover:underline"
             >
-              all demos →
+              All demos →
             </Link>
           </div>
           <Suspense
@@ -181,34 +181,32 @@ async function FeaturedRow() {
 
 function ShippedCard({ demo }: { demo: ShippedDemo }) {
   return (
-    <div className="relative flex h-full flex-col rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-[18px] transition-colors hover:border-[color:var(--color-accent)]">
+    <div className="card card-hover relative flex h-full flex-col p-6">
       {/* Stretched link makes the whole card a click target without nesting the source anchor inside it. */}
       <Link
         href={`/demos/${demo.slug}`}
         aria-label={`Open ${demo.title}`}
-        className="absolute inset-0 z-0 rounded-[var(--radius-panel)]"
+        className="absolute inset-0 z-0 rounded-[var(--radius-card)]"
       />
       <span className="inline-flex items-center gap-2">
-        <Eyebrow accent className="text-[11px]">
-          {demo.category}
-        </Eyebrow>
+        <span className="badge">{demo.category}</span>
         {isRecentlyReleased(demo.released, new Date()) ? <NewBadge /> : null}
       </span>
-      <h3 className="mt-[13px] text-[19px] leading-tight font-semibold tracking-[-0.01em] text-[color:var(--color-text)]">
+      <h3 className="mt-4 text-xl leading-tight font-bold tracking-tight text-[color:var(--color-text)]">
         {demo.title}
       </h3>
       <div className="flex-1">
-        <p className="mt-2 text-[14.5px] leading-[1.6] text-[color:var(--color-text-dim)]">
+        <p className="mt-2 text-[15px] leading-[1.6] text-[color:var(--color-text-dim)]">
           {demo.description}
         </p>
         <StackLine stack={demo.stack} />
       </div>
-      <div className="relative z-10 mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px] font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)]">
+      <div className="relative z-10 mt-5 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-4">
         <div className="flex items-center gap-2.5">
           <UpvoteButton slug={demo.slug} />
           <CookbookSourceLink slug={demo.slug} variant="inline" />
         </div>
-        <span className="font-semibold text-[color:var(--color-accent-dim)]">▶ play</span>
+        <span className="text-sm font-semibold text-[color:var(--color-accent-dim)]">Play →</span>
       </div>
     </div>
   );
@@ -220,23 +218,25 @@ function PlannedCard({ demo }: { demo: PlannedDemo }) {
       href={demo.github_link}
       target="_blank"
       rel="noreferrer noopener"
-      className="flex h-full flex-col rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border-dim)] bg-[color:var(--color-surface)] p-[18px] opacity-70 transition-opacity hover:opacity-100"
+      className="card flex h-full flex-col p-6"
     >
       <div className="flex items-center justify-between">
-        <Eyebrow className="text-[11px]">{demo.category} · planned</Eyebrow>
-        <span className="font-mono text-[11px] text-[color:var(--color-text-mute)]">
-          {demo.target_date}
+        <span className="inline-flex items-center gap-2">
+          <span className="badge">{demo.category}</span>
+          <span className="inline-flex items-center rounded-full bg-[color:var(--color-surface-3)] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-[color:var(--color-text-mute)] uppercase">
+            planned
+          </span>
         </span>
       </div>
-      <h3 className="mt-[13px] text-[19px] leading-tight font-semibold tracking-[-0.01em] text-[color:var(--color-text-dim)]">
+      <h3 className="mt-4 text-xl leading-tight font-bold tracking-tight text-[color:var(--color-text-dim)]">
         {demo.title}
       </h3>
-      <p className="mt-2 flex-1 text-[14.5px] leading-[1.6] text-[color:var(--color-text-mute)]">
+      <p className="mt-2 flex-1 text-[15px] leading-[1.6] text-[color:var(--color-text-mute)]">
         {demo.why}
       </p>
-      <div className="mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px] font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)]">
-        <span>source ↗</span>
-        <span>target {demo.target_date}</span>
+      <div className="mt-5 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-4 text-xs font-medium text-[color:var(--color-text-mute)]">
+        <span>Source ↗</span>
+        <span>Target {demo.target_date}</span>
       </div>
     </a>
   );
@@ -244,16 +244,12 @@ function PlannedCard({ demo }: { demo: PlannedDemo }) {
 
 function Step({ number, title, body }: { number: string; title: string; body: string }) {
   return (
-    <div className="rounded-[var(--radius-panel)] border border-[color:var(--color-border-dim)] p-[18px]">
-      <Eyebrow accent className="text-[11px]">
-        {number}
-      </Eyebrow>
-      <h3 className="mt-[10px] text-[16px] font-semibold tracking-tight text-[color:var(--color-text)]">
+    <div className="card card-hover p-6">
+      <Eyebrow accent>{number}</Eyebrow>
+      <h3 className="mt-3 text-lg font-bold tracking-tight text-[color:var(--color-text)]">
         {title}
       </h3>
-      <p className="mt-[6px] text-[14px] leading-[1.55] text-[color:var(--color-text-dim)]">
-        {body}
-      </p>
+      <p className="mt-2 text-[15px] leading-[1.55] text-[color:var(--color-text-dim)]">{body}</p>
     </div>
   );
 }

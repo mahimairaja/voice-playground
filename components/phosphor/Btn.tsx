@@ -16,18 +16,22 @@ interface BtnProps {
 }
 
 const BASE =
-  'inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[var(--radius-button)] border border-transparent px-[18px] py-[11px] font-mono text-[13px] font-semibold tracking-[0.02em] no-underline transition-all';
+  'inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-button)] border border-transparent px-[22px] py-3 text-[15px] leading-none font-semibold no-underline transition-colors';
 
 const KINDS: Record<Kind, string> = {
-  primary:
-    'bg-[color:var(--color-accent)] text-white shadow-[0_1px_2px_rgba(17,22,28,0.12)] hover:bg-[color:var(--color-accent-dim)]',
+  primary: 'bg-[color:var(--color-accent)] text-white hover:bg-[color:var(--color-accent-dim)]',
   ghost:
-    'border-[color:var(--color-border-strong)] bg-transparent text-[color:var(--color-text)] hover:border-[color:var(--color-accent-dim)]',
+    'border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] text-[color:var(--color-text)] hover:bg-[color:var(--color-surface-2)]',
   muted:
     'border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] font-medium text-[color:var(--color-text-dim)] hover:text-[color:var(--color-text)]',
 };
 
-/** Daylight brand button. Renders a Link (href), external anchor (href + external), or button. */
+/**
+ * Brand button matched to the mahimai.ca .btn-primary/.btn-secondary metrics
+ * (15px/600, 0.5rem radius, teal fill with white ink; ghost is the white
+ * secondary). Renders a Link (href), external anchor (href + external), or
+ * button.
+ */
 export function Btn({
   children,
   kind = 'primary',

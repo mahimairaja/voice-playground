@@ -9,14 +9,15 @@ interface EyebrowProps {
 }
 
 /**
- * Mono instrument label. Daylight rule: 12px floor and AA mute ink; the
- * accent variant is ochre (amber is a fill color, not label text on light).
+ * Uppercase section label in the mahimai.ca eyebrow voice (Inter bold,
+ * tracking-widest). The accent variant is deep teal, which passes AA where
+ * the raw teal fill does not; teal stays a fill color, not label text.
  */
 export function Eyebrow({ children, className, accent, muted }: EyebrowProps) {
   return (
     <span
       className={cn(
-        'font-mono text-[12px] tracking-[0.14em] uppercase',
+        'text-xs font-bold tracking-widest uppercase',
         accent
           ? 'text-[color:var(--color-accent-dim)]'
           : muted

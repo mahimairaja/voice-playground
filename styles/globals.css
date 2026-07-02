@@ -63,10 +63,10 @@
   --ring: var(--ph-accent-dim);
   --radius: 0.5rem;
 
-  --radius-input: 7px;
-  --radius-button: 7px;
-  --radius-panel: 12px;
-  --radius-card: 12px;
+  --radius-input: 8px;
+  --radius-button: 8px;
+  --radius-panel: 16px;
+  --radius-card: 16px;
   --radius-pill: 999px;
 }
 
@@ -191,6 +191,47 @@
 }
 
 /*
+ * Card primitives ported from mahimai.ca. .card is the base surface (1rem
+ * radius, gray border, layered soft shadow); .card-hover is the opt-in lift
+ * for interactive content cards (never the hero/instrument frames); .badge
+ * is the quiet category pill.
+ */
+@layer components {
+  .card {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.06),
+      0 8px 24px -12px rgba(0, 0, 0, 0.12);
+  }
+  .card-hover {
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      border-color 0.18s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--ph-accent) 45%, transparent);
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.06),
+      0 20px 44px -20px rgba(17, 22, 28, 0.24);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-mute);
+  }
+}
+
+/*
  * Instrument texture. ph-grain lays a faint film-grain wash; ph-scan adds CRT
  * scanlines. Decorative overlays that never capture pointer events. Daylight
  * rule: applied only inside dark screens (.dark interiors), never on page
@@ -254,5 +295,8 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .card-hover:hover {
+    transform: none;
   }
 }
