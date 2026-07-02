@@ -61,7 +61,7 @@ function TwoPane({
 
         {showInvite && session.room ? (
           <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-accent-dim)] p-3.5">
-            <p className="font-mono text-[11px] tracking-[0.06em] text-[color:var(--color-text-mute)] uppercase">
+            <p className="text-xs font-bold tracking-widest text-[color:var(--color-text-mute)] uppercase">
               two-party call
             </p>
             <p className="mt-1.5 mb-3 text-[13px] leading-[1.5] text-[color:var(--color-text-dim)]">
@@ -83,7 +83,7 @@ function TwoPane({
               </span>
             ))}
             <span
-              className="mt-1 w-full font-mono text-[11px]"
+              className="mt-1 w-full text-[13px]"
               style={{ color: isReady ? 'var(--color-live)' : 'var(--color-warning)' }}
             >
               LiveKit: {isReady ? '✓ keys present' : '✗ add your keys'}
@@ -91,13 +91,13 @@ function TwoPane({
           </div>
         </ScopeFrame>
 
-        <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-3.5 font-mono text-[12px] leading-[1.6] text-[color:var(--color-text-mute)]">
+        <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-3.5 text-[13px] leading-[1.6] text-[color:var(--color-text-mute)]">
           Run the worker locally:
           <div className="my-2">
             <CopySnippet command="uv run python agent.py dev" />
           </div>
           then connect: the agent joins room{' '}
-          <span className="text-[color:var(--color-text-dim)]">{demo.slug}</span>.
+          <span className="font-mono text-[color:var(--color-text-dim)]">{demo.slug}</span>.
         </div>
       </div>
     </div>
@@ -192,7 +192,7 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
         <div className="mx-auto w-full max-w-[1180px] px-6 pt-8 pb-16">
           <Link
             href="/demos"
-            className="font-mono text-[12px] tracking-[0.06em] text-[color:var(--color-text-mute)] transition-colors hover:text-[color:var(--color-accent-dim)]"
+            className="text-[13px] text-[color:var(--color-text-mute)] transition-colors hover:text-[color:var(--color-accent-dim)]"
           >
             ← all demos
           </Link>
@@ -223,7 +223,7 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
                 className="h-2 w-2 rounded-full bg-[color:var(--color-warning)]"
                 aria-hidden="true"
               />
-              <span className="font-mono text-[12px] tracking-[0.03em] text-[color:var(--color-warning)]">
+              <span className="text-xs font-bold tracking-widest text-[color:var(--color-warning)]">
                 NO LIVEKIT CREDENTIALS
               </span>
               <span className="text-[14px] text-[color:var(--color-text-dim)]">
@@ -232,7 +232,7 @@ export function DemoRuntime({ demo }: DemoRuntimeProps) {
               <button
                 type="button"
                 onClick={openVault}
-                className="ml-auto cursor-pointer font-mono text-[12px] whitespace-nowrap text-[color:var(--color-accent-dim)] hover:underline"
+                className="ml-auto cursor-pointer text-[13px] whitespace-nowrap text-[color:var(--color-accent-dim)] hover:underline"
               >
                 add keys →
               </button>

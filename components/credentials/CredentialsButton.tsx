@@ -48,7 +48,7 @@ export function CredentialsButton({ demoTitle }: CredentialsButtonProps) {
         type="button"
         onClick={() => setOpen(true)}
         disabled={unavailable}
-        className={`inline-flex items-center gap-2 rounded-[var(--radius-pill)] px-4 py-1.5 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors ${classes}`}
+        className={`inline-flex items-center gap-2 rounded-[var(--radius-pill)] px-4 py-1.5 text-xs font-bold tracking-widest uppercase transition-colors ${classes}`}
       >
         {dotColor ? (
           <span className="h-[7px] w-[7px] rounded-full" style={{ background: dotColor }} />

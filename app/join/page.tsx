@@ -144,10 +144,10 @@ export default function JoinPage() {
   return (
     <div className="mx-auto flex min-h-[60vh] w-full max-w-[460px] flex-col items-center justify-center gap-6 px-6 py-16 text-center">
       <div>
-        <p className="font-mono text-[12px] tracking-[0.08em] text-[color:var(--color-text-mute)] uppercase">
+        <p className="text-xs font-bold tracking-widest text-[color:var(--color-text-mute)] uppercase">
           interpreter call
         </p>
-        <h1 className="mt-2 text-[26px] font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
+        <h1 className="mt-2 text-[26px] font-bold tracking-tight text-[color:var(--color-text)]">
           Join the call
         </h1>
         <p className="mt-2 text-[14px] leading-[1.55] text-[color:var(--color-text-dim)]">
@@ -161,23 +161,19 @@ export default function JoinPage() {
         <button
           type="button"
           onClick={join}
-          className="flex items-center gap-2 rounded-[var(--radius-input)] border border-[color:var(--color-accent-dim)] bg-[color:color-mix(in_srgb,var(--color-accent)_14%,transparent)] px-5 py-2.5 font-mono text-[13px] tracking-[0.04em] text-[color:var(--color-accent-dim)] transition-colors hover:bg-[color:color-mix(in_srgb,var(--color-accent)_22%,transparent)]"
+          className="flex items-center gap-2 rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-[22px] py-3 text-[15px] leading-none font-semibold text-white transition-colors hover:bg-[color:var(--color-accent-dim)]"
         >
           <Mic size={16} />
-          {state === 'ended' ? 'rejoin the call' : 'join the call'}
+          {state === 'ended' ? 'Rejoin the call' : 'Join the call'}
         </button>
       ) : null}
 
       {state === 'connecting' ? (
-        <p className="font-mono text-[12px] tracking-[0.04em] text-[color:var(--color-text-dim)]">
-          connecting…
-        </p>
+        <p className="text-sm text-[color:var(--color-text-dim)]">connecting…</p>
       ) : null}
 
       {error ? (
-        <p className="font-mono text-[12px] leading-[1.5] text-[color:var(--color-warning)]">
-          {error}
-        </p>
+        <p className="text-sm leading-[1.5] text-[color:var(--color-warning)]">{error}</p>
       ) : null}
     </div>
   );

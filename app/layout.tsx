@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { JetBrains_Mono, Space_Grotesk } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import { PlaygroundFooter } from '@/components/layout/PlaygroundFooter';
 import { PlaygroundHeader } from '@/components/layout/PlaygroundHeader';
 import { UpvoteProvider } from '@/components/playground/UpvoteProvider';
@@ -10,9 +10,9 @@ const SITE_TITLE = 'voice playground';
 const SITE_DESCRIPTION =
   'Talk to open-source voice agents from the awesome-voice-apps cookbook, right in your browser.';
 
-const spaceGrotesk = Space_Grotesk({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-space-grotesk',
+  variable: '--font-inter',
   display: 'swap',
 });
 const jetbrainsMono = JetBrains_Mono({
@@ -86,10 +86,10 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
-      <body className="bg-[color:var(--color-bg)] text-[color:var(--color-text)] antialiased">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className="flex min-h-dvh flex-col bg-[color:var(--color-bg)] text-[color:var(--color-text)] antialiased">
         <PlaygroundHeader />
-        <main className="min-h-[calc(100dvh-56px-44px)]">
+        <main className="flex-1">
           <UpvoteProvider>{children}</UpvoteProvider>
         </main>
         <PlaygroundFooter />

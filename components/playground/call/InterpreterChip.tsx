@@ -25,7 +25,7 @@ export function InterpreterChip() {
 
   return (
     <span
-      className="flex items-center gap-2 font-mono text-[11px] tracking-[0.06em] uppercase"
+      className="flex items-center gap-2 text-xs font-bold tracking-widest uppercase"
       style={{ color: speaking ? 'var(--color-accent-dim)' : 'var(--color-text-mute)' }}
     >
       <span

@@ -121,8 +121,8 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-[rgba(34,28,18,0.35)]" />
-        <Dialog.Content className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right fixed inset-y-0 right-0 z-50 flex w-[min(440px,92vw)] flex-col border-l border-[color:var(--color-border)] bg-[color:var(--color-bg)] shadow-[-12px_0_40px_rgba(34,28,18,0.14)]">
+        <Dialog.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-[color:var(--color-overlay)]" />
+        <Dialog.Content className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right fixed inset-y-0 right-0 z-50 flex w-[min(440px,92vw)] flex-col border-l border-[color:var(--color-border)] bg-[color:var(--color-bg)] shadow-[-12px_0_40px_rgba(17,22,28,0.14)]">
           <header className="flex items-center justify-between gap-4 border-b border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-[22px] py-[18px]">
             <div>
               <Eyebrow accent>your livekit keys</Eyebrow>
@@ -136,7 +136,7 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
             </div>
             <Dialog.Close
               aria-label="Close credentials"
-              className="flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-[color:var(--color-border)] bg-transparent font-mono text-[14px] text-[color:var(--color-text-mute)] hover:text-[color:var(--color-text)]"
+              className="flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-[color:var(--color-border)] bg-transparent text-sm text-[color:var(--color-text-mute)] hover:text-[color:var(--color-text)]"
             >
               ✕
             </Dialog.Close>
@@ -166,9 +166,7 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
                         {meta.label}
                       </span>
                       {isMissing ? (
-                        <span className="font-mono text-[11px] tracking-[0.04em] text-[color:var(--color-warning)]">
-                          missing
-                        </span>
+                        <span className="text-xs text-[color:var(--color-warning)]">missing</span>
                       ) : null}
                     </span>
                     <span className="mt-0.5 block text-[12.5px] leading-[1.5] text-[color:var(--color-text-mute)]">
@@ -217,7 +215,7 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
 
           <div className="flex items-center gap-3 border-t border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-[22px] py-4">
             <span
-              className="mr-auto flex items-center gap-[7px] font-mono text-[11px]"
+              className="mr-auto flex items-center gap-[7px] text-xs"
               style={{ color: ready ? 'var(--color-live)' : 'var(--color-warning)' }}
             >
               <span
@@ -237,8 +235,8 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
             </Btn>
             <AlertDialogPrimitive.Root open={confirmOpen} onOpenChange={setConfirmOpen}>
               <AlertDialogPrimitive.Portal>
-                <AlertDialogPrimitive.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[60] bg-[rgba(34,28,18,0.35)]" />
-                <AlertDialogPrimitive.Content className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 fixed top-1/2 left-1/2 z-[70] w-[min(380px,92vw)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius-panel)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] p-5 shadow-[0_8px_40px_rgba(34,28,18,0.18)]">
+                <AlertDialogPrimitive.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[60] bg-[color:var(--color-overlay)]" />
+                <AlertDialogPrimitive.Content className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 fixed top-1/2 left-1/2 z-[70] w-[min(380px,92vw)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius-panel)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] p-5 shadow-[0_8px_40px_rgba(17,22,28,0.18)]">
                   <AlertDialogPrimitive.Title className="text-[16px] font-semibold text-[color:var(--color-text)]">
                     Remove your LiveKit keys from this browser?
                   </AlertDialogPrimitive.Title>
@@ -247,12 +245,12 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
                     any time.
                   </AlertDialogPrimitive.Description>
                   <div className="mt-5 flex justify-end gap-3">
-                    <AlertDialogPrimitive.Cancel className="inline-flex cursor-pointer items-center rounded-[var(--radius-button)] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] px-3.5 py-2 font-mono text-[13px] font-medium text-[color:var(--color-text-dim)] hover:text-[color:var(--color-text)]">
+                    <AlertDialogPrimitive.Cancel className="inline-flex cursor-pointer items-center rounded-[var(--radius-button)] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] px-3.5 py-2 text-[13px] font-medium text-[color:var(--color-text-dim)] hover:text-[color:var(--color-text)]">
                       cancel
                     </AlertDialogPrimitive.Cancel>
                     <AlertDialogPrimitive.Action
                       onClick={handleConfirmedClear}
-                      className="inline-flex cursor-pointer items-center rounded-[var(--radius-button)] border border-[color:color-mix(in_srgb,var(--color-danger)_45%,transparent)] px-3.5 py-2 font-mono text-[13px] font-semibold text-[color:var(--color-danger)] hover:border-[color:var(--color-danger)]"
+                      className="inline-flex cursor-pointer items-center rounded-[var(--radius-button)] border border-[color:color-mix(in_srgb,var(--color-danger)_45%,transparent)] px-3.5 py-2 text-[13px] font-semibold text-[color:var(--color-danger)] hover:border-[color:var(--color-danger)]"
                     >
                       Remove keys
                     </AlertDialogPrimitive.Action>

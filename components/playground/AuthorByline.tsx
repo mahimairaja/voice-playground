@@ -6,7 +6,7 @@
  */
 export function AuthorByline({ author, github }: { author: string; github?: string }) {
   const className =
-    'mt-1.5 flex items-center gap-2 font-mono text-[12px] tracking-[0.04em] text-[color:var(--color-text-mute)]';
+    'mt-1.5 flex items-center gap-2 text-[13px] text-[color:var(--color-text-mute)]';
 
   if (!github) {
     return <p className={className}>by {author}</p>;

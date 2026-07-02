@@ -7,7 +7,7 @@ import { COLOR } from '@/lib/design/tokens';
 /**
  * Live agent-audio trace for the demo SCOPE. Reads the agent participant's
  * audio track and state from useVoiceAssistant() and renders the agents-ui
- * shader Wave in brand amber, stretched to fill the scope. The component
+ * shader Wave in the brand teal trace, stretched to fill the scope. The component
  * defaults to a 224px square (aspect-square h-[224px]), so aspect-auto plus
  * h/w-full override that to fill the panel.
  *

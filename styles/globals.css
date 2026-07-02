@@ -3,57 +3,59 @@
 @source "../node_modules/streamdown/dist/index.js";
 
 /*
- * Daylight amber tokens. Light warm-paper page; dark screens are reserved for
- * instrument insets (anything wrapped in .dark). Amber (#ffb02e) is a fill
- * color: CTAs, chips, the scope trace. Ochre (#8a5c00) carries links and
- * labels on light surfaces. Source: lib/design/tokens.ts (mirrored values),
- * asserted at WCAG AA by lib/design/tokens.contrast.test.ts. Anything beyond
- * this palette needs an explicit reason in the PR.
+ * Clean-light tokens, matched to mahimai.ca. White page; dark screens are
+ * reserved for instrument insets (anything wrapped in .dark). Teal (#1f96aa)
+ * is a fill color: CTAs, chips, the scope trace, always with white ink on
+ * top. Deep teal (#15788a) carries links and labels on light surfaces.
+ * Source: lib/design/tokens.ts (mirrored values), asserted at WCAG AA by
+ * lib/design/tokens.contrast.test.ts. Anything beyond this palette needs an
+ * explicit reason in the PR.
  */
 :root {
   /* brand */
-  --ph-bg: #faf8f3;
+  --ph-bg: #ffffff;
   --ph-surface: #ffffff;
-  --ph-surface-2: #f3efe6;
-  --ph-surface-3: #ece6d8;
-  --ph-scope: #0a0803;
-  --ph-border: #e7e0d2;
-  --ph-border-strong: #d9d0bd;
-  --ph-border-dim: #efe9dc;
-  --ph-text: #221c12;
-  --ph-text-dim: #4b443a;
-  --ph-text-mute: #6b614e;
-  --ph-text-fade: #8a7d68;
-  --ph-accent: #ffb02e;
-  --ph-accent-dim: #8a5c00;
-  --ph-accent-deep: #b45309;
-  --ph-accent-soft: color-mix(in srgb, #ffb02e 14%, transparent);
-  --ph-scope-text: #f4ead6;
-  --ph-scope-text-dim: #bcab8e;
+  --ph-surface-2: #f9fafb;
+  --ph-surface-3: #f3f4f6;
+  --ph-scope: #0b0f14;
+  --ph-border: #e5e7eb;
+  --ph-border-strong: #d1d5db;
+  --ph-border-dim: #f3f4f6;
+  --ph-text: #11161c;
+  --ph-text-dim: #4b5563;
+  --ph-text-mute: #6b7280;
+  --ph-text-fade: #8a939f;
+  --ph-accent: #1f96aa;
+  --ph-accent-dim: #15788a;
+  --ph-accent-deep: #116575;
+  --ph-accent-soft: color-mix(in srgb, var(--ph-accent) 15%, transparent);
+  --ph-scope-text: #e8eef2;
+  --ph-scope-text-dim: #9ca3af;
   --ph-live: #15803d;
   --ph-warning: #b45309;
   --ph-danger: #b91c1c;
+  --ph-overlay: color-mix(in srgb, var(--ph-text) 35%, transparent); /* modal scrim */
 
   /*
    * shadcn semantic set. The vendored registry components (components/ui,
    * components/ai-elements, components/agents-ui) consume these names; under
    * Tailwind v4 an undefined theme color silently compiles to nothing, so
    * this block is what makes the registries render on-brand.
-   * Note: the semantic "accent" is a quiet hover wash, NOT brand amber.
+   * Note: the semantic "accent" is a quiet hover wash, NOT brand teal.
    */
   --background: var(--ph-bg);
   --foreground: var(--ph-text);
   --card: var(--ph-surface);
   --card-foreground: var(--ph-text);
-  --popover: #fffdf8;
+  --popover: #ffffff;
   --popover-foreground: var(--ph-text);
   --primary: var(--ph-accent);
-  --primary-foreground: var(--ph-text);
+  --primary-foreground: #ffffff;
   --secondary: var(--ph-surface-2);
   --secondary-foreground: var(--ph-text);
   --muted: var(--ph-surface-2);
   --muted-foreground: var(--ph-text-mute);
-  --accent: #f6efe0;
+  --accent: #f3f4f6;
   --accent-foreground: var(--ph-text);
   --destructive: var(--ph-danger);
   --destructive-foreground: #ffffff;
@@ -62,10 +64,10 @@
   --ring: var(--ph-accent-dim);
   --radius: 0.5rem;
 
-  --radius-input: 7px;
-  --radius-button: 7px;
-  --radius-panel: 12px;
-  --radius-card: 12px;
+  --radius-input: 8px;
+  --radius-button: 8px;
+  --radius-panel: 16px;
+  --radius-card: 16px;
   --radius-pill: 999px;
 }
 
@@ -77,18 +79,18 @@
 .dark {
   --background: var(--ph-scope);
   --foreground: var(--ph-scope-text);
-  --card: #15100a;
+  --card: #151a21;
   --card-foreground: var(--ph-scope-text);
-  --popover: #15100a;
+  --popover: #151a21;
   --popover-foreground: var(--ph-scope-text);
-  --secondary: #1b1408;
+  --secondary: #10151b;
   --secondary-foreground: var(--ph-scope-text);
-  --muted: #1b1408;
+  --muted: #10151b;
   --muted-foreground: var(--ph-scope-text-dim);
-  --accent: #2a2010;
+  --accent: #1c232c;
   --accent-foreground: var(--ph-scope-text);
-  --border: #2c2213;
-  --input: #3a2d18;
+  --border: #262d36;
+  --input: #333c47;
   color-scheme: dark;
 
   /*
@@ -98,21 +100,22 @@
    * --color-* names to these --ph-* vars, so overriding the --ph-* vars here
    * re-points every brand utility for the dark subtree.
    */
-  --ph-surface: #15100a;
-  --ph-surface-2: #1b1408;
-  --ph-surface-3: #221a0e;
-  --ph-border: #2c2213;
-  --ph-border-strong: #3a2d18;
-  --ph-border-dim: #1e1810;
+  --ph-surface: #151a21;
+  --ph-surface-2: #10151b;
+  --ph-surface-3: #1a2028;
+  --ph-border: #262d36;
+  --ph-border-strong: #333c47;
+  --ph-border-dim: #151a20;
   --ph-text: var(--ph-scope-text);
   --ph-text-dim: var(--ph-scope-text-dim);
-  --ph-text-mute: #8c7d63;
-  --ph-text-fade: #5f5340;
+  --ph-text-mute: #8b95a1;
+  --ph-text-fade: #5b6672;
 }
 
 @theme inline {
   --font-sans:
-    var(--font-space-grotesk), system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial,
+    sans-serif;
   --font-mono:
     var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', monospace;
@@ -134,6 +137,7 @@
   --color-accent-dim: var(--ph-accent-dim);
   --color-accent-deep: var(--ph-accent-deep);
   --color-accent-soft: var(--ph-accent-soft);
+  --color-overlay: var(--ph-overlay);
   --color-scope-text: var(--ph-scope-text);
   --color-scope-text-dim: var(--ph-scope-text-dim);
   --color-live: var(--ph-live);
@@ -189,6 +193,47 @@
 }
 
 /*
+ * Card primitives ported from mahimai.ca. .card is the base surface (1rem
+ * radius, gray border, layered soft shadow); .card-hover is the opt-in lift
+ * for interactive content cards (never the hero/instrument frames); .badge
+ * is the quiet category pill.
+ */
+@layer components {
+  .card {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.06),
+      0 8px 24px -12px rgba(0, 0, 0, 0.12);
+  }
+  .card-hover {
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      border-color 0.18s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--ph-accent) 45%, transparent);
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.06),
+      0 20px 44px -20px rgba(17, 22, 28, 0.24);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-mute);
+  }
+}
+
+/*
  * Instrument texture. ph-grain lays a faint film-grain wash; ph-scan adds CRT
  * scanlines. Decorative overlays that never capture pointer events. Daylight
  * rule: applied only inside dark screens (.dark interiors), never on page
@@ -201,7 +246,7 @@
   pointer-events: none;
   z-index: 0;
   opacity: 0.05;
-  background-image: radial-gradient(rgba(255, 176, 46, 0.5) 0.5px, transparent 0.5px);
+  background-image: radial-gradient(rgba(31, 150, 170, 0.5) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
 }
 .ph-scan::after {
@@ -243,6 +288,88 @@
   }
 }
 
+/*
+ * Motion vocabulary ported from mahimai.ca: page-enter fade, scroll-reveal
+ * (Reveal component sets data-revealed via IntersectionObserver, with
+ * --reveal-delay staggering siblings), a shimmer sweep across the hero badge
+ * label, and a periodic sheen across the primary hero CTA.
+ */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-page-enter {
+  animation: page-enter 0.25s ease-out;
+}
+
+[data-reveal] {
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+  transition-delay: var(--reveal-delay, 0s);
+}
+/* Visible by default so no-JS or failed-script visitors can still read the
+   content; the client arms the hidden state (data-reveal-armed) only when it
+   can drive the reveal, then flips data-revealed as each block scrolls in. */
+[data-reveal][data-reveal-armed='true']:not([data-revealed='true']) {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+@keyframes shiny-text {
+  to {
+    background-position: -200% center;
+  }
+}
+.shiny-text {
+  background: linear-gradient(
+    90deg,
+    var(--ph-text-mute) 0%,
+    var(--ph-text-mute) 35%,
+    var(--ph-accent) 50%,
+    var(--ph-text-mute) 65%,
+    var(--ph-text-mute) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shiny-text 3.2s linear infinite;
+}
+
+@keyframes btn-shine {
+  0%,
+  18% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  animation: btn-shine 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
 /* Reduced motion: kill decorative animation globally. OscWave additionally
    paints a single static trace frame instead of running its rAF loop. */
 @media (prefers-reduced-motion: reduce) {
@@ -252,5 +379,22 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .card-hover:hover {
+    transform: none;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .shiny-text {
+    animation: none;
+    color: var(--ph-text-mute);
+    -webkit-text-fill-color: var(--ph-text-mute);
+  }
+  .btn-shine::after {
+    animation: none;
+    opacity: 0;
   }
 }

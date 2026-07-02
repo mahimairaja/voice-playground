@@ -94,10 +94,10 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
             DEMOS · {shipped.length} SHIPPED · {planned.length} PLANNED
             {activeCategory ? ` · ${activeCategory}` : ''}
           </Eyebrow>
-          <h1 className="mt-2.5 text-[34px] leading-none font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
+          <h1 className="mt-3 text-4xl leading-none font-black tracking-tight text-[color:var(--color-text)]">
             Demos
           </h1>
-          <p className="mt-2 max-w-[58ch] text-[14.5px] leading-[1.55] text-[color:var(--color-text-dim)]">
+          <p className="mt-3 max-w-[58ch] text-lg leading-relaxed text-[color:var(--color-text-dim)]">
             Voice agents you can talk to in your browser. Run one locally, paste your LiveKit keys,
             start the call.
           </p>
@@ -173,9 +173,9 @@ export default async function DemosIndexPage({ searchParams }: DemosPageProps) {
             <div className="mt-5">
               <Link
                 href="/demos"
-                className="font-mono text-[11px] tracking-[0.06em] text-[color:var(--color-text-mute)] uppercase underline-offset-4 hover:underline"
+                className="text-sm font-medium text-[color:var(--color-accent-dim)] underline-offset-4 hover:underline"
               >
-                · clear filters
+                Clear filters
               </Link>
             </div>
           ) : null}
@@ -193,16 +193,16 @@ interface CategoryChipProps {
 
 function CategoryChip({ label, href, active }: CategoryChipProps) {
   // Inline filter chips on URL-driven links: filters stay shareable and
-  // server-rendered (deliberately not Tabs). The active chip takes the amber
-  // fill; the rest are quiet lowercase text until hovered.
+  // server-rendered (deliberately not Tabs). The active chip takes the teal
+  // fill with white ink; the rest are quiet bordered pills until hovered.
   const classes = active
-    ? 'bg-[color:var(--color-accent)] font-semibold text-[color:var(--color-text)]'
-    : 'text-[color:var(--color-text-mute)] hover:bg-[color:var(--color-surface-2)] hover:text-[color:var(--color-text)]';
+    ? 'border-transparent bg-[color:var(--color-accent)] font-semibold text-white'
+    : 'border-[color:var(--color-border)] text-[color:var(--color-text-dim)] hover:bg-[color:var(--color-surface-2)] hover:text-[color:var(--color-text)]';
   return (
     <Link
       href={href}
       aria-current={active ? 'true' : undefined}
-      className={`inline-flex items-center rounded-[var(--radius-pill)] px-2.5 py-1.5 font-mono text-[12px] lowercase transition-colors ${classes}`}
+      className={`inline-flex items-center rounded-[var(--radius-pill)] border px-3 py-1 text-xs font-medium transition-colors ${classes}`}
     >
       {label}
     </Link>
@@ -211,7 +211,7 @@ function CategoryChip({ label, href, active }: CategoryChipProps) {
 
 function FilterLabel({ children }: { children: string }) {
   return (
-    <span className="mr-1 font-mono text-[10px] tracking-[0.12em] text-[color:var(--color-text-fade)] uppercase">
+    <span className="mr-1 text-xs font-bold tracking-widest text-[color:var(--color-text-mute)] uppercase">
       {children}
     </span>
   );
@@ -219,39 +219,35 @@ function FilterLabel({ children }: { children: string }) {
 
 function ShippedCard({ demo }: { demo: ShippedDemo }) {
   return (
-    <div className="flex h-full flex-col rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-[18px] transition-colors hover:border-[color:var(--color-accent)]">
+    <div className="card card-hover flex h-full flex-col p-6">
       <Link href={`/demos/${demo.slug}`} className="block flex-1">
         <div className="flex items-center justify-between">
           <span className="inline-flex items-center gap-2">
-            <Eyebrow accent className="text-[11px] tracking-[0.08em]">
-              {demo.category}
-            </Eyebrow>
+            <span className="badge">{demo.category}</span>
             {isRecentlyReleased(demo.released, new Date()) ? <NewBadge /> : null}
           </span>
           {demo.card_stat ? (
-            <span className="font-mono text-[11px] text-[color:var(--color-text-mute)]">
-              {demo.card_stat}
-            </span>
+            <span className="text-xs text-[color:var(--color-text-mute)]">{demo.card_stat}</span>
           ) : null}
         </div>
-        <h3 className="mt-[13px] text-[19px] font-semibold tracking-[-0.01em] text-[color:var(--color-text)]">
+        <h3 className="mt-4 text-xl font-bold tracking-tight text-[color:var(--color-text)]">
           {demo.title}
         </h3>
-        <p className="mt-2 text-[14.5px] leading-[1.6] text-[color:var(--color-text-dim)]">
+        <p className="mt-2 text-[15px] leading-[1.6] text-[color:var(--color-text-dim)]">
           {demo.description}
         </p>
         <StackLine stack={demo.stack} />
       </Link>
-      <div className="mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px]">
+      <div className="mt-5 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-4">
         <div className="flex items-center gap-2.5">
           <UpvoteButton slug={demo.slug} />
           <CookbookSourceLink slug={demo.slug} variant="inline" />
         </div>
         <Link
           href={`/demos/${demo.slug}`}
-          className="font-mono text-[11px] font-semibold tracking-[0.08em] text-[color:var(--color-accent-dim)] uppercase hover:underline"
+          className="text-sm font-semibold text-[color:var(--color-accent-dim)] hover:underline"
         >
-          ▶ play
+          Play →
         </Link>
       </div>
     </div>
@@ -264,22 +260,27 @@ function PlannedCard({ demo }: { demo: PlannedDemo }) {
       href={demo.github_link}
       target="_blank"
       rel="noreferrer noopener"
-      className="flex h-full flex-col rounded-[var(--radius-card)] border border-dashed border-[color:var(--color-border-dim)] bg-[color:var(--color-surface)] p-[18px] opacity-[0.72] transition-opacity hover:opacity-100"
+      className="card flex h-full flex-col p-6"
     >
       <div className="flex items-center justify-between">
-        <Eyebrow className="text-[11px] tracking-[0.08em]">{demo.category} · PLANNED</Eyebrow>
+        <span className="inline-flex items-center gap-2">
+          <span className="badge">{demo.category}</span>
+          <span className="inline-flex items-center rounded-full bg-[color:var(--color-surface-3)] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-[color:var(--color-text-mute)] uppercase">
+            planned
+          </span>
+        </span>
       </div>
-      <h3 className="mt-[13px] text-[19px] font-semibold tracking-[-0.01em] text-[color:var(--color-text-dim)]">
+      <h3 className="mt-4 text-xl font-bold tracking-tight text-[color:var(--color-text-dim)]">
         {demo.title}
       </h3>
-      <p className="mt-2 flex-1 text-[14.5px] leading-[1.6] text-[color:var(--color-text-mute)]">
+      <p className="mt-2 flex-1 text-[15px] leading-[1.6] text-[color:var(--color-text-mute)]">
         {demo.why}
       </p>
-      <div className="mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px] font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)] uppercase">
+      <div className="mt-5 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-4 text-xs font-medium text-[color:var(--color-text-mute)]">
         <span className="inline-flex items-center gap-1">
-          source <span aria-hidden="true">↗</span>
+          Source <span aria-hidden="true">↗</span>
         </span>
-        <span className="text-[color:var(--color-text-mute)]">target {demo.target_date}</span>
+        <span>Target {demo.target_date}</span>
       </div>
     </a>
   );
@@ -294,7 +295,7 @@ interface EmptyStateProps {
 function EmptyState({ filtered, totalShipped, totalPlanned }: EmptyStateProps) {
   if (filtered) {
     return (
-      <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-7 font-mono text-[13px] text-[color:var(--color-text-mute)]">
+      <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-7 text-sm text-[color:var(--color-text-mute)]">
         No demos match this filter.{' '}
         <Link href="/demos" className="text-[color:var(--color-accent-dim)] hover:underline">
           see all
@@ -305,7 +306,7 @@ function EmptyState({ filtered, totalShipped, totalPlanned }: EmptyStateProps) {
   }
   if (totalShipped === 0 && totalPlanned === 0) {
     return (
-      <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-7 font-mono text-[13px] text-[color:var(--color-text-mute)]">
+      <div className="rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border)] p-7 text-sm text-[color:var(--color-text-mute)]">
         No demos yet. New ones land in the{' '}
         <a
           href="https://github.com/mahimairaja/awesome-voice-apps"

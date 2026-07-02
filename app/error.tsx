@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import Link from 'next/link';
+import { Btn } from '@/components/phosphor';
 
 interface RouteErrorProps {
   error: Error & { digest?: string };
@@ -17,10 +17,10 @@ export default function RouteError({ error, reset }: RouteErrorProps) {
 
   return (
     <main className="mx-auto flex max-w-[520px] flex-col gap-4 px-6 py-24">
-      <span className="font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-danger)] uppercase">
-        {`ERROR · ${error.digest ?? 'UNHANDLED'}`}
+      <span className="text-xs font-bold tracking-widest text-[color:var(--color-danger)] uppercase">
+        {`Error · ${error.digest ?? 'unhandled'}`}
       </span>
-      <h1 className="text-[28px] font-semibold tracking-tight text-[color:var(--color-text)]">
+      <h1 className="text-[28px] font-bold tracking-tight text-[color:var(--color-text)]">
         Something broke.
       </h1>
       <p className="text-[15px] text-[color:var(--color-text-dim)]">
@@ -39,19 +39,12 @@ export default function RouteError({ error, reset }: RouteErrorProps) {
         </pre>
       ) : null}
       <div className="mt-2 flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => reset()}
-          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13.5px] font-semibold text-[color:var(--color-text)] hover:brightness-105"
-        >
-          → Try again
-        </button>
-        <Link
-          href="/"
-          className="rounded-[var(--radius-button)] border border-[color:var(--color-border)] px-4 py-2 text-[13px] text-[color:var(--color-text)] hover:border-[color:var(--color-border-strong)]"
-        >
+        <Btn kind="primary" onClick={() => reset()}>
+          Try again
+        </Btn>
+        <Btn kind="ghost" href="/">
           Home
-        </Link>
+        </Btn>
       </div>
     </main>
   );

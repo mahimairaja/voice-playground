@@ -54,11 +54,9 @@ function GalleryTile({ entry }: { entry: GalleryEntry }) {
   return (
     <div className="flex flex-col rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-3.5">
       <div className="flex items-baseline justify-between gap-3">
-        <h3 className="font-mono text-[13px] font-semibold text-[color:var(--color-text)]">
-          {entry.name}
-        </h3>
+        <h3 className="text-sm font-semibold text-[color:var(--color-text)]">{entry.name}</h3>
         {entry.aliasOf ? (
-          <span className="font-mono text-[10px] text-[color:var(--color-text-mute)]">
+          <span className="text-[11px] text-[color:var(--color-text-mute)]">
             alias of {entry.aliasOf}
           </span>
         ) : null}
@@ -76,7 +74,7 @@ function GalleryTile({ entry }: { entry: GalleryEntry }) {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls={panelId}
-        className="mt-3 flex cursor-pointer items-center gap-1.5 self-start font-mono text-[11px] tracking-[0.04em] text-[color:var(--color-accent-dim)] hover:underline"
+        className="mt-3 flex cursor-pointer items-center gap-1.5 self-start text-[13px] font-medium text-[color:var(--color-accent-dim)] hover:underline"
       >
         <ChevronDown
           size={13}
@@ -146,7 +144,7 @@ export function ComponentGallery() {
           type="button"
           onClick={() => setShowAll((v) => !v)}
           aria-expanded={showAll}
-          className="mt-4 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] py-2.5 font-mono text-[12px] tracking-[0.04em] text-[color:var(--color-accent-dim)] transition-colors hover:border-[color:var(--color-accent-dim)]"
+          className="mt-4 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] py-2.5 text-[13px] font-medium text-[color:var(--color-accent-dim)] transition-colors hover:border-[color:var(--color-accent-dim)]"
         >
           <ChevronDown
             size={14}
@@ -166,7 +164,7 @@ export function ComponentGallery() {
         <span className="text-[14px] text-[color:var(--color-text-dim)]">
           Need a shape these don&apos;t cover? Request a component.
         </span>
-        <span className="font-mono text-[12px] text-[color:var(--color-accent-dim)]">
+        <span className="text-sm font-semibold text-[color:var(--color-accent-dim)]">
           open issue ↗
         </span>
       </a>

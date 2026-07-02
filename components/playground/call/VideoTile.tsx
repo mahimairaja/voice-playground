@@ -21,10 +21,10 @@ export function VideoTile({ tile }: { tile: Tile }) {
       ) : (
         <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-[color:var(--color-text-mute)]">
           <VideoOff size={22} />
-          <span className="font-mono text-[11px] tracking-[0.06em] uppercase">camera off</span>
+          <span className="text-xs font-bold tracking-widest uppercase">camera off</span>
         </div>
       )}
-      <span className="absolute bottom-2 left-2 rounded-[var(--radius-pill)] bg-[color:color-mix(in_srgb,var(--color-bg)_70%,transparent)] px-2 py-0.5 font-mono text-[11px] tracking-[0.04em] text-[color:var(--color-text-dim)]">
+      <span className="absolute bottom-2 left-2 rounded-[var(--radius-pill)] bg-[color:color-mix(in_srgb,var(--color-bg)_70%,transparent)] px-2 py-0.5 text-[13px] text-[color:var(--color-text-dim)]">
         {tile.label}
       </span>
     </div>

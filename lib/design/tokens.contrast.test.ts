@@ -2,11 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { COLOR } from './tokens';
 
 /**
- * WCAG 2.2 contrast gate for the Daylight amber palette. Pure module, no
+ * WCAG 2.2 contrast gate for the clean-light teal palette. Pure module, no
  * dependencies: relative luminance per WCAG, asserted at AA. If a token
  * change breaks a pair, fix the token value, not the threshold; this gate
- * exists because the readability complaint that triggered the redesign was
- * a palette that quietly failed these ratios.
+ * exists because the readability complaint that triggered the original
+ * redesign was a palette that quietly failed these ratios.
+ *
+ * One deliberate deviation from the amber era: the primary CTA is white text
+ * on the teal fill, matching mahimai.ca. White on #1f96aa is 3.5:1, so the
+ * fill itself is gated as a UI component (3:1) and the 4.5:1 body-text
+ * assertion moves to white on accentDim (#15788a), the hover fill.
  */
 
 function channel(v: number): number {
@@ -40,11 +45,13 @@ const BODY_PAIRS: [string, string, string][] = [
   ['textMute on surface2', COLOR.textMute, COLOR.surface2],
   ['accentDim links on bg', COLOR.accentDim, COLOR.bg],
   ['accentDim links on surface', COLOR.accentDim, COLOR.surface],
-  // surface-2 is the cream code-chip / snippet background; ochre code sits on it.
+  // surface-2 is the gray-50 code-chip / snippet background; deep teal code sits on it.
   ['accentDim code on surface2', COLOR.accentDim, COLOR.surface2],
   ['accentDeep emphasis on bg', COLOR.accentDeep, COLOR.bg],
-  ['ink on amber CTA', COLOR.text, COLOR.accent],
+  ['white on accentDim CTA hover', '#ffffff', COLOR.accentDim],
+  ['white on accentDeep', '#ffffff', COLOR.accentDeep],
   ['danger on bg', COLOR.danger, COLOR.bg],
+  ['warning on bg', COLOR.warning, COLOR.bg],
   ['scopeText on scope', COLOR.scopeText, COLOR.scope],
   ['scopeTextDim on scope', COLOR.scopeTextDim, COLOR.scope],
 ];
@@ -54,10 +61,13 @@ const LARGE_OR_UI_PAIRS: [string, string, string][] = [
   ['textFade on bg (large/decorative only)', COLOR.textFade, COLOR.bg],
   ['live on bg', COLOR.live, COLOR.bg],
   ['live on surface', COLOR.live, COLOR.surface],
-  ['amber fill against bg (UI component)', COLOR.accent, COLOR.scope],
+  ['teal trace against scope screen (UI component)', COLOR.accent, COLOR.scope],
+  // The main-site CTA ships white on #1f96aa; gate the fill as a UI component.
+  ['white on teal CTA fill (UI component)', '#ffffff', COLOR.accent],
+  ['teal fill against bg (UI component)', COLOR.accent, COLOR.bg],
 ];
 
-describe('Daylight amber contrast gate (WCAG 2.2 AA)', () => {
+describe('Clean-light teal contrast gate (WCAG 2.2 AA)', () => {
   it.each(BODY_PAIRS)('%s is at least 4.5:1', (_label, fg, bg) => {
     expect(ratio(fg, bg)).toBeGreaterThanOrEqual(4.5);
   });

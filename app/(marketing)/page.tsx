@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { Btn, Eyebrow } from '@/components/phosphor';
+import { Btn, Eyebrow, Reveal } from '@/components/phosphor';
 import { CatalogError } from '@/components/playground/CatalogError';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
 import { NewBadge } from '@/components/playground/NewBadge';
@@ -14,8 +14,8 @@ import { isRecentlyReleased } from '@/lib/demos/released';
 import { HeroScope } from './HeroScope';
 
 /**
- * Landing page, Daylight amber skin. Layout:
- *   hero left (eyebrow + headline + lead + CTA row) · scope panel right ·
+ * Landing page, clean-light teal skin. Layout:
+ *   hero left (badge + headline + lead + CTA row) · scope panel right ·
  *   featured demos trio (Suspense-streamed) · how-it-works trio · byo note.
  *
  * The featured row fills with up to 3 shipped demos. If shipped count is
@@ -25,25 +25,33 @@ import { HeroScope } from './HeroScope';
 export default function HomePage() {
   return (
     <>
-      <main className="mx-auto max-w-[1140px] px-8 pt-14 pb-4">
+      <main className="animate-page-enter mx-auto max-w-[1140px] px-8 pt-14 pb-4">
         <section aria-label="Hero" className="grid items-start gap-11 md:grid-cols-[1.25fr_1fr]">
           <div>
-            <Eyebrow>voice agents · live demos</Eyebrow>
-            <h1 className="mt-4 text-[52px] leading-[1.04] font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-3 py-1 text-xs font-semibold text-[color:var(--color-text-dim)]">
+              <span
+                aria-hidden="true"
+                className="h-1.5 w-1.5 rounded-full bg-[color:var(--color-accent)]"
+              />
+              <span className="shiny-text">voice agents · live demos</span>
+            </span>
+            <h1 className="mt-5 text-5xl leading-[1.04] font-black tracking-tight text-[color:var(--color-text)] sm:text-6xl">
               Stop reading about voice agents.
               <br />
-              <span className="text-[color:var(--color-accent-deep)]">Talk to one.</span>
+              <span className="bg-gradient-to-r from-[color:var(--color-accent-dim)] to-[color:var(--color-accent)] bg-clip-text text-transparent">
+                Talk to one.
+              </span>
             </h1>
-            <p className="mt-[22px] max-w-[48ch] text-[17px] leading-[1.65] text-[color:var(--color-text-dim)]">
+            <p className="mt-6 max-w-[48ch] text-lg leading-relaxed text-[color:var(--color-text-dim)]">
               Open-source voice agents you run locally and talk to right here. Your keys, your
               machine, nothing stored.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Btn kind="primary" href="/demos">
-                ▶ open demos
+              <Btn kind="primary" href="/demos" className="btn-shine">
+                Open demos
               </Btn>
               <Btn kind="ghost" href="/about">
-                how it works
+                How it works
               </Btn>
             </div>
           </div>
@@ -52,17 +60,17 @@ export default function HomePage() {
         </section>
 
         <section aria-labelledby="try-one" className="mt-[60px]">
-          <div className="flex items-baseline justify-between">
+          <Reveal className="flex items-baseline justify-between">
             <Eyebrow>
               <span id="try-one">try one</span>
             </Eyebrow>
             <Link
               href="/demos"
-              className="text-[13.5px] font-medium text-[color:var(--color-accent-dim)] hover:underline"
+              className="text-sm font-semibold text-[color:var(--color-accent-dim)] hover:underline"
             >
-              all demos →
+              All demos →
             </Link>
-          </div>
+          </Reveal>
           <Suspense
             fallback={
               <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -80,23 +88,31 @@ export default function HomePage() {
           aria-label="How it works"
           className="mt-14 border-t border-[color:var(--color-border-dim)] pt-9"
         >
-          <Eyebrow>how it works</Eyebrow>
+          <Reveal>
+            <Eyebrow>how it works</Eyebrow>
+          </Reveal>
           <div className="mt-[18px] grid grid-cols-1 gap-4 md:grid-cols-3">
-            <Step
-              number="01"
-              title="Run the agent"
-              body="Clone the cookbook, cd into a demo, run it."
-            />
-            <Step
-              number="02"
-              title="Paste your keys"
-              body="LiveKit URL, key, and secret. They stay in your browser."
-            />
-            <Step
-              number="03"
-              title="Talk to the agent"
-              body="Pick the demo here and start the call."
-            />
+            <Reveal>
+              <Step
+                number="01"
+                title="Run the agent"
+                body="Clone the cookbook, cd into a demo, run it."
+              />
+            </Reveal>
+            <Reveal delay={0.08}>
+              <Step
+                number="02"
+                title="Paste your keys"
+                body="LiveKit URL, key, and secret. They stay in your browser."
+              />
+            </Reveal>
+            <Reveal delay={0.16}>
+              <Step
+                number="03"
+                title="Talk to the agent"
+                body="Pick the demo here and start the call."
+              />
+            </Reveal>
           </div>
         </section>
 
@@ -167,11 +183,15 @@ async function FeaturedRow() {
         </p>
       ) : (
         <>
-          {featuredShipped.map((demo) => (
-            <ShippedCard key={demo.slug} demo={demo} />
+          {featuredShipped.map((demo, i) => (
+            <Reveal key={demo.slug} delay={i * 0.08} className="h-full">
+              <ShippedCard demo={demo} />
+            </Reveal>
           ))}
-          {featuredPlanned.map((demo) => (
-            <PlannedCard key={demo.slug} demo={demo} />
+          {featuredPlanned.map((demo, i) => (
+            <Reveal key={demo.slug} delay={(featuredShipped.length + i) * 0.08} className="h-full">
+              <PlannedCard demo={demo} />
+            </Reveal>
           ))}
         </>
       )}
@@ -181,34 +201,32 @@ async function FeaturedRow() {
 
 function ShippedCard({ demo }: { demo: ShippedDemo }) {
   return (
-    <div className="relative flex h-full flex-col rounded-[var(--radius-panel)] border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-[18px] transition-colors hover:border-[color:var(--color-accent)]">
+    <div className="card card-hover relative flex h-full flex-col p-6">
       {/* Stretched link makes the whole card a click target without nesting the source anchor inside it. */}
       <Link
         href={`/demos/${demo.slug}`}
         aria-label={`Open ${demo.title}`}
-        className="absolute inset-0 z-0 rounded-[var(--radius-panel)]"
+        className="absolute inset-0 z-0 rounded-[var(--radius-card)]"
       />
       <span className="inline-flex items-center gap-2">
-        <Eyebrow accent className="text-[11px]">
-          {demo.category}
-        </Eyebrow>
+        <span className="badge">{demo.category}</span>
         {isRecentlyReleased(demo.released, new Date()) ? <NewBadge /> : null}
       </span>
-      <h3 className="mt-[13px] text-[19px] leading-tight font-semibold tracking-[-0.01em] text-[color:var(--color-text)]">
+      <h3 className="mt-4 text-xl leading-tight font-bold tracking-tight text-[color:var(--color-text)]">
         {demo.title}
       </h3>
       <div className="flex-1">
-        <p className="mt-2 text-[14.5px] leading-[1.6] text-[color:var(--color-text-dim)]">
+        <p className="mt-2 text-[15px] leading-[1.6] text-[color:var(--color-text-dim)]">
           {demo.description}
         </p>
         <StackLine stack={demo.stack} />
       </div>
-      <div className="relative z-10 mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px] font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)]">
+      <div className="relative z-10 mt-5 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-4">
         <div className="flex items-center gap-2.5">
           <UpvoteButton slug={demo.slug} />
           <CookbookSourceLink slug={demo.slug} variant="inline" />
         </div>
-        <span className="font-semibold text-[color:var(--color-accent-dim)]">▶ play</span>
+        <span className="text-sm font-semibold text-[color:var(--color-accent-dim)]">Play →</span>
       </div>
     </div>
   );
@@ -220,23 +238,25 @@ function PlannedCard({ demo }: { demo: PlannedDemo }) {
       href={demo.github_link}
       target="_blank"
       rel="noreferrer noopener"
-      className="flex h-full flex-col rounded-[var(--radius-panel)] border border-dashed border-[color:var(--color-border-dim)] bg-[color:var(--color-surface)] p-[18px] opacity-70 transition-opacity hover:opacity-100"
+      className="card flex h-full flex-col p-6"
     >
       <div className="flex items-center justify-between">
-        <Eyebrow className="text-[11px]">{demo.category} · planned</Eyebrow>
-        <span className="font-mono text-[11px] text-[color:var(--color-text-mute)]">
-          {demo.target_date}
+        <span className="inline-flex items-center gap-2">
+          <span className="badge">{demo.category}</span>
+          <span className="inline-flex items-center rounded-full bg-[color:var(--color-surface-3)] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-[color:var(--color-text-mute)] uppercase">
+            planned
+          </span>
         </span>
       </div>
-      <h3 className="mt-[13px] text-[19px] leading-tight font-semibold tracking-[-0.01em] text-[color:var(--color-text-dim)]">
+      <h3 className="mt-4 text-xl leading-tight font-bold tracking-tight text-[color:var(--color-text-dim)]">
         {demo.title}
       </h3>
-      <p className="mt-2 flex-1 text-[14.5px] leading-[1.6] text-[color:var(--color-text-mute)]">
+      <p className="mt-2 flex-1 text-[15px] leading-[1.6] text-[color:var(--color-text-mute)]">
         {demo.why}
       </p>
-      <div className="mt-4 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-[13px] font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)]">
-        <span>source ↗</span>
-        <span>target {demo.target_date}</span>
+      <div className="mt-5 flex items-center justify-between border-t border-[color:var(--color-border-dim)] pt-4 text-xs font-medium text-[color:var(--color-text-mute)]">
+        <span>Source ↗</span>
+        <span>Target {demo.target_date}</span>
       </div>
     </a>
   );
@@ -244,16 +264,12 @@ function PlannedCard({ demo }: { demo: PlannedDemo }) {
 
 function Step({ number, title, body }: { number: string; title: string; body: string }) {
   return (
-    <div className="rounded-[var(--radius-panel)] border border-[color:var(--color-border-dim)] p-[18px]">
-      <Eyebrow accent className="text-[11px]">
-        {number}
-      </Eyebrow>
-      <h3 className="mt-[10px] text-[16px] font-semibold tracking-tight text-[color:var(--color-text)]">
+    <div className="card card-hover p-6">
+      <Eyebrow accent>{number}</Eyebrow>
+      <h3 className="mt-3 text-lg font-bold tracking-tight text-[color:var(--color-text)]">
         {title}
       </h3>
-      <p className="mt-[6px] text-[14px] leading-[1.55] text-[color:var(--color-text-dim)]">
-        {body}
-      </p>
+      <p className="mt-2 text-[15px] leading-[1.55] text-[color:var(--color-text-dim)]">{body}</p>
     </div>
   );
 }

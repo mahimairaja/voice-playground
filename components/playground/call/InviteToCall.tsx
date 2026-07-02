@@ -42,7 +42,7 @@ export function InviteToCall({ room, slug }: { room: Room; slug: string }) {
     <button
       type="button"
       onClick={invite}
-      className="flex items-center gap-2 rounded-[var(--radius-input)] border border-[color:var(--color-accent-dim)] bg-[color:color-mix(in_srgb,var(--color-accent)_12%,transparent)] px-3.5 py-2 font-mono text-[12px] tracking-[0.04em] text-[color:var(--color-accent-dim)] transition-colors hover:bg-[color:color-mix(in_srgb,var(--color-accent)_20%,transparent)]"
+      className="flex items-center gap-2 rounded-[var(--radius-input)] border border-[color:var(--color-accent-dim)] bg-[color:color-mix(in_srgb,var(--color-accent)_12%,transparent)] px-3.5 py-2 text-[13px] text-[color:var(--color-accent-dim)] transition-colors hover:bg-[color:color-mix(in_srgb,var(--color-accent)_20%,transparent)]"
     >
       {copied ? (
         <Check size={15} className="text-[color:var(--color-live)]" />

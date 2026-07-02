@@ -24,7 +24,7 @@ export function CatalogError({ cause, message, compact = false }: CatalogErrorPr
         (compact ? 'p-4 text-[13px]' : 'p-6 text-[14px]')
       }
     >
-      <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.1em] text-[color:var(--color-warning)] uppercase">
+      <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-[color:var(--color-warning)] uppercase">
         <span
           className="inline-block h-2 w-2 rounded-full bg-[color:var(--color-warning)]"
           aria-hidden="true"
@@ -37,12 +37,12 @@ export function CatalogError({ cause, message, compact = false }: CatalogErrorPr
           href={COOKBOOK_BASE_URL}
           target="_blank"
           rel="noreferrer noopener"
-          className="font-mono text-[color:var(--color-accent-dim)] hover:underline"
+          className="text-[color:var(--color-accent-dim)] hover:underline"
         >
           → View the cookbook on GitHub
         </a>
       </p>
-      <p className="mt-3 font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)] uppercase">
+      <p className="mt-3 text-xs font-bold tracking-widest text-[color:var(--color-text-mute)] uppercase">
         cause: {cause}
       </p>
     </div>

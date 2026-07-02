@@ -38,10 +38,10 @@ function Step({ n, title, children }: { n: string; title: string; children: Reac
   return (
     <section className="border-t border-[color:var(--color-border-dim)] pt-7">
       <div className="flex items-baseline gap-3">
-        <span className="font-mono text-[13px] font-semibold text-[color:var(--color-accent-dim)]">
+        <span className="text-sm font-bold tracking-widest text-[color:var(--color-accent-dim)] uppercase">
           {n}
         </span>
-        <h2 className="text-[20px] font-semibold tracking-[-0.01em] text-[color:var(--color-text)]">
+        <h2 className="text-2xl font-bold tracking-tight text-[color:var(--color-text)]">
           {title}
         </h2>
       </div>
@@ -56,7 +56,7 @@ export default function ContributePage() {
   return (
     <main className="mx-auto w-full max-w-[860px] px-6 pt-14 pb-20">
       <Eyebrow>contribute</Eyebrow>
-      <h1 className="mt-2.5 text-[34px] leading-none font-semibold tracking-[-0.02em] text-[color:var(--color-text)]">
+      <h1 className="mt-3 text-4xl leading-none font-black tracking-tight text-[color:var(--color-text)]">
         Ship a demo
       </h1>
       <p className="mt-3 max-w-[64ch] text-[16px] leading-[1.6] text-[color:var(--color-text-dim)]">

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { Btn } from '@/components/phosphor';
 
 export const metadata: Metadata = {
   title: '404 · voice playground',
@@ -9,28 +9,22 @@ export const metadata: Metadata = {
 export default function NotFoundPage() {
   return (
     <main className="mx-auto flex max-w-[520px] flex-col gap-4 px-6 py-24">
-      <span className="font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-text-mute)] uppercase">
-        404 · NO ROUTE
+      <span className="text-xs font-bold tracking-widest text-[color:var(--color-text-mute)] uppercase">
+        404 · No route
       </span>
-      <h1 className="text-[28px] font-semibold tracking-tight text-[color:var(--color-text)]">
+      <h1 className="text-[28px] font-bold tracking-tight text-[color:var(--color-text)]">
         That page doesn&apos;t live here.
       </h1>
       <p className="text-[15px] text-[color:var(--color-text-dim)]">
         We may have moved it, or the URL is a typo. The playground keeps working.
       </p>
       <div className="mt-4 flex items-center gap-3">
-        <Link
-          href="/demos"
-          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-4 py-2 text-[13.5px] font-semibold text-[color:var(--color-text)] hover:brightness-105"
-        >
-          → Back to demos
-        </Link>
-        <Link
-          href="/"
-          className="rounded-[var(--radius-button)] border border-[color:var(--color-border)] px-4 py-2 text-[13px] text-[color:var(--color-text)] hover:border-[color:var(--color-border-strong)]"
-        >
+        <Btn kind="primary" href="/demos">
+          Back to demos
+        </Btn>
+        <Btn kind="ghost" href="/">
           Home
-        </Link>
+        </Btn>
       </div>
     </main>
   );

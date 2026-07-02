@@ -160,7 +160,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
       <aside aria-label="Voice controls" className="flex w-full flex-col gap-4">
         {tokenError ? (
           <div className="rounded-[var(--radius-panel)] border border-[color:color-mix(in_srgb,var(--color-danger)_40%,transparent)] bg-[color:color-mix(in_srgb,var(--color-danger)_8%,transparent)] p-3">
-            <p className="font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-danger)] uppercase">
+            <p className="text-xs font-bold tracking-widest text-[color:var(--color-danger)] uppercase">
               token · rejected
             </p>
             <p className="mt-1 text-[13.5px] text-[color:var(--color-text-dim)]">
@@ -200,7 +200,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
             style={{
               background: 'var(--color-scope)',
               backgroundImage:
-                'repeating-linear-gradient(90deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 44px),repeating-linear-gradient(0deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 44px)',
+                'repeating-linear-gradient(90deg,rgba(232,238,242,0.06) 0 1px,transparent 1px 44px),repeating-linear-gradient(0deg,rgba(232,238,242,0.06) 0 1px,transparent 1px 44px)',
             }}
           >
             <div className="absolute inset-0 flex items-center px-2">
@@ -243,7 +243,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
               type="button"
               onClick={toggleMute}
               disabled={!live}
-              className="rounded-[var(--radius-button)] border border-[color:var(--color-border)] px-[14px] py-[10px] font-mono text-[12px] transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-[var(--radius-button)] border border-[color:var(--color-border-strong)] px-[14px] py-[10px] text-[13px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               style={{
                 color: !live
                   ? 'var(--color-text-fade)'
@@ -281,7 +281,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
 
         {agentMissing ? (
           <div className="rounded-[var(--radius-panel)] border border-[color:color-mix(in_srgb,var(--color-warning)_40%,transparent)] bg-[color:color-mix(in_srgb,var(--color-warning)_8%,transparent)] p-3">
-            <p className="font-mono text-[11px] tracking-[0.08em] text-[color:var(--color-warning)] uppercase">
+            <p className="text-xs font-bold tracking-widest text-[color:var(--color-warning)] uppercase">
               agent · not connected
             </p>
             <p className="mt-1 text-[13.5px] leading-[1.5] text-[color:var(--color-text-dim)]">

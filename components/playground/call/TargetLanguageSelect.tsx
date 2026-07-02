@@ -30,14 +30,14 @@ export function TargetLanguageSelect({
   disabled?: boolean;
 }) {
   return (
-    <label className="flex items-center gap-2.5 font-mono text-[11px] tracking-[0.06em] text-[color:var(--color-text-mute)] uppercase">
+    <label className="flex items-center gap-2.5 text-xs font-bold tracking-widest text-[color:var(--color-text-mute)] uppercase">
       target language
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
         aria-label="Target language"
-        className="rounded-[var(--radius-input)] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] px-2.5 py-1.5 font-mono text-[12px] tracking-[0.02em] text-[color:var(--color-text-dim)] normal-case disabled:opacity-50"
+        className="rounded-[var(--radius-input)] border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] px-2.5 py-1.5 text-[13px] font-normal tracking-normal text-[color:var(--color-text-dim)] normal-case disabled:opacity-50"
       >
         {TARGET_LANGUAGES.map((lang) => (
           <option key={lang} value={lang}>
