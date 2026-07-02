@@ -286,6 +286,87 @@
   }
 }
 
+/*
+ * Motion vocabulary ported from mahimai.ca: page-enter fade, scroll-reveal
+ * (Reveal component sets data-revealed via IntersectionObserver, with
+ * --reveal-delay staggering siblings), a shimmer sweep across the hero badge
+ * label, and a periodic sheen across the primary hero CTA.
+ */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-page-enter {
+  animation: page-enter 0.25s ease-out;
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+  transition-delay: var(--reveal-delay, 0s);
+}
+[data-reveal][data-revealed='true'] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes shiny-text {
+  to {
+    background-position: -200% center;
+  }
+}
+.shiny-text {
+  background: linear-gradient(
+    90deg,
+    var(--ph-text-mute) 0%,
+    var(--ph-text-mute) 35%,
+    var(--ph-accent) 50%,
+    var(--ph-text-mute) 65%,
+    var(--ph-text-mute) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shiny-text 3.2s linear infinite;
+}
+
+@keyframes btn-shine {
+  0%,
+  18% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  animation: btn-shine 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
 /* Reduced motion: kill decorative animation globally. OscWave additionally
    paints a single static trace frame instead of running its rAF loop. */
 @media (prefers-reduced-motion: reduce) {
@@ -298,5 +379,19 @@
   }
   .card-hover:hover {
     transform: none;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .shiny-text {
+    animation: none;
+    color: var(--ph-text-mute);
+    -webkit-text-fill-color: var(--ph-text-mute);
+  }
+  .btn-shine::after {
+    animation: none;
+    opacity: 0;
   }
 }

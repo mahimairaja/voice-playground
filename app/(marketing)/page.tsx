@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { Btn, Eyebrow } from '@/components/phosphor';
+import { Btn, Eyebrow, Reveal } from '@/components/phosphor';
 import { CatalogError } from '@/components/playground/CatalogError';
 import { CookbookSourceLink } from '@/components/playground/CookbookSourceLink';
 import { NewBadge } from '@/components/playground/NewBadge';
@@ -14,8 +14,8 @@ import { isRecentlyReleased } from '@/lib/demos/released';
 import { HeroScope } from './HeroScope';
 
 /**
- * Landing page, Daylight amber skin. Layout:
- *   hero left (eyebrow + headline + lead + CTA row) · scope panel right ·
+ * Landing page, clean-light teal skin. Layout:
+ *   hero left (badge + headline + lead + CTA row) · scope panel right ·
  *   featured demos trio (Suspense-streamed) · how-it-works trio · byo note.
  *
  * The featured row fills with up to 3 shipped demos. If shipped count is
@@ -25,10 +25,16 @@ import { HeroScope } from './HeroScope';
 export default function HomePage() {
   return (
     <>
-      <main className="mx-auto max-w-[1140px] px-8 pt-14 pb-4">
+      <main className="animate-page-enter mx-auto max-w-[1140px] px-8 pt-14 pb-4">
         <section aria-label="Hero" className="grid items-start gap-11 md:grid-cols-[1.25fr_1fr]">
           <div>
-            <Eyebrow accent>voice agents · live demos</Eyebrow>
+            <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-3 py-1 text-xs font-semibold text-[color:var(--color-text-dim)]">
+              <span
+                aria-hidden="true"
+                className="h-1.5 w-1.5 rounded-full bg-[color:var(--color-accent)]"
+              />
+              <span className="shiny-text">voice agents · live demos</span>
+            </span>
             <h1 className="mt-5 text-5xl leading-[1.04] font-black tracking-tight text-[color:var(--color-text)] sm:text-6xl">
               Stop reading about voice agents.
               <br />
@@ -41,7 +47,7 @@ export default function HomePage() {
               machine, nothing stored.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Btn kind="primary" href="/demos">
+              <Btn kind="primary" href="/demos" className="btn-shine">
                 Open demos
               </Btn>
               <Btn kind="ghost" href="/about">
@@ -54,7 +60,7 @@ export default function HomePage() {
         </section>
 
         <section aria-labelledby="try-one" className="mt-[60px]">
-          <div className="flex items-baseline justify-between">
+          <Reveal className="flex items-baseline justify-between">
             <Eyebrow>
               <span id="try-one">try one</span>
             </Eyebrow>
@@ -64,7 +70,7 @@ export default function HomePage() {
             >
               All demos →
             </Link>
-          </div>
+          </Reveal>
           <Suspense
             fallback={
               <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -82,23 +88,31 @@ export default function HomePage() {
           aria-label="How it works"
           className="mt-14 border-t border-[color:var(--color-border-dim)] pt-9"
         >
-          <Eyebrow>how it works</Eyebrow>
+          <Reveal>
+            <Eyebrow>how it works</Eyebrow>
+          </Reveal>
           <div className="mt-[18px] grid grid-cols-1 gap-4 md:grid-cols-3">
-            <Step
-              number="01"
-              title="Run the agent"
-              body="Clone the cookbook, cd into a demo, run it."
-            />
-            <Step
-              number="02"
-              title="Paste your keys"
-              body="LiveKit URL, key, and secret. They stay in your browser."
-            />
-            <Step
-              number="03"
-              title="Talk to the agent"
-              body="Pick the demo here and start the call."
-            />
+            <Reveal>
+              <Step
+                number="01"
+                title="Run the agent"
+                body="Clone the cookbook, cd into a demo, run it."
+              />
+            </Reveal>
+            <Reveal delay={0.08}>
+              <Step
+                number="02"
+                title="Paste your keys"
+                body="LiveKit URL, key, and secret. They stay in your browser."
+              />
+            </Reveal>
+            <Reveal delay={0.16}>
+              <Step
+                number="03"
+                title="Talk to the agent"
+                body="Pick the demo here and start the call."
+              />
+            </Reveal>
           </div>
         </section>
 
@@ -169,11 +183,15 @@ async function FeaturedRow() {
         </p>
       ) : (
         <>
-          {featuredShipped.map((demo) => (
-            <ShippedCard key={demo.slug} demo={demo} />
+          {featuredShipped.map((demo, i) => (
+            <Reveal key={demo.slug} delay={i * 0.08} className="h-full">
+              <ShippedCard demo={demo} />
+            </Reveal>
           ))}
-          {featuredPlanned.map((demo) => (
-            <PlannedCard key={demo.slug} demo={demo} />
+          {featuredPlanned.map((demo, i) => (
+            <Reveal key={demo.slug} delay={(featuredShipped.length + i) * 0.08} className="h-full">
+              <PlannedCard demo={demo} />
+            </Reveal>
           ))}
         </>
       )}
