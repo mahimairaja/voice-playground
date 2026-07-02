@@ -121,8 +121,8 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-[rgba(34,28,18,0.35)]" />
-        <Dialog.Content className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right fixed inset-y-0 right-0 z-50 flex w-[min(440px,92vw)] flex-col border-l border-[color:var(--color-border)] bg-[color:var(--color-bg)] shadow-[-12px_0_40px_rgba(34,28,18,0.14)]">
+        <Dialog.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-[rgba(17,22,28,0.35)]" />
+        <Dialog.Content className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right fixed inset-y-0 right-0 z-50 flex w-[min(440px,92vw)] flex-col border-l border-[color:var(--color-border)] bg-[color:var(--color-bg)] shadow-[-12px_0_40px_rgba(17,22,28,0.14)]">
           <header className="flex items-center justify-between gap-4 border-b border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-[22px] py-[18px]">
             <div>
               <Eyebrow accent>your livekit keys</Eyebrow>
@@ -237,8 +237,8 @@ export function CredentialsSheet({ open, onOpenChange, demoTitle }: CredentialsS
             </Btn>
             <AlertDialogPrimitive.Root open={confirmOpen} onOpenChange={setConfirmOpen}>
               <AlertDialogPrimitive.Portal>
-                <AlertDialogPrimitive.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[60] bg-[rgba(34,28,18,0.35)]" />
-                <AlertDialogPrimitive.Content className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 fixed top-1/2 left-1/2 z-[70] w-[min(380px,92vw)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius-panel)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] p-5 shadow-[0_8px_40px_rgba(34,28,18,0.18)]">
+                <AlertDialogPrimitive.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[60] bg-[rgba(17,22,28,0.35)]" />
+                <AlertDialogPrimitive.Content className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 fixed top-1/2 left-1/2 z-[70] w-[min(380px,92vw)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius-panel)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] p-5 shadow-[0_8px_40px_rgba(17,22,28,0.18)]">
                   <AlertDialogPrimitive.Title className="text-[16px] font-semibold text-[color:var(--color-text)]">
                     Remove your LiveKit keys from this browser?
                   </AlertDialogPrimitive.Title>

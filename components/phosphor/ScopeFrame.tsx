@@ -40,7 +40,7 @@ export function ScopeFrame({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-[var(--radius-panel)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] shadow-[0_1px_3px_rgba(34,28,18,0.08)]',
+        'overflow-hidden rounded-[var(--radius-panel)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] shadow-[0_1px_3px_rgba(17,22,28,0.08)]',
         className
       )}
     >

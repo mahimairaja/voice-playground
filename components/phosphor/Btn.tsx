@@ -20,7 +20,7 @@ const BASE =
 
 const KINDS: Record<Kind, string> = {
   primary:
-    'bg-[color:var(--color-accent)] text-[color:var(--color-text)] shadow-[0_1px_2px_rgba(34,28,18,0.12)] hover:brightness-105',
+    'bg-[color:var(--color-accent)] text-white shadow-[0_1px_2px_rgba(17,22,28,0.12)] hover:bg-[color:var(--color-accent-dim)]',
   ghost:
     'border-[color:var(--color-border-strong)] bg-transparent text-[color:var(--color-text)] hover:border-[color:var(--color-accent-dim)]',
   muted:

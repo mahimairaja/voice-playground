@@ -40,7 +40,7 @@ export function PlaygroundHeader() {
     <header
       role="banner"
       className="sticky top-0 z-40 flex h-[60px] items-center justify-between border-b border-[color:var(--color-border)] px-6 backdrop-blur-[10px] sm:px-8"
-      style={{ background: 'rgba(250,248,243,0.85)' }}
+      style={{ background: 'rgba(255,255,255,0.85)' }}
     >
       <Link
         href="/"

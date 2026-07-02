@@ -200,7 +200,7 @@ export function VoicePanel({ session, isReady, slug }: VoicePanelProps) {
             style={{
               background: 'var(--color-scope)',
               backgroundImage:
-                'repeating-linear-gradient(90deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 44px),repeating-linear-gradient(0deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 44px)',
+                'repeating-linear-gradient(90deg,rgba(232,238,242,0.06) 0 1px,transparent 1px 44px),repeating-linear-gradient(0deg,rgba(232,238,242,0.06) 0 1px,transparent 1px 44px)',
             }}
           >
             <div className="absolute inset-0 flex items-center px-2">

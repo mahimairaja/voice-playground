@@ -25,7 +25,7 @@ export function HeroScope() {
           height: 184,
           background: 'var(--color-scope)',
           backgroundImage:
-            'repeating-linear-gradient(90deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 40px),repeating-linear-gradient(0deg,rgba(244,234,214,0.06) 0 1px,transparent 1px 40px)',
+            'repeating-linear-gradient(90deg,rgba(232,238,242,0.06) 0 1px,transparent 1px 40px),repeating-linear-gradient(0deg,rgba(232,238,242,0.06) 0 1px,transparent 1px 40px)',
         }}
       >
         {/* OscWave sits directly in Grain: the `.ph-grain > *` rule lifts it
