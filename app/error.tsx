@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import Link from 'next/link';
+import { Btn } from '@/components/phosphor';
 
 interface RouteErrorProps {
   error: Error & { digest?: string };
@@ -39,19 +39,12 @@ export default function RouteError({ error, reset }: RouteErrorProps) {
         </pre>
       ) : null}
       <div className="mt-2 flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => reset()}
-          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-[18px] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[color:var(--color-accent-dim)]"
-        >
+        <Btn kind="primary" onClick={() => reset()}>
           Try again
-        </button>
-        <Link
-          href="/"
-          className="rounded-[var(--radius-button)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] px-[18px] py-2.5 text-sm font-semibold text-[color:var(--color-text)] transition-colors hover:bg-[color:var(--color-surface-2)]"
-        >
+        </Btn>
+        <Btn kind="ghost" href="/">
           Home
-        </Link>
+        </Btn>
       </div>
     </main>
   );

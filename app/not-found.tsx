@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { Btn } from '@/components/phosphor';
 
 export const metadata: Metadata = {
   title: '404 · voice playground',
@@ -19,18 +19,12 @@ export default function NotFoundPage() {
         We may have moved it, or the URL is a typo. The playground keeps working.
       </p>
       <div className="mt-4 flex items-center gap-3">
-        <Link
-          href="/demos"
-          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-[18px] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[color:var(--color-accent-dim)]"
-        >
+        <Btn kind="primary" href="/demos">
           Back to demos
-        </Link>
-        <Link
-          href="/"
-          className="rounded-[var(--radius-button)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] px-[18px] py-2.5 text-sm font-semibold text-[color:var(--color-text)] transition-colors hover:bg-[color:var(--color-surface-2)]"
-        >
+        </Btn>
+        <Btn kind="ghost" href="/">
           Home
-        </Link>
+        </Btn>
       </div>
     </main>
   );

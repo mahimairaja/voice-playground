@@ -11,9 +11,13 @@ interface RevealProps {
 
 /**
  * Scroll-reveal wrapper ported from mahimai.ca: content fades up once it
- * scrolls into view (see [data-reveal] in globals.css). Reduced-motion users
- * get it shown immediately, no transition. Server children pass through as
- * props, so server-rendered sections can be wrapped without going client.
+ * scrolls into view (see [data-reveal] in globals.css). Progressive
+ * enhancement: the content is visible by default and the client only arms the
+ * hidden-then-reveal style (data-reveal-armed) when it can actually drive it,
+ * so if scripts fail, are disabled, or IntersectionObserver is unavailable the
+ * marketing copy stays readable. Reduced-motion users are left visible, no
+ * transition. Server children pass through as props, so server-rendered
+ * sections can be wrapped without going client.
  */
 export function Reveal({ delay = 0, className, children }: RevealProps) {
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -28,6 +32,14 @@ export function Reveal({ delay = 0, className, children }: RevealProps) {
     observerRef.current?.disconnect();
     if (!node) return;
 
+    // Leave the default visible state in place (never arm) when we cannot or
+    // should not animate: no IntersectionObserver, or reduced-motion.
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced || typeof IntersectionObserver === 'undefined') return;
+
+    node.dataset.revealArmed = 'true';
     observerRef.current = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

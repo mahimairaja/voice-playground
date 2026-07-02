@@ -16,6 +16,9 @@
  * tokens.contrast.test.ts.
  */
 
+/** The single accent hex. Derive tints (accentSoft) from this, never repeat it. */
+const ACCENT = '#1f96aa';
+
 export const COLOR = {
   bg: '#ffffff',
   surface: '#ffffff',
@@ -29,15 +32,16 @@ export const COLOR = {
   textDim: '#4b5563', // gray-600: body copy, descriptions
   textMute: '#6b7280', // gray-500: badges, footers, readout labels
   textFade: '#8a939f', // decorative/large only; passes 3:1 where gray-400 does not
-  accent: '#1f96aa', // fill only: CTAs, chips, scope trace. White ink on top; never small text on light.
+  accent: ACCENT, // fill only: CTAs, chips, scope trace. White ink on top; never small text on light.
   accentDim: '#15788a', // deep teal: links, labels, focus rings, CTA hover fill (AA on every light surface)
   accentDeep: '#116575', // headline emphasis; AA both as text on white and under white text
-  accentSoft: 'color-mix(in srgb, #1f96aa 15%, transparent)',
+  accentSoft: `color-mix(in srgb, ${ACCENT} 15%, transparent)`,
   scopeText: '#e8eef2', // text on the dark screen
   scopeTextDim: '#9ca3af',
   live: '#15803d', // connected green, dark enough for light surfaces
   warning: '#b45309',
   danger: '#b91c1c',
+  overlay: 'color-mix(in srgb, #11161c 35%, transparent)', // modal scrim: ink at 35%
 } as const;
 
 export const RADIUS = {

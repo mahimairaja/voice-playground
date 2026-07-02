@@ -28,12 +28,13 @@
   --ph-accent: #1f96aa;
   --ph-accent-dim: #15788a;
   --ph-accent-deep: #116575;
-  --ph-accent-soft: color-mix(in srgb, #1f96aa 15%, transparent);
+  --ph-accent-soft: color-mix(in srgb, var(--ph-accent) 15%, transparent);
   --ph-scope-text: #e8eef2;
   --ph-scope-text-dim: #9ca3af;
   --ph-live: #15803d;
   --ph-warning: #b45309;
   --ph-danger: #b91c1c;
+  --ph-overlay: color-mix(in srgb, var(--ph-text) 35%, transparent); /* modal scrim */
 
   /*
    * shadcn semantic set. The vendored registry components (components/ui,
@@ -136,6 +137,7 @@
   --color-accent-dim: var(--ph-accent-dim);
   --color-accent-deep: var(--ph-accent-deep);
   --color-accent-soft: var(--ph-accent-soft);
+  --color-overlay: var(--ph-overlay);
   --color-scope-text: var(--ph-scope-text);
   --color-scope-text-dim: var(--ph-scope-text-dim);
   --color-live: var(--ph-live);
@@ -305,16 +307,17 @@
 }
 
 [data-reveal] {
-  opacity: 0;
-  transform: translateY(16px);
   transition:
     opacity 0.5s ease-out,
     transform 0.5s ease-out;
   transition-delay: var(--reveal-delay, 0s);
 }
-[data-reveal][data-revealed='true'] {
-  opacity: 1;
-  transform: translateY(0);
+/* Visible by default so no-JS or failed-script visitors can still read the
+   content; the client arms the hidden state (data-reveal-armed) only when it
+   can drive the reveal, then flips data-revealed as each block scrolls in. */
+[data-reveal][data-reveal-armed='true']:not([data-revealed='true']) {
+  opacity: 0;
+  transform: translateY(16px);
 }
 
 @keyframes shiny-text {

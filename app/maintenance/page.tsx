@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Btn } from '@/components/phosphor';
 
 const COOKBOOK_URL = 'https://github.com/mahimairaja/awesome-voice-apps';
 
@@ -24,20 +25,12 @@ export default function MaintenancePage() {
         The cookbook is open source and stays up while this site is down.
       </p>
       <div className="mt-4 flex items-center gap-3">
-        <a
-          href={COOKBOOK_URL}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="rounded-[var(--radius-button)] bg-[color:var(--color-accent)] px-[18px] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[color:var(--color-accent-dim)]"
-        >
+        <Btn kind="primary" href={COOKBOOK_URL} external>
           View the cookbook
-        </a>
-        <a
-          href="mailto:hello@mahimai.ca"
-          className="rounded-[var(--radius-button)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)] px-[18px] py-2.5 text-sm font-semibold text-[color:var(--color-text)] transition-colors hover:bg-[color:var(--color-surface-2)]"
-        >
+        </Btn>
+        <Btn kind="ghost" href="mailto:hello@mahimai.ca">
           hello@mahimai.ca
-        </a>
+        </Btn>
       </div>
     </main>
   );
