@@ -398,3 +398,210 @@
     opacity: 0;
   }
 }
+
+/*
+ * Cookbook writeups: the short blog on a demo page and the full tutorial at
+ * /learn/<slug>. Body copy is Inter; code is JetBrains Mono on a quiet gray
+ * inset. Callouts are token-colored alert boxes; the light hljs theme keeps
+ * code readable without shouting. Rendered from untrusted markdown through
+ * react-markdown + rehype-sanitize (lib/cookbook/markdown.ts).
+ */
+.cookbook-prose {
+  color: var(--color-text-dim);
+  font-size: 15px;
+  line-height: 1.75;
+}
+.cookbook-prose > :first-child {
+  margin-top: 0;
+}
+.cookbook-prose h2 {
+  scroll-margin-top: 6rem;
+  margin-top: 2.5rem;
+  font-size: 1.35rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+.cookbook-prose h3 {
+  scroll-margin-top: 6rem;
+  margin-top: 1.75rem;
+  font-size: 1.1rem;
+  font-weight: 650;
+  color: var(--color-text);
+}
+.cookbook-prose p {
+  margin-top: 1rem;
+}
+.cookbook-prose a {
+  color: var(--color-accent-dim);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.cookbook-prose ul,
+.cookbook-prose ol {
+  margin-top: 0.85rem;
+  padding-left: 1.35rem;
+}
+.cookbook-prose ul {
+  list-style: disc;
+}
+.cookbook-prose ol {
+  list-style: decimal;
+}
+.cookbook-prose li {
+  margin-top: 0.4rem;
+}
+.cookbook-prose strong {
+  color: var(--color-text);
+  font-weight: 650;
+}
+.cookbook-prose img {
+  margin-top: 1.25rem;
+  border-radius: var(--radius-panel);
+  border: 1px solid var(--color-border);
+}
+.cookbook-prose hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+}
+.cookbook-prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  background: var(--color-surface-3);
+  color: var(--color-accent-deep);
+}
+.cookbook-prose pre {
+  margin-top: 1.1rem;
+  overflow-x: auto;
+  border-radius: var(--radius-panel);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  padding: 1rem 1.1rem;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.cookbook-prose pre code {
+  font-family: var(--font-mono);
+  background: none;
+  padding: 0;
+  color: var(--color-text);
+}
+.cookbook-prose table {
+  margin-top: 1.25rem;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.cookbook-prose th,
+.cookbook-prose td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.cookbook-prose th {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* callouts: a GitHub-style alert blockquote tagged by remark-callouts */
+.cookbook-prose .callout {
+  margin-top: 1.25rem;
+  border-radius: var(--radius-panel);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-border-strong);
+  background: var(--color-surface-2);
+  padding: 0.85rem 1rem;
+  color: var(--color-text-dim);
+}
+.cookbook-prose .callout p {
+  margin: 0;
+}
+.cookbook-prose .callout p + p {
+  margin-top: 0.6rem;
+}
+.cookbook-prose .callout::before {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.cookbook-prose .callout-note {
+  border-left-color: var(--color-text-mute);
+}
+.cookbook-prose .callout-note::before {
+  content: 'Note';
+  color: var(--color-text-mute);
+}
+.cookbook-prose .callout-tip {
+  border-left-color: var(--color-accent-dim);
+}
+.cookbook-prose .callout-tip::before {
+  content: 'Tip';
+  color: var(--color-accent-dim);
+}
+.cookbook-prose .callout-important {
+  border-left-color: var(--color-accent-deep);
+}
+.cookbook-prose .callout-important::before {
+  content: 'Important';
+  color: var(--color-accent-deep);
+}
+.cookbook-prose .callout-warning {
+  border-left-color: var(--color-warning);
+}
+.cookbook-prose .callout-warning::before {
+  content: 'Warning';
+  color: var(--color-warning);
+}
+.cookbook-prose .callout-caution {
+  border-left-color: var(--color-danger);
+}
+.cookbook-prose .callout-caution::before {
+  content: 'Caution';
+  color: var(--color-danger);
+}
+
+/* light highlight.js theme, scoped to the prose, colored from brand tokens */
+.cookbook-prose .hljs {
+  color: var(--color-text);
+  background: transparent;
+}
+.cookbook-prose .hljs-comment,
+.cookbook-prose .hljs-quote {
+  color: var(--color-text-fade);
+  font-style: italic;
+}
+.cookbook-prose .hljs-keyword,
+.cookbook-prose .hljs-selector-tag,
+.cookbook-prose .hljs-built_in {
+  color: var(--color-accent-deep);
+}
+.cookbook-prose .hljs-string,
+.cookbook-prose .hljs-attr,
+.cookbook-prose .hljs-symbol {
+  color: var(--color-live);
+}
+.cookbook-prose .hljs-number,
+.cookbook-prose .hljs-literal,
+.cookbook-prose .hljs-type {
+  color: var(--color-warning);
+}
+.cookbook-prose .hljs-title,
+.cookbook-prose .hljs-title.function_,
+.cookbook-prose .hljs-section,
+.cookbook-prose .hljs-name {
+  color: var(--color-accent-dim);
+}
+.cookbook-prose .hljs-params {
+  color: var(--color-text);
+}
+.cookbook-prose .hljs-meta {
+  color: var(--color-text-mute);
+}

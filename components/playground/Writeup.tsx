@@ -1,37 +1,21 @@
-import ReactMarkdown from 'react-markdown';
 import { Eyebrow } from '@/components/phosphor/Eyebrow';
 import { AuthorByline } from '@/components/playground/AuthorByline';
+import { CookbookMarkdown } from '@/components/playground/CookbookMarkdown';
 import type { Writeup as WriteupData } from '@/lib/cookbook/blog';
-import { WRITEUP_REHYPE_PLUGINS } from '@/lib/cookbook/markdown';
 
 interface WriteupProps {
   writeup: WriteupData;
+  /** When the demo has a tutorial.md, the /learn/<slug> link to it. */
+  tutorialHref?: string;
 }
 
-const PROSE =
-  'mt-6 max-w-[68ch] text-[15px] leading-[1.7] text-[color:var(--color-text-dim)] ' +
-  '[&_a]:text-[color:var(--color-accent-dim)] [&_a]:underline ' +
-  '[&_code]:font-mono [&_code]:text-[13px] ' +
-  '[&_h2]:mt-8 [&_h2]:text-[20px] [&_h2]:font-semibold [&_h2]:text-[color:var(--color-text)] ' +
-  '[&_h3]:mt-6 [&_h3]:text-[17px] [&_h3]:font-semibold [&_h3]:text-[color:var(--color-text)] ' +
-  '[&_p]:mt-4 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mt-3 [&_ol]:list-decimal [&_ol]:pl-5 ' +
-  '[&_li]:mt-1.5 [&_blockquote]:mt-4 [&_blockquote]:border-l-2 [&_blockquote]:border-[color:var(--color-border)] [&_blockquote]:pl-4 ' +
-  '[&_pre]:mt-4 [&_pre]:overflow-x-auto [&_pre]:rounded-[var(--radius-panel)] [&_pre]:border ' +
-  '[&_pre]:border-[color:var(--color-border)] [&_pre]:bg-[color:color-mix(in_srgb,var(--color-border)_12%,transparent)] [&_pre]:p-4 ' +
-  '[&_img]:mt-4 [&_img]:rounded-[var(--radius-panel)]';
-
 /**
- * The build-writeup section below the live demo on /demos/<slug>. Server
- * component: it renders the markdown body with react-markdown and no
- * rehype-raw, so raw HTML in a writeup is never parsed into the tree, and
- * rehype-sanitize strips anything outside the safe element set. Writeup
- * bodies come from a public cookbook with external contributors, so this
- * sanitization is load-bearing, not cosmetic. react-markdown renders
- * synchronously during SSR, so the body lands in the initial server HTML and
- * is crawlable. The frozen markdown subset is documented in the cookbook's
- * AGENTS.md.
+ * The short build-along below the live demo on /demos/<slug>. Server component:
+ * the markdown body renders through CookbookMarkdown (react-markdown, no
+ * rehype-raw, rehype-sanitize is load-bearing since bodies come from external
+ * contributors). When a full tutorial exists, a link points readers to it.
  */
-export function Writeup({ writeup }: WriteupProps) {
+export function Writeup({ writeup, tutorialHref }: WriteupProps) {
   const { frontmatter, body } = writeup;
   return (
     <section className="mx-auto w-full max-w-[1180px] px-6 pb-20">
@@ -49,9 +33,18 @@ export function Writeup({ writeup }: WriteupProps) {
           {frontmatter.title}
         </h2>
         <AuthorByline author={frontmatter.author} github={frontmatter.github} />
-        <div className={PROSE}>
-          <ReactMarkdown rehypePlugins={WRITEUP_REHYPE_PLUGINS}>{body}</ReactMarkdown>
+        <div className="mt-6 max-w-[68ch]">
+          <CookbookMarkdown body={body} variant="blog" />
         </div>
+        {tutorialHref ? (
+          <a
+            href={tutorialHref}
+            className="mt-8 inline-flex items-center gap-1.5 text-[14px] font-medium text-[color:var(--color-accent-dim)] hover:underline"
+          >
+            Read the full walkthrough
+            <span aria-hidden>&rarr;</span>
+          </a>
+        ) : null}
       </div>
     </section>
   );

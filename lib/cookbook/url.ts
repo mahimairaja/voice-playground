@@ -22,3 +22,7 @@ export function demoSourceUrl(slug: string): string {
 export function blogRawUrl(slug: string): string {
   return `${RAW_BASE}/demos/${slug}/blog.md`;
 }
+
+export function tutorialRawUrl(slug: string): string {
+  return `${RAW_BASE}/demos/${slug}/tutorial.md`;
+}
