@@ -44,6 +44,7 @@ export function TableOfContents({ items }: { items: TocItem[] }) {
           <li key={item.id}>
             <a
               href={`#${item.id}`}
+              aria-current={active === item.id ? 'location' : undefined}
               className={[
                 'block py-0.5 transition-colors',
                 item.depth === 3 ? 'pl-4' : '',

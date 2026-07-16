@@ -47,10 +47,12 @@ function applyCallout(bq: MdNode): void {
   first.value = parsed.rest;
   // Defensive: if the marker sat alone on its line and the parser left an empty
   // lead node followed by a hard break, drop both so the body does not start
-  // blank. The common soft-break case leaves the body in place already.
+  // blank. The common soft-break case leaves the body in place already. If that
+  // empties the paragraph entirely, drop it too so no blank <p> renders.
   if (first.value === '') {
     para.children.shift();
     if (para.children[0]?.type === 'break') para.children.shift();
+    if (para.children.length === 0) bq.children?.shift();
   }
 
   bq.data ??= {};

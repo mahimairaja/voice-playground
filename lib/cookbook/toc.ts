@@ -6,6 +6,12 @@ export interface TocItem {
   id: string;
 }
 
+// rehype-sanitize's default schema clobbers id/name attributes with this
+// prefix, so a rendered heading id is 'user-content-<slug>'. The TOC ids must
+// carry the same prefix or the anchor links and the scroll-spy break. Locked to
+// the sanitize default by a test in markdown.test.ts.
+const CLOBBER_PREFIX = 'user-content-';
+
 /**
  * Extract a table of contents from a tutorial markdown body: the ## and ###
  * headings, each with a github-slugger id. The ids match rehype-slug's output
@@ -36,7 +42,7 @@ export function extractToc(body: string): TocItem[] {
     // tutorials keep headings plain, but this stays robust if one gains code.
     const text = heading[2].replace(/`/g, '').trim();
     if (!text) continue;
-    items.push({ depth, text, id: slugger.slug(text) });
+    items.push({ depth, text, id: CLOBBER_PREFIX + slugger.slug(text) });
   }
 
   return items;

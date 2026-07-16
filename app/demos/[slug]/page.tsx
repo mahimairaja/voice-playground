@@ -32,6 +32,8 @@ export default async function DemoPage({ params }: DemoPageProps) {
   const demo = await getShippedBySlug(slug);
   if (!demo) notFound();
   const writeup = demo.blog ? await fetchWriteup(slug) : null;
+  // A tutorial always ships alongside a blog in this cookbook, so only look for
+  // one when a writeup exists; this avoids an extra fetch for blog-less demos.
   const tutorial = writeup ? await fetchTutorial(slug) : null;
   return (
     <>
