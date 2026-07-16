@@ -1,7 +1,7 @@
 import 'server-only';
 import { z } from 'zod';
 import { COOKBOOK_REVALIDATE_TAG } from './manifest';
-import { blogRawUrl } from './url';
+import { blogRawUrl, tutorialRawUrl } from './url';
 
 const REVALIDATE_SECONDS = 300;
 
@@ -84,25 +84,25 @@ export function splitFrontmatter(
 }
 
 /**
- * Fetch and parse a demo's writeup from the cookbook. Returns null on any
- * failure path (missing file, malformed frontmatter, network) so the demo
- * page degrades to no writeup rather than erroring. Mirrors manifest.ts:
- * same 5-minute cache and 'cookbook' revalidation tag.
+ * Fetch and parse a writeup body (blog or tutorial) from the cookbook. Returns
+ * null on any failure path (missing file, malformed frontmatter, network) so a
+ * page degrades to no writeup rather than erroring. Mirrors manifest.ts: same
+ * 5-minute cache and 'cookbook' revalidation tag.
  */
-export async function fetchWriteup(slug: string): Promise<Writeup | null> {
+async function fetchWriteupFrom(url: string, slug: string, kind: string): Promise<Writeup | null> {
   let res: Response;
   try {
-    res = await fetch(blogRawUrl(slug), {
+    res = await fetch(url, {
       next: { revalidate: REVALIDATE_SECONDS, tags: [COOKBOOK_REVALIDATE_TAG] },
     });
   } catch {
-    console.warn(`[cookbook] writeup fetch failed for "${slug}"`);
+    console.warn(`[cookbook] ${kind} fetch failed for "${slug}"`);
     return null;
   }
 
   if (!res.ok) {
     if (res.status !== 404) {
-      console.warn(`[cookbook] writeup HTTP ${res.status} for "${slug}"`);
+      console.warn(`[cookbook] ${kind} HTTP ${res.status} for "${slug}"`);
     }
     return null;
   }
@@ -110,16 +110,26 @@ export async function fetchWriteup(slug: string): Promise<Writeup | null> {
   const text = await res.text();
   const split = splitFrontmatter(text);
   if (!split) {
-    console.warn(`[cookbook] writeup frontmatter malformed for "${slug}"`);
+    console.warn(`[cookbook] ${kind} frontmatter malformed for "${slug}"`);
     return null;
   }
 
   const parsed = WriteupFrontmatterSchema.safeParse(split.raw);
   if (!parsed.success) {
     const issues = parsed.error.issues.map((i) => i.message).join('; ');
-    console.warn(`[cookbook] writeup frontmatter invalid for "${slug}": ${issues}`);
+    console.warn(`[cookbook] ${kind} frontmatter invalid for "${slug}": ${issues}`);
     return null;
   }
 
   return { frontmatter: parsed.data, body: split.body };
+}
+
+/** The short build-along shown on a demo page (demos/<slug>/blog.md). */
+export function fetchWriteup(slug: string): Promise<Writeup | null> {
+  return fetchWriteupFrom(blogRawUrl(slug), slug, 'writeup');
+}
+
+/** The full "How to build" walkthrough (demos/<slug>/tutorial.md), for /learn. */
+export function fetchTutorial(slug: string): Promise<Writeup | null> {
+  return fetchWriteupFrom(tutorialRawUrl(slug), slug, 'tutorial');
 }

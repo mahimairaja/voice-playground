@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { DemoRuntime } from '@/components/playground/DemoRuntime';
 import { Writeup } from '@/components/playground/Writeup';
-import { fetchWriteup } from '@/lib/cookbook/blog';
+import { fetchTutorial, fetchWriteup } from '@/lib/cookbook/blog';
 import { getAllShipped, getShippedBySlug } from '@/lib/demos';
 
 export const dynamicParams = false;
@@ -32,10 +32,13 @@ export default async function DemoPage({ params }: DemoPageProps) {
   const demo = await getShippedBySlug(slug);
   if (!demo) notFound();
   const writeup = demo.blog ? await fetchWriteup(slug) : null;
+  const tutorial = writeup ? await fetchTutorial(slug) : null;
   return (
     <>
       <DemoRuntime demo={demo} />
-      {writeup ? <Writeup writeup={writeup} /> : null}
+      {writeup ? (
+        <Writeup writeup={writeup} tutorialHref={tutorial ? `/learn/${slug}` : undefined} />
+      ) : null}
     </>
   );
 }
