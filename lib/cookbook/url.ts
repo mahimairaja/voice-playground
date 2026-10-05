@@ -7,7 +7,9 @@
  * in a different raw host without redeploying. Untouched in production.
  */
 
-const DEFAULT_RAW_BASE = 'https://raw.githubusercontent.com/mahimairaja/awesome-voice-apps/main';
+// Preserve this legacy frontend while the new website owns editorial content.
+const DEFAULT_RAW_BASE =
+  'https://raw.githubusercontent.com/mahimairaja/awesome-voice-apps/6a23e123a49baac3be3f3f7098fe6bf6596b6778';
 const REPO_BASE = 'https://github.com/mahimairaja/awesome-voice-apps';
 
 const RAW_BASE = process.env.NEXT_PUBLIC_COOKBOOK_BASE_URL ?? DEFAULT_RAW_BASE;
