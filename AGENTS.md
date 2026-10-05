@@ -27,7 +27,7 @@ When the operator opens a fresh session and asks for help, default to **brainsto
 | State           | zustand (the generative-UI store only). React state everywhere else.                                       |
 | Theming         | next-themes for light/dark, body.clean toggle for sketchy/clean modes (see `lib/theme.ts`, `lib/mode.ts`). |
 | Voice runtime   | livekit-client plus `@livekit/components-react`. Visitor-supplied LiveKit URL/key/secret.                  |
-| Hosting         | Vercel Hobby tier, Node 20 pin via `package.json#engines.node` and `vercel.json`.                          |
+| Hosting         | Vercel Hobby tier, Node 24 pin via `package.json#engines.node` and `vercel.json`.                          |
 
 The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`, NOT in this repo. The playground only ships the visitor-side client.
 
@@ -62,7 +62,7 @@ The agent worker (Python, `livekit-agents 1.x`) lives in `../awesome-voice-apps`
 
 | Command               | Purpose                                                                               |
 | --------------------- | ------------------------------------------------------------------------------------- |
-| `pnpm install`        | Install deps. Node 20 pin emits a warning on Node 22 dev machines, harmless.          |
+| `pnpm install`        | Install deps. Node 24 pin emits a warning on Node 22 dev machines, harmless.          |
 | `pnpm dev`            | Next dev with Turbopack on http://localhost:3000.                                     |
 | `pnpm build`          | Production build. Runs `scripts/sync-demos.mjs` first (the `prebuild` hook).          |
 | `pnpm lint`           | ESLint plus Next core-web-vitals plus prettier.                                       |
